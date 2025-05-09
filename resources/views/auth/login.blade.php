@@ -9,9 +9,12 @@
         </div>
         <div class="col-md-6 ">
           <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="mb-4">
+            <div class="col-md-8 ">
+              <div class="mb-4 text-center">
+                <img src="{{asset('images/logo_mo.png')}}" class="light-logo" alt="Logo-Dark"  style='width:300px;'
+                /> <br>
               <h3>Sign In to </h3>
+          
               <p class="mb-4"><strong>{{ config('app.name', 'Laravel') }}</strong></p>
             </div>
             <form method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}" onsubmit='show()'>
