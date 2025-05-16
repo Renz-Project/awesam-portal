@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
 
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -11,7 +11,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="shortcut icon" href="{{url('images/aaa.png')}}">
-    <link href="{{asset('inside_css/assets/libs/jsvectormap/jsvectormap.min.css')}}" rel="stylesheet" type="text/css" />
 
     <!-- Layout config Js -->
     <script src="{{asset('inside_css/assets/js/layout.js')}}"></script>
@@ -25,6 +24,7 @@
     <link href="{{asset('inside_css/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
  
     {{-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css"> --}}
+    @yield('css')
   
 </head>
 <body>
@@ -43,7 +43,7 @@
                                     <img src="{{asset('images/aaa.png')}}" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{asset('images/logo_mo.png')}}" alt="" height="17">
+                                    <img src="{{asset('images/logo_mo.png')}}" alt="" height="37">
                                 </span>
                             </a>
 
@@ -52,7 +52,7 @@
                                     <img src="{{asset('images/aaa.png')}}" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{asset('images/logo_mo.png')}}" alt="" height="17">
+                                    <img src="{{asset('images/logo_mo.png')}}" alt="" height="37">
                                 </span>
                             </a>
                         </div>
@@ -115,7 +115,7 @@
                         <img src="{{asset('images/aaa.png')}}" alt="" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('images/logo_mo.png')}}" alt="" height="17">
+                        <img src="{{asset('images/logo_mo.png')}}" alt="" height="37">
                     </span>
                 </a>
                 <!-- Light Logo-->
@@ -124,7 +124,7 @@
                         <img src="{{asset('images/aaa.png')}}" alt="" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('images/logo_mo.png')}}" alt="" height="17">
+                        <img src="{{asset('images/logo_mo.png')}}" alt="" height="37">
                     </span>
                 </a>
                 <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -132,25 +132,7 @@
                 </button>
             </div>
     
-            <div class="dropdown sidebar-user m-1 rounded">
-                <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="d-flex align-items-center gap-2">
-                        <img class="rounded header-profile-user" src="assets/images/users/avatar-1.jpg" alt="Header Avatar">
-                        <span class="text-start">
-                            <span class="d-block fw-medium sidebar-user-name-text">Anna Adame</span>
-                            <span class="d-block fs-14 sidebar-user-name-sub-text"><i class="ri ri-circle-fill fs-10 text-success align-baseline"></i> <span class="align-middle">Online</span></span>
-                        </span>
-                    </span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                    <!-- item-->
-                    <h6 class="dropdown-header">Welcome Anna!</h6>
-                    <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
-                    <div class="dropdown-divider"></div>
-              
-                    <a class="dropdown-item" href="auth-logout-basic.html"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
-                </div>
-            </div>
+        
             <div id="scrollbar">
                 <div class="container-fluid">
 
@@ -165,7 +147,71 @@
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboard</span>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/transactions')}}">
+                                <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/transactions')}}">
+                                <i class="ri-list-check-2"></i> <span data-key="t-inventory">Inventory</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/clients')}}">
+                                <i class=" ri-folder-user-line"></i> <span data-key="t-clients">Clients</span>
+                            </a>
+                        </li>
+                        {{-- <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/projects')}}">
+                                <i class="ri-list-check"></i> <span data-key="t-dashboards">Projects</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/tasks')}}">
+                                <i class="ri-check-line"></i> <span data-key="t-dashboards">Tasks</span><span class="badge badge-pill bg-danger" data-key="t-hot">2</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/timekeeping')}}">
+                                <i class=" ri-time-line"></i> <span data-key="t-dashboards">Timekeeping</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/payslips')}}">
+                                <i class=" ri-money-dollar-circle-line"></i> <span data-key="t-dashboards">Payslips</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/api-keys')}}">
+                                <i class=" ri-shield-keyhole-line"></i> <span data-key="t-dashboards">API Keys</span>
+                            </a>
+                        </li> --}}
+                        <li class="menu-title"><span data-key="t-menu">Admin</span></li>
+                         
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/users')}}">
+                                <i class="ri-account-box-line"></i> <span data-key="t-users">Users</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/locations')}}">
+                                <i class="ri-map-pin-line"></i> <span data-key="t-locations">Locations</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                              <a class="nav-link menu-link" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
+                                <i class="ri-dashboard-2-line"></i> <span data-key="t-reports">Reports</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="reports">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Transactions </a>
+                                    </li>
+                                  
+                                </ul>
+                            </div>
+                        </li>
 
                     </ul>
                 </div>
@@ -177,7 +223,38 @@
         <!-- Left Sidebar End -->
         <!-- Vertical Overlay-->
         <div class="vertical-overlay"></div>
-        @yield('content')
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+                                    <h4 class="mb-sm-0">{{Route::current()->getName()}}</h4>
+        
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        @yield('content')
+                    </div>
+                </div>
+            
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                {{date('Y')}} © Awesam Clinic
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Design & Develop by Renz Cabato
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
     </div>
 
 
@@ -213,14 +290,13 @@
     <script src="{{asset('inside_css/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
 
     <!-- Vector map-->
-    <script src="{{asset('inside_css/assets/libs/jsvectormap/jsvectormap.min.js')}}"></script>
-    <script src="{{asset('inside_css/assets/libs/jsvectormap/maps/world-merc.js')}}"></script>
 
     <!-- Dashboard init -->
-    <script src="{{asset('inside_css/assets/js/pages/dashboard-analytics.init.js')}}"></script>
+    <script src="{{asset('inside_css/assets/js/pages/dashboard-projects.init.js')}}"></script>
 
     <!-- App js -->
     <script src="{{asset('inside_css/assets/js/app.js')}}"></script>
+    @yield('js')
     <script>
         function logout() {
         event.preventDefault();

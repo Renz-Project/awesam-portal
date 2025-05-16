@@ -17,4 +17,15 @@ Route::group(['middleware' => 'auth'], function () {
     
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+//transactions
+Route::get('/transactions','TransactionController@index')->name('transactions');
+
+
+
+//Users
+Route::get('/users','UserController@index')->name('users');
+
+
 });
