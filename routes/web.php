@@ -28,4 +28,9 @@ Route::get('/transactions','TransactionController@index')->name('transactions');
 Route::get('/users','UserController@index')->name('users');
 
 
+Route::get('/clients','ClientController@index')->name('clients');
+
+
+Route::get('/locations','LocationController@index')->name('locations');
+
 });
