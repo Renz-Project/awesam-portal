@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Location;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -10,6 +10,12 @@ class LocationController extends Controller
 
     public function index()
     {
-           return view('locations.index');
+        $locations = Location::get();
+           return view('locations.index',
+        
+            array(
+                'locations' => $locations,
+            )
+        );
     }
 }

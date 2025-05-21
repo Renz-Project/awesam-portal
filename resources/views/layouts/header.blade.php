@@ -11,7 +11,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="shortcut icon" href="{{url('images/aaa.png')}}">
-
+    @yield('css')
     <!-- Layout config Js -->
     <script src="{{asset('inside_css/assets/js/layout.js')}}"></script>
     <!-- Bootstrap Css -->
@@ -24,7 +24,7 @@
     <link href="{{asset('inside_css/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
  
     {{-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css"> --}}
-    @yield('css')
+
   
 </head>
 <body>
@@ -287,16 +287,10 @@
     <script src="{{asset('inside_css/assets/js/plugins.js')}}"></script>
 
     <!-- apexcharts -->
-    <script src="{{asset('inside_css/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
-
-    <!-- Vector map-->
-
-    <!-- Dashboard init -->
-    <script src="{{asset('inside_css/assets/js/pages/dashboard-projects.init.js')}}"></script>
-
+  @yield('js')
     <!-- App js -->
     <script src="{{asset('inside_css/assets/js/app.js')}}"></script>
-    @yield('js')
+  
     <script>
         function logout() {
         event.preventDefault();
@@ -304,5 +298,6 @@
     }
 
 </script>
+ @include('sweetalert::alert')
 </body>
 </html>

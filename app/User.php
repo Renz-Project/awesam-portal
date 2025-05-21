@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
     use Notifiable;
+      use \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,4 +38,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function locations()
+    {
+        return $this->hasMany(UserLocation::class);
+    }
 }

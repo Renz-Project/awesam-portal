@@ -26,6 +26,9 @@ Route::get('/transactions','TransactionController@index')->name('transactions');
 
 //Users
 Route::get('/users','UserController@index')->name('users');
+Route::post('/new-user','UserController@store')->name('new-user');
+Route::post('/edit-user/{id}','UserController@editUser')->name('edit-user');
+
 
 
 Route::get('/clients','ClientController@index')->name('clients');
