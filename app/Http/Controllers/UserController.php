@@ -54,7 +54,7 @@ class UserController extends Controller
 
     public function editUser(Request $request,$id)
     {
-        dd($request->all());
+        // dd($request->all());
         $this->validate($request, [
             'email' => 'unique:users,email,' . $id,
         ]);
@@ -68,7 +68,7 @@ class UserController extends Controller
 
         $user_locations = UserLocation::where('user_id',$id)->delete();
     
-        foreach($request->locations as $location)
+        foreach($request->locations_data as $location)
         {
             $new_location = new UserLocation;
             $new_location->location_id = $location;

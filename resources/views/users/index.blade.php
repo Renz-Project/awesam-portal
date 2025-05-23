@@ -47,16 +47,19 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a href='#' class="dropdown-item edit-item-btn"  data-bs-toggle="modal" data-bs-target="#editUser{{$user->id}}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
+                                          @if(Auth::user()->id != $user->id)
                                         <li>
-                                            <a  href='#' class="dropdown-item remove-item-btn">
-                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Deactivate
+                                          
+                                            <a  href='#' class="dropdown-item remove-item-btn deactivate-user">
+                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted "></i> Deactivate
                                             </a>
+                                            @endif
                                         </li>
                                     </ul>
                                 </div>
                             </td>
                         </tr>
-                        @include('users.edit_user')
+                    
                         @endforeach
                     </tbody>
                 </table>
@@ -66,6 +69,10 @@
 </div><!--end row-->
 
 @include('users.new_user')
+@foreach($users as $user)
+    @include('users.edit_user')
+@endforeach
+
 @endsection
 @section('js')
  <!-- gridjs js -->

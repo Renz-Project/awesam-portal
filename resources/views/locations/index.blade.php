@@ -26,8 +26,8 @@
                         @foreach($locations as $location)
                         <tr>
                           
-                            <td >Location</td>
-                            <td >Address</td>
+                            <td >{{$location->name}}</td>
+                            <td >{{$location->address}}</td>
                             <td>Action</td>
                         </tr>
                         @endforeach
