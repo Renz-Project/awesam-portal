@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use \OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Location extends Model implements Auditable
