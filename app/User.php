@@ -40,6 +40,6 @@ class User extends Authenticatable implements Auditable
     ];
     public function locations()
     {
-        return $this->hasMany(UserLocation::class);
+      return $this->belongsToMany(Location::class, 'user_locations');
     }
 }

@@ -32,6 +32,7 @@ Route::post('/edit-user/{id}','UserController@editUser')->name('edit-user');
 
 
 Route::get('/clients','ClientController@index')->name('clients');
+Route::post('/new-client','ClientController@store')->name('new-client');
 
 
 Route::get('/locations','LocationController@index')->name('locations');

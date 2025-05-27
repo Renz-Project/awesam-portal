@@ -41,7 +41,7 @@
                                 <label  class="form-label">Location</label>
                                 <select class="form-control required"  data-choices data-choices-removeItem  name="locations_data[]" multiple required>
                                     @foreach($locations as $loc)
-                                        <option value='{{$loc->id}}' @foreach($user->locations as $d ) @if($d->location_id == $loc->id) selected @endif @endforeach>{{$loc->name}}</option>
+                                        <option value='{{$loc->id}}' @foreach($user->locations as $d ) @if($d->id == $loc->id) selected @endif @endforeach>{{$loc->name}}</option>
                                     @endforeach
                                 </select>
                            

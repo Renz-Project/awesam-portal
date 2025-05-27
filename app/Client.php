@@ -4,7 +4,7 @@ namespace App;
 use \OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
-class Location extends Model implements Auditable
+class Client extends Model implements Auditable
 {
     //
     use \OwenIt\Auditing\Auditable;

@@ -36,7 +36,7 @@
                             <td>{{$user->role}}</td>
                             <td>
                                 @foreach($user->locations as $location)
-                                {{$location->location->name}} <br>
+                                {{$location->name}} <br>
                                 @endforeach
                                 </td>
                             <td>{{$user->status}}</td>
