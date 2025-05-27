@@ -18,13 +18,13 @@
                         <div class="col-xxl-12">
                             <div>
                                 <label for="middle_name" class="form-label">Middle Name (optional)</label>
-                                <input type="text" class="form-control" id="middle_name" name='email' placeholder="Middle Name" >
+                                <input type="text" class="form-control" id="middle_name" name='middle_name' placeholder="Middle Name" >
                             </div>
                         </div>
                         <div class="col-xxl-12">
                             <div>
                                 <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name='position'  placeholder="Last Name" Required>
+                                <input type="text" class="form-control" id="last_name" name='last_name'  placeholder="Last Name" Required>
                             </div>
                         </div>
                     

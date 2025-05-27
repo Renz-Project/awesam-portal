@@ -21,11 +21,17 @@
                             <th >Email</th>
                             <th >Contact Number</th>
                             <th >Last Transaction</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        @foreach($clients as $client)
+                        <tr>
+                            <td > <a href="{{ url('client/' . $client->id) }}"><img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
+                            <td >{{$client->email}}</td>
+                            <td >{{$client->contact_number}}</td>
+                            <td >{{date('d M, Y',strtotime($client->updated_at))}}</td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
