@@ -47,11 +47,28 @@ class ClientController extends Controller
 
     public function view(Request $request,$id)
     {
-        $client = Client::findOrfail($id);
-
+        $client = Client::with('locations')->findOrfail($id);
+        $locations = auth()->user()->locations;
          return view('clients.view',
         array(
             'client' => $client,
+            'locations' => $locations,
         ));
+    }
+    public function updateLocation(Request $request,$id)
+    {
+   
+        $user_locations = ClientLocation::where('client_id',$id)->delete();
+        //  dd($user_locations);
+        foreach($request->locations as $location)
+        {
+            $new_location = new ClientLocation;
+            $new_location->location_id = $location;
+            $new_location->client_id = $id;
+            $new_location->save();
+        }
+
+        Alert::success('Successfully Update')->persistent('Dismiss');
+        return back();
     }
 }

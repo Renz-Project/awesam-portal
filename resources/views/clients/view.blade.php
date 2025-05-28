@@ -1,8 +1,9 @@
 @extends('layouts.header')
 @section('css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"> --}}
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 @section('content')
 @include('error')
@@ -84,6 +85,8 @@
             <div class="tab-pane fade show active" id="project-overview" role="tabpanel">
                 <div class="row">
                     <div class="col-xl-9 col-lg-8">
+                        <form method='POST' action='edit-client-information/{{$client->id}}' onsubmit="show();"  enctype="multipart/form-data">
+                        @csrf   
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
@@ -191,26 +194,71 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class='row mb-3'>
+                                        <div class="col-xxl-4 col-md-6">
+                                            <div>
+                                                <label for="dental_insurance" class="form-label">Dental Insurance</label>
+                                                <input type='text' class="form-control" id="dental_insurance" placeholder="Company" value="{{$client->dental_insurance}}" name="dental_insurance" >
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-4 col-md-6">
+                                            <div>
+                                                <label for="effective_date" class="form-label">Effective Date</label>
+                                                <input type='date' class="form-control" id="effective_date" placeholder="" value="{{$client->effective_date}}" name="effective_date" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-xxl-12 col-md-12 text-end">
+                                            <br>
+                                            <button class="btn btn-success btn-border float-end" type="submit">Update</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- end card body -->
                         </div>
+                        </form>
                         <!-- end card -->
 
                         <!-- end card -->
                     </div>
                     <!-- ene col -->
                     <div class="col-xl-3 col-lg-4">
+                         <div class="card">
+                            <div class="card-body">
+                            <form method='POST' action='update-location/{{$client->id}}' onsubmit="show();"  enctype="multipart/form-data">
+                                @csrf   
+                                <h5 class="card-title mb-4">Locations </h5> 
+                               @php
+                                   $loc = ($client->locations)->pluck('id')->toArray();
+                                   
+                               @endphp
+                                <div class="row mb-2">
+                                    <div class="col-lg-12">
+                                        <select  id="locations"class="js-example-disabled-multi" name="locations[]" multiple="multiple" multiple required>
+                                            @foreach($locations as $location)
+                                            <option value='{{$location->id}}' @if(in_array($location->id,$loc))  selected @endif>{{$location->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                 <div class="row mb-3">
+                                      <div class="col-lg-12 ">
+                                            <button class="btn btn-success btn-border " type="submit">Update</button>
+                                      </div>
+                                 </div>
+                            </form>
+                            </div>
+                            <!-- end card body -->
+                        </div>
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title mb-4">For Minors</h5>
+                                <h5 class="card-title mb-4">Upload Chart <button type="button" class="btn btn-success btn-icon waves-effect waves-light" title='Upload Chart' data-bs-toggle="modal" data-bs-target="#uploadChart"><i class="ri-upload-fill"></i></button></h5> 
                                 
                             </div>
                             <!-- end card body -->
                         </div>
-                        <!-- end card -->
-
-                    
                         <!-- end card -->
                     </div>
                     <!-- end col -->
@@ -1210,13 +1258,19 @@
 @endsection
 @section('js')
  <!-- gridjs js -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script> --}}
 
-    <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
+    {{-- <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
     <!-- App js -->
-     <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
+     <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script> --}}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!--select2 cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="{{asset('inside_css/assets/js/pages/select2.init.js')}}"></script>
 @endsection

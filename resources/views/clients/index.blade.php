@@ -21,6 +21,7 @@
                             <th >Email</th>
                             <th >Contact Number</th>
                             <th >Last Transaction</th>
+                            <th >Locations</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +31,10 @@
                             <td >{{$client->email}}</td>
                             <td >{{$client->contact_number}}</td>
                             <td >{{date('d M, Y',strtotime($client->updated_at))}}</td>
+                            <td>@foreach($client->locations as $location)
+                                 {{$location->name}} <br>
+                                @endforeach
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
