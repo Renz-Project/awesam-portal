@@ -162,7 +162,7 @@
                                 <i class=" ri-folder-user-line"></i> <span data-key="t-clients">Clients</span>
                             </a>
                         </li>
-                        @if(auth()->user()->role == 'admin')
+                        @if(auth()->user()->role == 'Admin')
                         <li class="menu-title"><span data-key="t-menu">Admin</span></li>
                          
                         <li class="nav-item">
