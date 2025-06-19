@@ -18,8 +18,45 @@
                                 <div class="col-md-auto">
                                     <div class="avatar-md">
                                         <div class="avatar-title bg-white rounded-circle">
-                                            <img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs">
+                                            <a href='#'><img data-bs-toggle="modal" data-bs-target="#uploadAvatar" src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs"></a>
+                                            <div class="modal fade" id="uploadAvatar" tabindex="-1" aria-labelledby="newUserLabel">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-success" id="newUserLabel">Change Avatar</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method='POST' action='{{url('change-avatar/'.$client->id)}}' onsubmit="show();"  enctype="multipart/form-data">
+                                                                 @csrf   
+                                                                 <div class="row g-3">
+                                                                    <div class="col-lg-12">
+                                                                       
+                                                                        <div>
+                                                                            <label for="name" class="form-label">Avatar</label>
+                                                                            <input type="file" name="avatar" class="form-control" accept="image/*" capture="user" required>
+                                                                        </div>
+                                            
+                                                                    </div>
+                                                                 </div>
+                                                                
+                                                                <div class="row mt-2 g-3">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="hstack gap-2 justify-content-end">
+                                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Change Avatar</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--end col-->
+                                                                </div>
+                                                                <!--end row-->
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md">
@@ -126,8 +163,8 @@
                                                 {{-- <input type="text" class="form-control" id="sex" placeholder="M/F" value="{{$client->sex}}" name="sex" >  --}}
                                                 <select class='form-control' name='sex' >
                                                     <option></option>
-                                                    <option value='Male'>Male</option>
-                                                    <option value='Female'>Female</option>
+                                                    <option value='Male' @if($client->sex == 'Male') selected @endif>Male</option>
+                                                    <option value='Female' @if($client->sex == 'Female') selected @endif>Female</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -149,13 +186,13 @@
                                         <div class="col-xxl-8 col-md-6">
                                             <div>
                                                 <label for="home_address" class="form-label">Home Address</label>
-                                                <textarea  class="form-control" id="home_address" placeholder="Home Address" value="{{$client->home_address}}" name="home_address" ></textarea>
+                                                <textarea  class="form-control" id="home_address" placeholder="Home Address" value="" name="home_address" >{{$client->home_address}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-xxl-4 col-md-6">
                                             <div>
                                                 <label for="home_number" class="form-label">Home Number</label>
-                                                <input  class="form-control" id="home_number" placeholder="Home Number" value="{{$client->home_address}}" name="home_number" >
+                                                <input  class="form-control" id="home_number" placeholder="Home Number" value="{{$client->home_number}}" name="home_number" >
                                             </div>
                                         </div>
                                     
@@ -185,7 +222,7 @@
                                         <div class="col-xxl-4 col-md-6">
                                             <div>
                                                 <label for="phone_number" class="form-label">Cell/Mobile No.</label>
-                                                <input type='text' class="form-control" id="phone_number" placeholder="Phone Number" value="{{$client->phone_number}}" name="phone_number" >
+                                                <input type='text' class="form-control" id="phone_number" placeholder="Phone Number" value="{{$client->mobile_number}}" name="phone_number" >
                                             </div>
                                         </div>
                                         <div class="col-xxl-4 col-md-6">

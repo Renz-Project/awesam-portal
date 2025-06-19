@@ -93,4 +93,49 @@ class ClientController extends Controller
         Alert::success('Successfully Uploaded')->persistent('Dismiss');
         return back();
     }
+    public function updateInformation(Request $request,$id)
+    {
+        // dd($request->all());
+        $client = Client::findOrFail($id);
+      $client->first_name       = $request->first_name;
+    $client->middle_name      = $request->middle_name;
+    $client->last_name        = $request->last_name;
+    $client->nickname         = $request->nickname;
+    $client->birth_date        = $request->birthdate;
+    $client->sex              = $request->sex;
+    $client->religion         = $request->religion;
+    $client->nationality      = $request->nationality;
+    $client->home_address     = $request->home_address;
+    $client->home_number      = $request->home_number;
+    $client->occupation       = $request->occupation;
+    $client->office_number    = $request->office_number;
+    $client->fax_number       = $request->fax_number;
+    $client->mobile_number     = $request->phone_number;
+    $client->email_address    = $request->email_address;
+    $client->dental_insurance = $request->dental_insurance;
+    $client->effective_date   = $request->effective_date;
+
+    $client->save();
+
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+    public function changeAvatar(Request $request,$id)
+    {
+        // dd($request->all());
+        $client = Client::findOrFail($id);
+        $attachment = $request->file('avatar');
+        $original_name = $attachment->getClientOriginalName();
+        $name = time().'_'.$attachment->getClientOriginalName();
+        $attachment->move(public_path().'/avatars/', $name);
+        $file_name = '/avatars/'.$name;
+        $client->avatar = $file_name;
+
+        $client->save();
+
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
 }

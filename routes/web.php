@@ -39,7 +39,7 @@ Route::post('/new-client','ClientController@store')->name('new-client');
 Route::get('/client/{id}','ClientController@view')->name('view-client');
 Route::post('client/edit-client-information/{id}','ClientController@updateInformation')->name('edit-client');
 Route::post('/client/update-location/{id}','ClientController@updateLocation')->name('update-location-client');
-
+Route::post('/change-avatar/{id}','ClientController@changeAvatar')->name('change-avatar-client');
 
 Route::get('/locations','LocationController@index')->name('locations');
 
