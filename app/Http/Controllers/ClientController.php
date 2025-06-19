@@ -42,7 +42,7 @@ class ClientController extends Controller
             $client_location->save();
         }
          Alert::success('Successfully Encoded')->persistent('Dismiss');
-          return redirect("client/view/{$client->id}");
+          return redirect("client/{$client->id}");
       
     }
 

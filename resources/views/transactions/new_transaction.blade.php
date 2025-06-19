@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Payment Type -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                 <label for="paymentType" class="form-label">Payment Type</label>
                 <select id="paymentType" name='type' class="form-select" required>
                     <option value="">Select type...</option>
@@ -63,6 +63,20 @@
                     <option value="insurance">Insurance</option>
                     <option value="other">Other</option>
                 </select>
+                </div>
+                <div class="col-md-4">
+                <label for="paymentType" class="form-label">Location</label>
+                <select id="paymentType" name='location' class="form-select" required>
+                    <option value="">Select location...</option>
+                    @foreach($locations as $key => $location)
+                        <option value="{{$location->id}}" @if($key == 0) selected @endif>{{$location->name}}</option>
+                    @endforeach
+                    
+                </select>
+                </div>
+                <div class="col-md-4">
+                <label for="paymentType" class="form-label">Date</label>
+                <input type='date' name='date' class='form-control' value='{{date("Y-m-d")}}' max='{{date("Y-m-d")}}'  required>
                 </div>
 
                 <!-- Remarks -->

@@ -8,7 +8,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <p class="fw-medium text-muted mb-0">Clients</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="0">0</span></h2>
+                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="{{$clients->count()}}">0</span></h2>
                         {{-- <p class="mb-0 text-muted"><span class="badge bg-light text-success mb-0"><i class="ri-arrow-up-line align-middle"></i> 16.24 % </span> vs. previous month</p> --}}
                     </div>
                     <div>
@@ -29,7 +29,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <p class="fw-medium text-muted mb-0">Sales Today ({{date('d M, Y')}})</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="0">0</span></h2>
+                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="{{$transactions->where('date',date('Y-m-d'))->sum('amount_paid')}}">0</span></h2>
                         {{-- <p class="mb-0 text-muted"><span class="badge bg-light text-danger mb-0"><i class="ri-arrow-down-line align-middle"></i> 3.96 % </span> vs. previous month</p> --}}
                     </div>
                     <div>
@@ -50,7 +50,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <p class="fw-medium text-white-50 mb-0">Sales this Month ({{date('M Y')}})</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white"><span class="counter-value" data-target="3">3</span>m <span class="counter-value" data-target="0">0</span></h2>
+                        <h2 class="mt-4 ff-secondary fw-semibold text-white"><span class="counter-value" data-target="{{$transactions->sum('amount_paid')}}">0</span></h2>
                         {{-- <p class="mb-0 text-white-50"><span class="badge bg-white bg-opacity-25 text-white mb-0"><i class="ri-arrow-down-line align-middle"></i> 0.24 % </span> vs. previous month</p> --}}
                     </div>
                     <div>
@@ -71,7 +71,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <p class="fw-medium text-muted mb-0">Transactions Today ({{date('d M, Y')}})</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="0">0</span></h2>
+                        <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="{{$transactions_group->count()}}">0</span></h2>
                         {{-- <p class="mb-0 text-muted"><span class="badge bg-light text-success mb-0"><i class="ri-arrow-up-line align-middle"></i>0</span></p> --}}
                     </div>
                     <div>
@@ -145,16 +145,7 @@
         type: 'bar',
         height: 400
       },
-      series: [
-        {
-          name: 'Transactions',
-          data: [10, 20, 15, 30, 25, 40, 35, 50, 45, 60, 55, 70] // Jan to Dec
-        },
-        {
-          name: 'Sales',
-          data: [12, 18, 22, 28, 30, 35, 38, 42, 50, 48, 55, 65] // Jan to Dec
-        }
-      ],
+      series: @json($data),
       xaxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

@@ -18,7 +18,7 @@
                                 <div class="col-md-auto">
                                     <div class="avatar-md">
                                         <div class="avatar-title bg-white rounded-circle">
-                                            <img src="{{asset('/images/aaa.png')}}" alt="" class="avatar-xs">
+                                            <img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs">
                                         </div>
                                     </div>
                                 </div>

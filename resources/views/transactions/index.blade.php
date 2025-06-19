@@ -4,16 +4,38 @@
 
 @endsection
 @section('content')
+<form  onsubmit="show();"   enctype="multipart/form-data">
+    <div class='row mb-4'>
+        <div class="col-md-2">
+            <label class="form-label">Date From</label>
+            <input type='date' name='date_from' class='form-control' value='{{$date_from}}'  required>
+        </div>
+           <div class="col-md-2">
+            <label class="form-label">Date To</label>
+            <input type='date' name='date_to' class='form-control' value='{{$date_to}}' required>
+        </div>
+        <div class='col-xl-2'>
+            <br>
+                <button type="submit" class="btn btn-success" >
+                <i class="ri-search-fill me-1"></i> Search
+                </button>
+        </div>
+    </div>
+</form>
 <div class='row mb-4'>
     <div class='col-xl-12'>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTransactionModal">
         <i class="ri-add-fill me-1"></i> New Transaction
         </button>
     </div>
-
 </div>
 <div class='row'>
-    @foreach($transactions->sortByDesc('created_at') as $transaction)
+    <div  class="col-xl-4">
+        <input type="text" id="searchInput" placeholder="Search transaction..." class="form-control mb-3">
+    </div>
+</div>
+<div class='row'>
+    @foreach($transactions->sortByDesc('id') as $transaction)
     <div  class="col-xl-3">
         <div class="card card-height-100">
             <div class="card-body">
@@ -43,7 +65,7 @@
                     <div class="flex-shrink-0 me-3">
                     <div class="avatar-sm">
                         <span class="avatar-title bg-primary-subtle rounded p-2">
-                            
+                            <img src="{{asset($transaction->client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs">
                         </span>
                     </div>
                     </div>
@@ -59,7 +81,7 @@
                     <span class="text-muted">Amount:</span>
                     <h4 class="mb-0 text-success">₱{{number_format($transaction->amount_paid)}}</h4>
                     </div>
-                    <span class="badge bg-success-subtle text-success">Completed</span>
+                    <span class="badge bg-success-subtle text-success">{{$transaction->dentist}}</span>
                 </div>
 
                 <!-- Bottom: Timeline -->
@@ -112,5 +134,20 @@
       $(this).closest('.treatment-item').remove();
     });
   });
+</script>
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    const keyword = this.value.toLowerCase();
+    const cards = document.querySelectorAll(".col-xl-3");
+
+    cards.forEach(card => {
+        const cardText = card.innerText.toLowerCase();
+        if (cardText.includes(keyword)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+});
 </script>
 @endsection
