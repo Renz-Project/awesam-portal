@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Location;
 use App\UserLocation;
 use App\Client;
+use App\ClientAttachment;
 use App\ClientLocation;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -69,6 +70,26 @@ class ClientController extends Controller
         }
 
         Alert::success('Successfully Update')->persistent('Dismiss');
+        return back();
+    }
+    public function upload(Request $request,$id)
+    {
+        // dd($request->all());
+
+        $client = new ClientAttachment;
+        $client->client_id = $id;
+
+        $attachment = $request->file('file');
+        $original_name = $attachment->getClientOriginalName();
+        $name = time().'_'.$attachment->getClientOriginalName();
+        $attachment->move(public_path().'/attachments/', $name);
+        $file_name = '/attachments/'.$name;
+        $client->document_name = $original_name;
+        $client->file = $file_name;
+        $client->save();
+
+
+        Alert::success('Successfully Uploaded')->persistent('Dismiss');
         return back();
     }
 }

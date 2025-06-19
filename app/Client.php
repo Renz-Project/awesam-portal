@@ -13,4 +13,9 @@ class Client extends Model implements Auditable
     {
       return $this->belongsToMany(Location::class, 'client_locations');
     }
+
+    public function attachments()
+    {
+      return $this->hasMany(ClientAttachment::class);
+    }
 }

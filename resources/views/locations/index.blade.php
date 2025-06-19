@@ -19,7 +19,6 @@
                           
                             <th >Location</th>
                             <th >Address</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +27,6 @@
                           
                             <td >{{$location->name}}</td>
                             <td >{{$location->address}}</td>
-                            <td>Action</td>
                         </tr>
                         @endforeach
                         

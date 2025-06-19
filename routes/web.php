@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //transactions
 Route::get('/transactions','TransactionController@index')->name('transactions');
+Route::post('/new-transaction','TransactionController@store')->name('store-transaction');
 
 
 
@@ -32,6 +33,7 @@ Route::post('/edit-user/{id}','UserController@editUser')->name('edit-user');
 
 
 Route::get('/clients','ClientController@index')->name('clients');
+Route::post('client/upload-document/{id}','ClientController@upload')->name('upload');
 Route::post('/new-client','ClientController@store')->name('new-client');
 Route::get('/client/{id}','ClientController@view')->name('view-client');
 Route::post('client/edit-client-information/{id}','ClientController@updateInformation')->name('edit-client');
