@@ -48,6 +48,7 @@ class ClientController extends Controller
 
     public function view(Request $request,$id)
     {
+        
         $client = Client::with('locations')->findOrfail($id);
         $locations = auth()->user()->locations;
          return view('clients.view',

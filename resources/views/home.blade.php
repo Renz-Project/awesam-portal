@@ -1,5 +1,9 @@
 @extends('layouts.header')
-
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+@endsection
 @section('content')
 <div class="row">
     <div class="col-xl-3 col-md-6">
@@ -45,17 +49,17 @@
     </div> <!-- end col-->
 
     <div class="col-xl-3 col-md-6">
-        <div class="card card-animate bg-primary">
+        <div class="card card-animate ">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p class="fw-medium text-white-50 mb-0">Sales this Month ({{date('M Y')}})</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white"><span class="counter-value" data-target="{{$transactions->sum('amount_paid')}}">0</span></h2>
+                        <p class="fw-medium  mb-0">Sales this Month ({{date('M Y')}})</p>
+                        <h2 class="mt-4 ff-secondary fw-semibold "><span class="counter-value" data-target="{{$transactions->sum('amount_paid')}}">0</span></h2>
                         {{-- <p class="mb-0 text-white-50"><span class="badge bg-white bg-opacity-25 text-white mb-0"><i class="ri-arrow-down-line align-middle"></i> 0.24 % </span> vs. previous month</p> --}}
                     </div>
                     <div>
                         <div class="avatar-sm flex-shrink-0">
-                            <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                            <span class="avatar-title  bg-opacity-25 rounded-circle fs-2 material-shadow">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-white"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             </span>
                         </div>
@@ -98,29 +102,29 @@
             </div><!-- end card-body -->
         </div><!-- end card -->
     </div>
-    <div class="col-xl-4">
-        <div class="card">
+    <div class="col-xl-4 stretch-card">
+        <div class="card stretch-card">
             <div class="card-header">
                 <h4 class="card-title mb-0">Sales per Location ({{date('d M, Y')}})</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body stretch-card">
                 <div class="table-responsive table-card">
-                                        <table class="table align-middle table-borderless table-centered table-nowrap mb-0">
+                                        <table class="table align-middle table-bordered table-centered table-nowrap mb-0">
                                             <thead class="text-muted table-light">
                                                 <tr>
                                                     <th scope="col" style="width: 62;">Location</th>
                                                     <th scope="col">Sales</th>
-                                                    <th scope="col">Transaction</th>
+                                                    <th scope="col">Transactions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($locations as $location)
                                                 <tr>
                                                     <td>
-                                                        {{$location->name}}
+                                                        {{($location['location_name'])}}
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>{{number_format($location['total_amount_paid'],2)}}</td>
+                                                    <td>{{number_format($location['client_count'],2)}}</td>
                                                 </tr>
                                                 @endforeach
                                                 
@@ -134,6 +138,50 @@
 
     <!-- end col -->
 </div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Latest Transactions ({{date('M Y')}})</h5>
+            </div>
+            <div class="card-body">
+                <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <thead>
+                        <tr>
+                          
+                            <th >#Id</th>
+                            <th >Client</th>
+                            <th >Dentist</th>
+                            <th >Treatment</th>
+                            <th >Amount</th>
+                            <th>Type</th>
+                            <th>Remarks</th>
+                            <th>Location</th>
+                            <th>Encoded by</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($transactions->sortByDesc('id') as $transaction)
+                        <tr>
+                            
+                            <td>#{{$transaction->id}}</td>
+                            <td>{{$transaction->client->last_name}}, {{$transaction->client->first_name}}</td>
+                            <td>{{$transaction->dentist}}</td>
+                            <td>{{$transaction->treatment}}</td>
+                            <td>{{number_format($transaction->amount_paid,2)}}</td>
+                            <td>{{$transaction->type}}</td>
+                            <td>{{$transaction->remarks}}</td>
+                            <td>{{$transaction->location->name}}</td>
+                            <td>{{$transaction->user->name}}</td>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!--end col-->
+</div>
 @endsection
 @section('js')
 <script src="{{asset('inside_css/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
@@ -143,7 +191,7 @@
     var options = {
       chart: {
         type: 'bar',
-        height: 400
+        height: 350
       },
       series: @json($data),
       xaxis: {
@@ -154,7 +202,7 @@
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: '55%',
+          columnWidth: '100%',
           endingShape: 'rounded'
         }
       },
@@ -162,7 +210,7 @@
         enabled: false
       },
       title: {
-        text: 'Transactions and Sales',
+        text: 'Sales',
         align: 'left'
       }
     };
@@ -170,4 +218,18 @@
     var chart = new ApexCharts(document.querySelector("#column_chart"), options);
     chart.render();
   </script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+   <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+
+   <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
+   <!-- App js -->
+    <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
+    <script>
+            $('#example').DataTable({
+                ordering: false
+            });
+    </script>
 @endsection

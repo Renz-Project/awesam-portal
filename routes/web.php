@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 //transactions
 Route::get('/transactions','TransactionController@index')->name('transactions');
 Route::post('/new-transaction','TransactionController@store')->name('store-transaction');
+Route::get('/transactions-report','TransactionController@report')->name('transactions-report');
 
 
 

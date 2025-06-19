@@ -56,4 +56,9 @@
     <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
     <!-- App js -->
      <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
+     <script>
+        $('#example').DataTable({
+            ordering: false
+        });
+</script>
 @endsection

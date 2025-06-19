@@ -31,7 +31,22 @@ class HomeController extends Controller
         $year = date('Y');
        $locations = auth()->user()->locations;
        $locationIds = $locations->pluck('id');
-       $locations_d = Location::whereIn('id',$locationIds)->get();
+       $locations_d = Location::whereIn('id', $locationIds)
+       ->with(['transactions' => function ($query) {
+           $query->select('id', 'location_id', 'client_id', 'amount_paid');
+       }])
+       ->get()
+       ->map(function ($location) {
+           $totalAmountPaid = $location->transactions->sum('amount_paid');
+           $clientCount = $location->transactions->pluck('client_id')->unique()->count();
+   
+           return [
+               'location_id' => $location->id,
+               'location_name' => $location->name,
+               'total_amount_paid' => $totalAmountPaid,
+               'client_count' => $clientCount,
+           ];
+       });
         $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
             $query->whereIn('locations.id', $locationIds);
         })->with('locations')->get();
@@ -46,12 +61,9 @@ class HomeController extends Controller
                 $transactionsPerMonth[$monthIndex]++; // count of transactions
                 $salesPerMonth[$monthIndex] += $transaction->amount_paid; // sum of sales
             }
+            
 
             $data = [
-                [
-                    'name' => 'Transactions',
-                    'data' => $transactionsPerMonth
-                ],
                 [
                     'name' => 'Sales',
                     'data' => $salesPerMonth

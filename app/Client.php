@@ -18,4 +18,8 @@ class Client extends Model implements Auditable
     {
       return $this->hasMany(ClientAttachment::class);
     }
+    public function transactions()
+    {
+        return $this->hasMany(ClientTransaction::class);
+    }
 }

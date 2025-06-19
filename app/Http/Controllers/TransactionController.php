@@ -57,4 +57,31 @@ class TransactionController extends Controller
          Alert::success('Successfully Encoded')->persistent('Dismiss');
         return back();
     }
+    public function report(Request $request)
+    {
+        $date_from = date('Y-m-d');
+        $date_to =  date('Y-m-d');
+        if($request->date_from)
+        {
+            $date_from = $request->date_from;
+            $date_to = $request->date_to;
+        }
+        $locations = auth()->user()->locations;
+       $locationIds = $locations->pluck('id');
+       $locations_d = Location::whereIn('id',$locationIds)->get();
+        $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
+            $query->whereIn('locations.id', $locationIds);
+        })->with('locations')->get();
+
+        $transactions = ClientTransaction::whereBetween('created_at', [$date_from." 00:00:00", $date_to." 23:59:59"])->get();
+         return view('transactions.report',
+            array(
+                'clients' => $clients,
+                'transactions' => $transactions,
+                'locations' => $locations_d,
+                'date_from' => $date_from,
+                'date_to' => $date_to,
+            )
+            );
+    }
 }
