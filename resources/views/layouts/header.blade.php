@@ -153,7 +153,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/transactions')}}">
+                            <a class="nav-link menu-link" href="{{url('/inventory')}}">
                                 <i class="ri-list-check-2"></i> <span data-key="t-inventory">Inventory</span>
                             </a>
                         </li>
@@ -162,31 +162,7 @@
                                 <i class=" ri-folder-user-line"></i> <span data-key="t-clients">Clients</span>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/projects')}}">
-                                <i class="ri-list-check"></i> <span data-key="t-dashboards">Projects</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/tasks')}}">
-                                <i class="ri-check-line"></i> <span data-key="t-dashboards">Tasks</span><span class="badge badge-pill bg-danger" data-key="t-hot">2</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/timekeeping')}}">
-                                <i class=" ri-time-line"></i> <span data-key="t-dashboards">Timekeeping</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/payslips')}}">
-                                <i class=" ri-money-dollar-circle-line"></i> <span data-key="t-dashboards">Payslips</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/api-keys')}}">
-                                <i class=" ri-shield-keyhole-line"></i> <span data-key="t-dashboards">API Keys</span>
-                            </a>
-                        </li> --}}
+                        @if(auth()->user()->role == 'admin')
                         <li class="menu-title"><span data-key="t-menu">Admin</span></li>
                          
                         <li class="nav-item">
@@ -197,6 +173,11 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/locations')}}">
                                 <i class="ri-map-pin-line"></i> <span data-key="t-locations">Locations</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/products')}}">
+                                <i class="ri-stack-line"></i> <span data-key="t-products">Products</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -212,6 +193,7 @@
                                 </ul>
                             </div>
                         </li>
+                        @endif
 
                     </ul>
                 </div>

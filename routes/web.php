@@ -43,4 +43,14 @@ Route::post('/client/update-location/{id}','ClientController@updateLocation')->n
 
 Route::get('/locations','LocationController@index')->name('locations');
 
+
+
+Route::get('/products','ProductController@index')->name('products');
+Route::post('/new-product','ProductController@store')->name('new-product');
+Route::post('/edit-product/{id}','ProductController@editProduct')->name('edit-product');
+Route::post('/delete-product/{id}','ProductController@deleteProduct')->name('delete-product');
+
+Route::get('/inventory','StockMovementController@index')->name('inventory');
+Route::post('/new-stock','StockMovementController@store')->name('create-stock');
+
 });

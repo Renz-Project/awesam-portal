@@ -12,7 +12,6 @@ class TransactionController extends Controller
     //
     public function index(Request $request)
     {
-     
         $date_from = date('Y-m-d');
         $date_to =  date('Y-m-d');
         if($request->date_from)
