@@ -1,18 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Product;
-use App\Category;
-use Illuminate\Http\Request;
+use App\OfficeSupply;
+use App\OfficeCategory;
 use RealRashid\SweetAlert\Facades\Alert;
-class ProductController extends Controller
+use Illuminate\Http\Request;
+
+class OfficeSupplyController extends Controller
 {
     //
     public function index()
     {
-        $products = Product::all();
-        $categories = Category::all();
-        return view('products.index', compact('products', 'categories'));
+        $OfficeSupplies = OfficeSupply::all();
+        $categories = OfficeCategory::all();
+        return view('office_supplies.index', array(
+            'products' => $OfficeSupplies, 
+            'categories' => $categories));
     }
     public function store(Request $request)
     {
@@ -23,23 +26,22 @@ class ProductController extends Controller
             'ideal_stock' => 'required|integer|min:0',
         ]);
     
-        $category = Category::find($request->category_id);
+        $category = OfficeCategory::find($request->category_id);
     
         // Get the latest product for this category
-        $lastProduct = Product::where('category_id', $category->id)
+        $lastProduct = OfficeSupply::where('category_id', $category->id)
             ->orderBy('id', 'desc')
             ->first();
     
         // Extract the last 5 digits from the product_code, if exists
         $lastNumber = 0;
-        if ($lastProduct && preg_match('/\-(\d{5})$/', $lastProduct->product_code, $matches)) {
+        if ($lastProduct && preg_match('/\-(\d{4})$/', $lastProduct->product_code, $matches)) {
             $lastNumber = (int)$matches[1];
         }
-    
-        $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
         $generatedCode = $category->code . '-' . $nextNumber;
     
-        $product = new Product();
+        $product = new OfficeSupply();
         $product->product_code = $generatedCode;
         $product->product_name = $request->product_name;
         $product->category_id = $category->id;
@@ -59,7 +61,7 @@ class ProductController extends Controller
             'ideal_stock' => 'required|integer|min:0',
         ]);
 
-        $product = Product::findOrFail($id);
+        $product = OfficeSupply::findOrFail($id);
         $product->product_name = $request->product_name;
         $product->unit_price = $request->unit_price;
         $product->ideal_stock = $request->ideal_stock;

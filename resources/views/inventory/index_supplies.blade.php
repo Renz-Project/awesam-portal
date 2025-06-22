@@ -50,15 +50,15 @@
                                 <td>{{ $row['category']->category }}</td>
                                 <td>{{ $row['location'] }}</td>
                                 <td>{{ number_format($row['unit_price'], 2) }}</td>
-                                <td>{{  number_format($row['ideal_stock'],2) }}</td>
-                                <td>{{  number_format($row['available_stock'],2) }}</td>
-                                <td><span class="text-danger">{{ $row['notification'] }} </span></td>
+                                <td>{{ number_format($row['ideal_stock'],2) }}</td>
+                                <td>{{ number_format($row['available_stock'],2) }}</td>
+                                <td><span class="text-danger">{{ $row['notification'] }}</span></td>
                                 {{-- <td>{{ number_format($row['available_stock_value'], 2) }}</td> --}}
                                 <td>
                                     <button class="btn btn-sm btn-success"  data-bs-toggle="modal" data-bs-target="#newStack-{{$key}}">+</button>
                                     <button class="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target="#reduceStock-{{$key}}">−</button>
-                                    @include('inventory.addstack')
-                                    @include('inventory.reducestock')
+                                    @include('inventory.addstack_office')
+                                    @include('inventory.reducestock_office')
                                 </td>
                             </tr>
                         @endforeach

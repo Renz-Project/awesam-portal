@@ -154,7 +154,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/inventory')}}">
-                                <i class="ri-list-check-2"></i> <span data-key="t-inventory">Inventory</span>
+                                <i class="ri-list-check-2"></i> <span data-key="t-inventory">DA Inventory</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/office-supplies/inventory')}}">
+                                <i class="ri-list-check-2"></i> <span data-key="t-inventory">FDO Inventory</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -175,11 +180,28 @@
                                 <i class="ri-map-pin-line"></i> <span data-key="t-locations">Locations</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/products')}}">
                                 <i class="ri-stack-line"></i> <span data-key="t-products">Products</span>
                             </a>
-                        </li>
+                        </li> --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#inventories" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="inventories">
+                              <i class="ri-stack-line"></i> <span data-key="t-inventories">Inventories</span>
+                          </a>
+                          <div class="collapse menu-dropdown" id="inventories">
+                              <ul class="nav nav-sm flex-column">
+                                  <li class="nav-item">
+                                      <a href="{{url('products')}}" class="nav-link" data-key="t-products"> Products </a>
+                                  </li>
+                                
+                                  <li class="nav-item">
+                                      <a href="{{url('office-supplies')}}" class="nav-link" data-key="t-office-supplies"> Office Supplies </a>
+                                  </li>
+                                
+                              </ul>
+                          </div>
+                      </li>
                         <li class="nav-item">
                               <a class="nav-link menu-link" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-reports">Reports</span>

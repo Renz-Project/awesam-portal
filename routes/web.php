@@ -46,11 +46,17 @@ Route::get('/locations','LocationController@index')->name('locations');
 
 
 Route::get('/products','ProductController@index')->name('products');
-Route::post('/new-product','ProductController@store')->name('new-product');
-Route::post('/edit-product/{id}','ProductController@editProduct')->name('edit-product');
-Route::post('/delete-product/{id}','ProductController@deleteProduct')->name('delete-product');
+Route::post('/products/store','ProductController@store')->name('new-product');
+Route::post('/products/update/{id}','ProductController@editProduct')->name('edit-product');
+
+Route::get('/office-supplies','OfficeSupplyController@index')->name('products');
+Route::post('/office-supplies/store','OfficeSupplyController@store')->name('new-product');
+Route::post('/office-supplies/update/{id}','OfficeSupplyController@editProduct')->name('edit-product');
 
 Route::get('/inventory','StockMovementController@index')->name('inventory');
 Route::post('/new-stock','StockMovementController@store')->name('create-stock');
+
+Route::get('/office-supplies/inventory','StockMovementOfficeController@index')->name('inventory');
+Route::post('office-supplies/new-stock','StockMovementOfficeController@store')->name('create-stock');
 
 });

@@ -274,7 +274,7 @@
                                @endphp
                                 <div class="row mb-2">
                                     <div class="col-lg-12">
-                                        <select  id="locations"class="js-example-disabled-multi" name="locations[]" multiple="multiple" multiple required>
+                                        <select  id="locations"class="js-example-disabled-multi" name="locations[]" multiple="multiple"  required>
                                             @foreach($locations as $location)
                                             <option value='{{$location->id}}' @if(in_array($location->id,$loc))  selected @endif>{{$location->name}}</option>
                                             @endforeach

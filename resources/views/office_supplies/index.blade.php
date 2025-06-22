@@ -10,8 +10,8 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Products</h5>
-                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#AddProduct">+ Add Product</button>
+                <h5 class="card-title mb-0">Office Supplies</h5>
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#AddProduct">+ Add Office Supplies</button>
             </div>
             <div class="card-body">
                 <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -52,14 +52,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newUserLabel">New Product</h5>
+                <h5 class="modal-title" id="newUserLabel">New Office Supply</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method='POST' action="{{ url('products/store') }}" onsubmit="show();"  enctype="multipart/form-data">
+            <form method='POST' action="{{ url('office-supplies/store') }}" onsubmit="show();"  enctype="multipart/form-data">
                 @csrf  
             <div class="modal-body">
             
-                     @include('products.form')
+                     @include('office_supplies.form')
              
             </div>
             <div class="modal-footer">
@@ -74,16 +74,16 @@
 <!-- Edit Product Modal -->
 <div class="modal fade" id="editProductModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="editProductLabel{{ $product->id }}" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <form action="{{ url('products/update/'. $product->id) }}" method="POST" onsubmit="show();"  enctype="multipart/form-data">
+    <form action="{{ url('/office-supplies/update/'. $product->id) }}" method="POST" onsubmit="show();"  enctype="multipart/form-data">
         @csrf
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editProductLabel{{ $product->id }}">Edit Product</h5>
+            <h5 class="modal-title" id="editProductLabel{{ $product->id }}">Edit Office Supplies</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
               <div class="form-group">
-                  <label for="product_name{{ $product->id }}">Product Name</label>
+                  <label for="product_name{{ $product->id }}">Name</label>
                   <input type="text" name="product_name" class="form-control" value="{{ $product->product_name }}" required>
               </div>
               <div class="form-group">

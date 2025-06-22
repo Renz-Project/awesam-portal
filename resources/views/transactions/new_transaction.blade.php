@@ -60,8 +60,9 @@
                     <option value="">Select type...</option>
                     <option value="cash" selected>Cash</option>
                     <option value="gcash">GCash</option>
-                    <option value="insurance">Insurance</option>
-                    <option value="other">Other</option>
+                    <option value="HMO">HMO</option>
+                    <option value="CC">CC</option>
+                    <option value="Others">Others</option>
                 </select>
                 </div>
                 <div class="col-md-4">
