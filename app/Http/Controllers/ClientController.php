@@ -125,16 +125,9 @@ class ClientController extends Controller
     {
         // dd($request->all());
         $client = Client::findOrFail($id);
-        $attachment = $request->file('avatar');
-        $original_name = $attachment->getClientOriginalName();
-        $name = time().'_'.$attachment->getClientOriginalName();
-        $attachment->move(public_path().'/avatars/', $name);
-        $file_name = '/avatars/'.$name;
-        $client->avatar = $file_name;
-
+        $client->avatar = $request->image_data;
         $client->save();
-
-
+        
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }

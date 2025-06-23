@@ -42,7 +42,7 @@ class StockMovementController extends Controller
     public function index(Request $request)
     {
         $selectedLocation = $request->get('location');
-        $products = Product::with('stockMovements')->get();
+        $products = Product::with('stockMovements','transactions')->get();
         $locations = auth()->user()->locations;
         $locationIds = $locations->pluck('id');
         $locations = Location::whereIn('id',$locationIds)->get();
@@ -53,9 +53,12 @@ class StockMovementController extends Controller
             foreach ($locations->where('id',$selectedLocation) as $location) {
                 $in = $product->stockMovements->where('location_id', $location->id)->where('type', 'inflow')->sum('quantity');
                 $out = $product->stockMovements->where('location_id', $location->id)->where('type', 'outflow')->sum('quantity');
-                $available = $in - $out;
+                $out_transactions = $product->transactions->where('location_id', $location->id)->sum('qty');
+                $available = $in - $out- $out_transactions;
                 $report[] = [
                     'location_id' => $location->id,
+                    'transactions' => $product->transactions->where('location_id', $location->id),
+                    'stockMovements' => $product->stockMovements->where('location_id', $location->id),
                     'product_id' => $product->id,
                     'product_code' => $product->product_code,
                     'product_name' => $product->product_name,

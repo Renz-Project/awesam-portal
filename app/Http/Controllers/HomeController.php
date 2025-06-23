@@ -28,6 +28,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->role == "Dental Assistant")
+        {
+            return redirect('/inventory');
+        }
         $transactionsPerMonth = array_fill(0, 12, 0); // Index 0 = Jan
         $salesPerMonth = array_fill(0, 12, 0);
         $year = date('Y');

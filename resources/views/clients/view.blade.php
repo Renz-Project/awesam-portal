@@ -18,43 +18,8 @@
                                 <div class="col-md-auto">
                                     <div class="avatar-md">
                                         <div class="avatar-title bg-white rounded-circle">
-                                            <a href='#'><img data-bs-toggle="modal" data-bs-target="#uploadAvatar" src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs"></a>
-                                            <div class="modal fade" id="uploadAvatar" tabindex="-1" aria-labelledby="newUserLabel">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title text-success" id="newUserLabel">Change Avatar</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form method='POST' action='{{url('change-avatar/'.$client->id)}}' onsubmit="show();"  enctype="multipart/form-data">
-                                                                 @csrf   
-                                                                 <div class="row g-3">
-                                                                    <div class="col-lg-12">
-                                                                       
-                                                                        <div>
-                                                                            <label for="name" class="form-label">Avatar</label>
-                                                                            <input type="file" name="avatar" class="form-control" accept="image/*" capture="user" required>
-                                                                        </div>
-                                            
-                                                                    </div>
-                                                                 </div>
-                                                                
-                                                                <div class="row mt-2 g-3">
-                                                                    <div class="col-lg-12">
-                                                                        <div class="hstack gap-2 justify-content-end">
-                                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Change Avatar</button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!--end col-->
-                                                                </div>
-                                                                <!--end row-->
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <a href='#'><img data-bs-toggle="modal" data-bs-target="#uploadAvatar" src="{{($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="" class="avatar-xs"></a>
+                                           @include('clients.change_avatar')
                                         </div>
                                         
                                     </div>
@@ -274,7 +239,7 @@
                                @endphp
                                 <div class="row mb-2">
                                     <div class="col-lg-12">
-                                        <select  id="locations"class="js-example-disabled-multi" name="locations[]" multiple="multiple"  required>
+                                        <select  id="locations"class="js-example-disabled-multi" name="locations[]"   required>
                                             @foreach($locations as $location)
                                             <option value='{{$location->id}}' @if(in_array($location->id,$loc))  selected @endif>{{$location->name}}</option>
                                             @endforeach
@@ -406,5 +371,66 @@
         'excel'
     ]
 });
+</script>
+<script>
+  const modal = document.getElementById('imageModal');
+  const video = document.getElementById('video');
+  const preview = document.getElementById('preview');
+  const imageInput = document.getElementById('image_data');
+
+  function openModal() {
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+    stopCamera();
+  }
+
+  function handleFileUpload(event) {
+     stopCamera();
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        imageInput.value = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function enableCamera() {
+    document.getElementById('cameraSection').style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert("Camera access denied: " + err);
+      });
+  }
+
+  function captureImage() {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    const imageData = canvas.toDataURL('image/png');
+    preview.src = imageData;
+    imageInput.value = imageData;
+    stopCamera();
+  }
+
+  function stopCamera() {
+    const stream = video.srcObject;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    video.srcObject = null;
+    cameraSection.style.display = 'none';
+  }
+  
 </script>
 @endsection

@@ -59,4 +59,6 @@ Route::post('/new-stock','StockMovementController@store')->name('create-stock');
 Route::get('/office-supplies/inventory','StockMovementOfficeController@index')->name('inventory');
 Route::post('office-supplies/new-stock','StockMovementOfficeController@store')->name('create-stock');
 
+Route::get('audit-trails','AuditTrailController@index')->name('audit');
+
 });

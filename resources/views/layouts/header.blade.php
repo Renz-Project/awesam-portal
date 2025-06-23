@@ -141,22 +141,28 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                      
+                        @if(auth()->user()->role != "Dental Assistant")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/')}}">
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboard</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->role != "Dental Assistant")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/transactions')}}">
                                 <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->role != "Front Desk Officer")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/inventory')}}">
                                 <i class="ri-list-check-2"></i> <span data-key="t-inventory">DA Inventory</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->role != "Dental Assistant")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/office-supplies/inventory')}}">
                                 <i class="ri-list-check-2"></i> <span data-key="t-inventory">FDO Inventory</span>
@@ -167,10 +173,26 @@
                                 <i class=" ri-folder-user-line"></i> <span data-key="t-clients">Clients</span>
                             </a>
                         </li>
+                        @endif
                         @if(auth()->user()->role == 'Admin')
                         <li class="menu-title"><span data-key="t-menu">Admin</span></li>
-                         
-                        <li class="nav-item">
+                          <li class="nav-item">
+                              <a class="nav-link menu-link" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
+                                <i class="ri-dashboard-2-line"></i> <span data-key="t-reports">Reports</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="reports">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Transactions </a>
+                                    </li>
+                                  
+                                </ul>
+                            </div>
+                        </li>
+                        @endif
+                         @if(auth()->user()->role == 'Super Admin')
+                              <li class="menu-title"><span data-key="t-menu">Super Admin</span></li>
+                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/users')}}">
                                 <i class="ri-account-box-line"></i> <span data-key="t-users">Users</span>
                             </a>
@@ -202,7 +224,7 @@
                               </ul>
                           </div>
                       </li>
-                        <li class="nav-item">
+                          <li class="nav-item">
                               <a class="nav-link menu-link" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-reports">Reports</span>
                             </a>
@@ -211,10 +233,15 @@
                                     <li class="nav-item">
                                         <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Transactions </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{url('audit-trails')}}" class="nav-link" data-key="t-analytics"> Audit Logs </a>
+                                    </li>
                                   
                                 </ul>
                             </div>
                         </li>
+                      
+                       
                         @endif
 
                     </ul>

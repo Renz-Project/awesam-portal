@@ -27,7 +27,7 @@
                     <tbody>
                         @foreach($clients as $client)
                         <tr>
-                            <td > <a href="{{ url('client/' . $client->id) }}"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
+                            <td > <a href="{{ url('client/' . $client->id) }}"><img src="{{($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
                             <td >{{$client->email}}</td>
                             <td >{{$client->contact_number}}</td>
                             <td >{{date('d M, Y',strtotime($client->updated_at))}}</td>

@@ -32,8 +32,10 @@
                                 <label for="role" class="form-label">Role</label>
                                 <select class='form-control' name='role' required>
                                     <option value=''>Select</option>
-                                    <option value='Admin' @if($user->role == "Admin") selected @endif>Admin</option>
-                                    <option value='Receptionist'  @if($user->role == "Receptionist") selected @endif >Receptionist</option>
+                                    <option value='Front Desk Officer'  @if($user->role == "Front Desk Officer") selected @endif>Front Desk Officer</option>
+                                    <option value='Dental Assistant'  @if($user->role == "Dental Assistant") selected @endif>Dental Assistant</option>
+                                    <option value='Admin'  @if($user->role == "Admin") selected @endif>Admin</option>
+                                    <option value='Super Admin'  @if($user->role == "Super Admin") selected @endif>Super Admin</option>
                                 </select>
                             </div>
                         </div>
