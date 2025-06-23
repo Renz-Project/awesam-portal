@@ -31,7 +31,7 @@
                         <div class="col-xxl-12">
                             <div>
                                 <label for="location" class="form-label">Location</label>
-                                <select class="form-control required" id="locations" data-choices data-choices-removeItem  name="locations[]" multiple required>
+                                <select class="form-control required" id="locations" data-choices   name="locations[]" required>
                                     @foreach($locations as $location)
                                     <option value='{{$location->id}}' selected>{{$location->name}}</option>
                                     @endforeach
