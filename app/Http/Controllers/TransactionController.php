@@ -72,7 +72,7 @@ class TransactionController extends Controller
                     $transaction->save();
                 }
             }
-        if (!empty($request->treatment)) {
+        if (!empty($request->product)) {
             foreach($request->product as $key => $product)
             {
                 $transaction = new ClientTransaction;
@@ -81,7 +81,7 @@ class TransactionController extends Controller
                 $transaction->dentist_2 = $request->dentist_2;
                 $transaction->dentist_3 = $request->dentist_3;
                 $transaction->product_id = $product;
-                $transaction->amount_paid = $request->total_amount[$key];
+                $transaction->amount_paid = $request->product_amount[$key];
                 $transaction->qty = $request->quantity[$key];
                 $transaction->type = $request->type;
                 $transaction->remarks = $request->remarks;
