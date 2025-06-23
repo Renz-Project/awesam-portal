@@ -263,7 +263,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    @foreach($client->attachments as $attachment)
+                                    @foreach(($client->attachments)->sortByDesc('id') as $attachment)
                                     <div data-simplebar  class="mx-n3 px-3 mb-1">
                                         <div class="vstack gap-3">
                                             <div class="d-flex align-items-center">

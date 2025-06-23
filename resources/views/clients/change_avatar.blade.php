@@ -31,7 +31,7 @@
             </div>
 
             <div id="previewSection" class="mt-3">
-              <img id="preview" src="{{ ($client->avatar) }}" onerror="this.src='{{ url('design/assets/images/profile/user-1.png') }}';" alt="Image Preview" class="img-fluid rounded border" />
+              <img id="preview" src="{{ ($client->avatar) }}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';" alt="Image Preview" class="img-fluid rounded border" />
             </div>
 
             <input type="hidden" id="image_data" name="image_data" />
