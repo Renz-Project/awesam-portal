@@ -325,7 +325,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($lowStockReport->where('location_id',$location['location_id']) as $key => $row)
+                                @foreach($lowStockReportFdos->where('location_id',$location['location_id']) as $key => $row)
                                 <tr class="">
                                     <td>{{ $row['product_name'] }}</td>
                                     <td>{{ $row['ideal_stock'] }}</td>
