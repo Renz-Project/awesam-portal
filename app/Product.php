@@ -19,6 +19,6 @@ class Product extends Model implements Auditable
     }
     public function transactions()
     {
-        return $this->hasMany(ClienTTransaction::class,'product_id','id');
+        return $this->hasMany(ClientTransaction::class,'product_id','id');
     }
 }
