@@ -50,7 +50,7 @@
                         <input type="text" name="treatment[]" class="form-control" placeholder="Service name" required>
                         </div>
                         <div class="col-md-4">
-                        <input type="number" name="amount[]" class="form-control" placeholder="0.00" required>
+                        <input type="number" name="total_amount[]" class="form-control" placeholder="0.00" required>
                         </div>
                         <div class="col-md-2">
                         <button type="button" class="btn btn-danger btn-remove-treatment w-100">
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-md-12">
                     <button type="button" id="addTreatmentBtn" class="btn btn-outline-primary ">
-                        <i class="ri-add-line"></i> Add More Treatment
+                        <i class="ri-add-line"></i> Add More Service
                     </button>
                 </div>
                 
