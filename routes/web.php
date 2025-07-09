@@ -15,6 +15,7 @@
 Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
     
+    
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -30,6 +31,7 @@ Route::get('/transactions-report','TransactionController@report')->name('transac
 Route::get('/users','UserController@index')->name('users');
 Route::post('/new-user','UserController@store')->name('new-user');
 Route::post('/edit-user/{id}','UserController@editUser')->name('edit-user');
+Route::post('/update-user-password','UserController@updatePassword');
 
 
 

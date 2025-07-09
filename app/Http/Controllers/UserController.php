@@ -81,4 +81,18 @@ class UserController extends Controller
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
+    public function updatePassword(Request $request)
+    {
+        $validator = $request->validate([
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required'
+        ]);
+    
+        $user = User::findOrFail(auth()->user()->id);
+        $user->password = bcrypt($request->input('password'));
+        $user->save();
+
+        Alert::success('Password Updated')->persistent('Dismiss');
+        return redirect('/users');
+    }
 }
