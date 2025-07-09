@@ -20,6 +20,15 @@
 
                         </div>
                      </div>
+                     <div class="row g-3">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="name" class="form-label">Date</label>
+                                <input type="date" name="date" class="form-control" value='{{date('Y-m-d')}}' max='{{date('Y-m-d')}}' required>
+                            </div>
+
+                        </div>
+                     </div>
                     <div class="row g-3">
                         <div class="col-lg-12">
                             <div>

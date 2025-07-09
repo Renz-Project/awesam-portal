@@ -31,6 +31,7 @@ class StockMovementController extends Controller
         $movement->product_id = $request->product_id;
         $movement->location_id = $request->location_id;
         $movement->type = $request->type;
+        $movement->date = $request->date;
         $movement->quantity = $request->quantity;
         $movement->remarks = $request->remarks;
         $movement->user_id = auth()->user()->id;
