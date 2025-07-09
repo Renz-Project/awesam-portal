@@ -8,10 +8,21 @@
 <form  onsubmit="show();"   enctype="multipart/form-data">
     <div class='row mb-4'>
         <div class="col-md-2">
-            <label class="form-label">Date From</label>
-            <input type='date' name='date_from' class='form-control' value='{{$date_from}}'  required>
+            <label class="form-label">Location</label>
+            <select name="location" class="form-control" onchange="this.form.submit()">
+                <option value="">Select Location</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}" {{ $selectedLocation == $location->id ? 'selected' : '' }}>
+                        {{ $location->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
-           <div class="col-md-2">
+        <div class="col-md-2">
+            <label class="form-label">Date From</label>
+            <input type='date' name='date_from' class='form-control' value='{{$date_from}}'   required>
+        </div>
+        <div class="col-md-2">
             <label class="form-label">Date To</label>
             <input type='date' name='date_to' class='form-control' value='{{$date_to}}' required>
         </div>
@@ -27,29 +38,30 @@
     <div class="col-lg-12">
                <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Report</h5>
+                        <h5 class="card-title mb-0">Sales Report ({{date('M d, Y',strtotime($date_from))}} - {{date('M d, Y',strtotime($date_to))}})</h5>
                     </div>
                     <div class="card-body">
-                        <table id="example" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="" class=" table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
-                                  
+                                    <th colspan='11' class='text-center'><b>Treatment</b></th>
+                                </tr>
+                                <tr>
                                     <th >#Id</th>
                                     <th >Client</th>
                                     <th >Dentist</th>
                                     <th >Dentist 2</th>
                                     <th >Dentist 3</th>
-                                    <th >Treatment/Product</th>
-                                    <th >Qty</th>
-                                    <th >Total Amount</th>
                                     <th>Type</th>
                                     <th>Remarks</th>
                                     <th>Location</th>
                                     <th>Encoded by</th>
+                                    <th >Treatment</th>
+                                    <th >Total Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($transactions->sortByDesc('id') as $transaction)
+                                @foreach($transactions->sortByDesc('id')->where('product_id',null) as $transaction)
                                 <tr>
                                     
                                     <td>#{{$transaction->id}}</td>
@@ -57,16 +69,88 @@
                                     <td>{{$transaction->dentist}}</td>
                                     <td>{{$transaction->dentist_2}}</td>
                                     <td>{{$transaction->dentist_3}}</td>
-                                    <td>@if($transaction->treatment){{$transaction->treatment}} @else{{$transaction->product->product_name}} -  ₱{{number_format($transaction->amount_paid/$transaction->qty,2)}}@endif</td>
-                                    <td>{{$transaction->qty}}</td>
-                                    <td>{{number_format($transaction->amount_paid,2)}}</td>
                                     <td>{{$transaction->type}}</td>
                                     <td>{{$transaction->remarks}}</td>
                                     <td>{{$transaction->location->name}}</td>
                                     <td>{{$transaction->user->name}}</td>
+                                    
+                                    <td>{{$transaction->treatment}}</td>
+                                    <td>{{number_format($transaction->amount_paid,2)}}</td>
                                 </tr>
                                 @endforeach
-        
+                            </tbody>
+                        </table>
+                         <table id="" class=" table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th colspan='12' class='text-center'><b>Product</b></th>
+                                </tr>
+                                <tr>
+                                    <th >#Id</th>
+                                    <th >Client</th>
+                                    <th >Dentist</th>
+                                    <th >Dentist 2</th>
+                                    <th >Dentist 3</th>
+                                    <th>Type</th>
+                                    <th>Remarks</th>
+                                    <th>Location</th>
+                                    <th>Encoded by</th>
+                                    
+                                    <th >Product</th>
+                                    <th >Qty</th>
+                                    <th >Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($transactions->sortByDesc('id')->where('product_id','!=',null) as $transaction)
+                                <tr>
+                                    
+                                    <td>#{{$transaction->id}}</td>
+                                    <td>{{$transaction->client->last_name}}, {{$transaction->client->first_name}}</td>
+                                    <td>{{$transaction->dentist}}</td>
+                                    <td>{{$transaction->dentist_2}}</td>
+                                    <td>{{$transaction->dentist_3}}</td>
+                                    <td>{{$transaction->type}}</td>
+                                    <td>{{$transaction->remarks}}</td>
+                                    <td>{{$transaction->location->name}}</td>
+                                    <td>{{$transaction->user->name}}</td>
+                                    
+                                    <td>{{$transaction->product->product_name}}</td>
+                                    <td>{{$transaction->qty}}</td>
+                                    <td>{{number_format($transaction->amount_paid,2)}}</td>
+                                </tr>
+                                @endforeach
+                                
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > Gcash</td>
+                                    <td > <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > HMO</td>
+                                    <td > <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > CC</td>
+                                    <td > <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > Others</td>
+                                    <td > <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > Cash On Hand</td>
+                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid'),2)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan='10' class='float-right'> </td>
+                                    <td > Total Sales</td>
+                                    <td >  <b>{{number_format($transactions->sum('amount_paid'),2)}}</b></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
