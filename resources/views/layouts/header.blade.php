@@ -154,6 +154,11 @@
                                 <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{url('/expenses')}}">
+                                <i class="ri-money-dollar-circle-line"></i> <span data-key="t-transactions">Expenses</span>
+                            </a>
+                        </li>
                         @endif
                         @if(auth()->user()->role != "Front Desk Officer")
                         <li class="nav-item">
@@ -183,9 +188,11 @@
                             <div class="collapse menu-dropdown" id="reports">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Transactions </a>
+                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Sales Report </a>
                                     </li>
-                                  
+                                    <li class="nav-item">
+                                        <a href="{{url('inventories-report')}}" class="nav-link" data-key="t-analytics"> Inventory </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
@@ -231,7 +238,10 @@
                             <div class="collapse menu-dropdown" id="reports">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Transactions </a>
+                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Sales Report </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{url('inventories-report')}}" class="nav-link" data-key="t-analytics"> Inventory </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{url('audit-trails')}}" class="nav-link" data-key="t-analytics"> Audit Logs </a>
