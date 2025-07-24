@@ -5,6 +5,7 @@ use App\Client;
 use App\Location;
 use App\Product;
 use App\ClientTransaction;
+use App\Expense;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -107,6 +108,7 @@ class TransactionController extends Controller
         $locations = auth()->user()->locations;
        $locationIds = $locations->pluck('id');
        $locations_d = Location::whereIn('id',$locationIds)->get();
+       $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
         $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
             $query->whereIn('locations.id', $locationIds);
         })->with('locations')->get();
@@ -120,6 +122,7 @@ class TransactionController extends Controller
                 'selectedLocation' => $selectedLocation,
                 'date_from' => $date_from,
                 'date_to' => $date_to,
+                'expenses' => $expenses,
             )
             );
     }

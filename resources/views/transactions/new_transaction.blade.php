@@ -97,6 +97,7 @@
                     <option value="gcash">GCash</option>
                     <option value="HMO">HMO</option>
                     <option value="CC">CC</option>
+                    <option value="Debit">Debit</option>
                     <option value="Others">Others</option>
                 </select>
                 </div>
