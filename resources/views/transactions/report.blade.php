@@ -11,8 +11,8 @@
             <label class="form-label">Location</label>
             <select name="location" class="form-control" onchange="this.form.submit()">
                 <option value="">Select Location</option>
-                @foreach($locations as $location)
-                    <option value="{{ $location->id }}" @if($selectedLocation == $location->id) selected @endif>
+                @foreach($locations as $key => $location)
+                    <option value="{{ $location->id }}" @if($selectedLocation == $location->id) selected  @endif>
                         {{ $location->name }}
                     </option>
                 @endforeach
@@ -36,7 +36,7 @@
 </form>
 <div class="row">
     <div class="col-lg-12">
-               <div class="card">
+        <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Sales Report ({{date('M d, Y',strtotime($date_from))}} - {{date('M d, Y',strtotime($date_to))}})</h5>
                     </div>
@@ -77,46 +77,56 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td > Total Sales</td>
-                                    <td  class='text-success'>  <b>{{number_format($transactions->sum('amount_paid'),2)}}</b></td>
+                                    <td > Sales</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td colspan='2'></td>
+                                </tr>
+                                <tr>
+                                    <td > Product</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td colspan='2'></td>
+                                </tr>
+                                <tr>
+                                    <td > Total</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid')+$transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Gcash</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > HMO</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Debit</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','Debit')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Debit')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                     
                                 </tr>
                                 <tr>
                                     <td > CC</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Others</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 @foreach($expenses as $expense)
                                  <tr>
                                     <td > {{$expense->name}}</td>
-                                    <td class='text-danger'> <b>{{number_format($expenses->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($expenses->sum('amount'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 @endforeach
                                 <tr>
                                     <td > Cash On Hand</td>
-                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->sum('amount_paid'),2)}}</b></td>
+                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->sum('amount'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                             </tbody>
