@@ -27,8 +27,8 @@ class TransactionController extends Controller
        $locations_d = Location::whereIn('id',$locationIds)->get();
 
        $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
-        $clients = Client::whereHas('locations', function ($query) use ($selectedLocation) {
-            $query->where('locations.id', $selectedLocation);
+        $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
+            $query->whereIn('locations.id', $locationIds);
         })->with('locations')->get();
          $transactions = Client::whereHas('locations', function ($query) use ($selectedLocation) {
             $query->where('locations.id', $selectedLocation);

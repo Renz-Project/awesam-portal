@@ -43,8 +43,8 @@
                         <tr>   
                             <th >Client</th>
                             <th >Dentist</th>
-                            <th >Product/Treatment</th>
-                            <th >Transactions</th>
+                            <th >Product</th>
+                            <th >Treatment</th>
                             <th >Total Amount</th>
                             <th>Location</th>
                             <th>Type</th>
@@ -56,10 +56,16 @@
                              <tr>   
                                 <td ><a href="#"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
                                 <td > {{$client->transactions[0]->dentist}} <br>{{$client->transactions[0]->dentist_2}}<br>{{$client->transactions[0]->dentist_3}}</td>
-                                <td > {{$client->transactions->count()}}</td>
-                                <td > @foreach($client->transactions as $transaction)
-                                        @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) ={{number_format($transaction->amount_paid,2)}}   @endif <br>
-                                    @endforeach
+                                <td > 
+                                  @foreach($client->transactions->where('product_id',null) as $transaction)
+                                  @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
+                              @endforeach
+                                </td>
+                                <td > 
+                                  @foreach($client->transactions->where('product_id',"!=",null) as $transaction)
+                                  @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
+                              @endforeach
+                                  
                                 </td>
                                 <td >{{number_format($client->transactions->sum('amount_paid'),2)}}</td>
                                 <td>{{$client->transactions['0']->location->name}}</td>

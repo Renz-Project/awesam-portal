@@ -120,13 +120,13 @@
                                 @foreach($expenses as $expense)
                                  <tr>
                                     <td > {{$expense->name}}</td>
-                                    <td class='text-danger'> <b>{{number_format($expenses->sum('amount'),2)}}</b></td>
+                                    <td  @if($expense->payment_type == 'cash') class='text-danger' @else class='text-info' @endif> <b>{{number_format($expense->amount,2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 @endforeach
                                 <tr>
                                     <td > Cash On Hand</td>
-                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->sum('amount'),2)}}</b></td>
+                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                             </tbody>

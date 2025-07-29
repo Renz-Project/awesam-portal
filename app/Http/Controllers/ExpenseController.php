@@ -46,6 +46,7 @@ class ExpenseController extends Controller
         $expense->location_id = $request->location;
         $expense->amount = $request->amount;
         $expense->remarks = $request->remarks;
+        $expense->payment_type = $request->type;
         $expense->attachment = $validated['attachment'] ?? null;
         $expense->user_id = auth()->user()->id ?? null; // optional if you want to track who added it
         $expense->save();

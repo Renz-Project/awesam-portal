@@ -84,11 +84,21 @@
             </div>
             <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="date" name="date" max='{{date('Y-m-d')}}' value='{{date('Y-m-d')}}' readonly required>
+                <input type="date" class="form-control" id="date" name="date" min='{{date('Y-m-d', strtotime('-2 days'))}}' max='{{date('Y-m-d')}}' value='{{date('Y-m-d')}}' required>
             </div>
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount</label>
                 <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+            </div>
+            <div class="mb-3">
+                <label for="payment_type" class="form-label">Payment Type</label>
+                <select id="paymentType" name='type' class="form-select" required>
+                    <option value="">Select type...</option>
+                    <option value="cash" selected>Cash</option>
+                    <option value="check">Check</option>
+                    <option value="gcash">Gcash</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                </select>
             </div>
             <div class="mb-3">
                  <label for="location" class="form-label">Location</label>
