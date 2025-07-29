@@ -6,6 +6,7 @@ use App\Client;
 use App\Product;
 use App\OfficeSupply;
 use App\ClientTransaction;
+use App\Expense;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -144,6 +145,8 @@ class HomeController extends Controller
         $lowStockReportFdos = collect($report_office_supplies)->filter(function ($item) {
             return $item['available_stock'] < $item['ideal_stock'];
         });
+
+       $expenses = Expense::whereIn('location_id',$locationIds)->where('date', date('Y-m-d'))->get();
         return view('home',
         array(
             'lowStockReport' => $lowStockReport,
@@ -153,6 +156,7 @@ class HomeController extends Controller
             'transactions' => $transactions,
             'transactions_group' => $transactions_group,
             'data' => $data,
+            'expenses' => $expenses,
             ));
     }
 }
