@@ -1,6 +1,6 @@
 <!-- New Transaction Modal -->
 <div class="modal fade" id="newTransactionModal" tabindex="-1" aria-labelledby="newTransactionModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="newTransactionModalLabel">New Transaction</h5>
@@ -36,91 +36,136 @@
                 </div>
 
                 <!-- Treatment Items Container -->
-                 <div class="col-md-6">
+                    <div class="col-md-6">
+                         <div class='row mb-2'>
+                           <div class="col-md-6">
                         
-                        <label class="form-label">Service</label>
-                 </div>
-                   <div class="col-md-4">
+                                    <label class="form-label">Service <button type="button" id="addTreatmentBtn" class="btn btn-outline-primary btn-sm ">
+                                    <i class="ri-add-line"></i>
+                                </button></label>
+                            </div>
+                            <div class="col-md-4">
 
-                        <label class="form-label">Amount</label>
-                   </div>
-                <div id="treatment-items">
-                    <div class="treatment-item row g-3 align-items-end mb-2">
-                        <div class="col-md-6">
-                        <input type="text" name="treatment[]" class="form-control" placeholder="Service name" required>
+                                <label class="form-label">Amount</label>
+                            </div>
+                          
                         </div>
-                        <div class="col-md-4">
-                        <input type="number" name="amount[]" class="form-control" placeholder="0.00" required>
+                          <div id="treatment-items">
+                                <div class="treatment-item row g-3 align-items-end mb-2">
+                                    <div class="col-md-6">
+                                    <input type="text" name="treatment[]" class="form-control" placeholder="Service name" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                    <input type="number" name="amount[]" class="form-control" placeholder="0.00" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger btn-remove-treatment w-100">
+                                        <i class="ri-delete-bin-6-line"></i>
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                   
+              
+                <div class="col-md-6">
+                     <div class='row mb-2'>
+                         <div class="col-md-5">
+                        
+                                <label class="form-label">Product  <button type="button" id="addProductBtn" class="btn btn-outline-primary btn-sm">
+                                <i class="ri-add-line"></i> 
+                            </button></label>
                         </div>
                         <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-remove-treatment w-100">
-                            <i class="ri-delete-bin-6-line"></i>
-                        </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <button type="button" id="addTreatmentBtn" class="btn btn-outline-primary ">
-                        <i class="ri-add-line"></i> Add More Service
-                    </button>
-                </div>
-                
-                 <div class="col-md-5">
-                        
-                        <label class="form-label">Product</label>
-                 </div>
-                   <div class="col-md-2">
 
-                        <label class="form-label">Qty</label>
-                   </div>
-                   <div class="col-md-3">
-                        <label class="form-label">Total Amount</label>
-                   </div>
+                                <label class="form-label">Qty</label>
+                        </div>
+                        <div class="col-md-4">
+                                <label class="form-label">Total Amount</label>
+                        </div>
+                            
+                    </div>
                     <div id="product-items">
                         <div class="product-item row g-3 align-items-end mb-2">
                         </div>
                     </div>
-                        <div class="col-md-12">
-                    <button type="button" id="addProductBtn" class="btn btn-outline-primary ">
-                        <i class="ri-add-line"></i> Add More Product
-                    </button>
+                </div>
+                
+                <div class="col-md-12">
+                    <h3 class="text-end mt-3 text-danger">Total Amount to be Paid: <span id="totalAmount" class="fw-bold">₱0.00</span></h3>
                 </div>
                 <!-- Add More Treatment -->
              
 
                 <!-- Payment Type -->
-                <div class="col-md-4">
-                <label for="paymentType" class="form-label">Payment Type</label>
-                <select id="paymentType" name='type' class="form-select" required>
-                    <option value="">Select type...</option>
-                    <option value="cash" selected>Cash</option>
-                    <option value="gcash">GCash</option>
-                    <option value="HMO">HMO</option>
-                    <option value="CC">CC</option>
-                    <option value="Debit">Debit</option>
-                    <option value="Others">Others</option>
-                </select>
-                </div>
-                <div class="col-md-4">
-                <label for="paymentType" class="form-label">Location</label>
-                <select id="paymentType" name='location' class="form-select" required>
-                    <option value="">Select location...</option>
-                    @foreach($locations as $key => $location)
-                        <option value="{{$location->id}}" @if($key == 0) selected @endif>{{$location->name}}</option>
-                    @endforeach
+                 <div class="col-md-6">
+                    <div class="col-md-8">
+                        <label for="paymentType" class="form-label">Location</label>
+                        <select id="paymentType" name='location' class="form-select" required>
+                            <option value="">Select location...</option>
                     
-                </select>
+                            @foreach($locations as $key => $location)
+                                @if($selectedLocation == $location->id)
+                                <option value="{{$location->id}}" selected >{{$location->name}}</option>
+                                @endif
+                            @endforeach
+                            
+                        </select>
+                    </div>
+                     
+                    <div class="col-md-8">
+                        <label for="paymentType" class="form-label">Date</label>
+                        <input type='date' name='date' class='form-control' value='{{date("Y-m-d")}}' max='{{date("Y-m-d")}}' readonly  required>
+                    </div>
+                    <div class="col-md-8">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="remarks" name='remarks' rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                 </div>
+                <div class="col-md-6">
+                    <div class='row mb-3'>
+                        <div class="col-md-12">
+                            <label class="form-label">Payments   <button type="button" id="addPaymentBtn" class="btn btn-outline-primary btn-sm">
+                                <i class="ri-add-line"></i>
+                            </button></label>
+                        </div>
+                    </div>
+                    <div id="payment-items">
+                        <div class="payment-item row g-3 align-items-end mb-2">
+                            <div class="col-md-5">
+                                <select name="payment_type[]" class="form-select" required>
+                                    <option value="">Select type...</option>
+                                    <option value="cash" selected>Cash</option>
+                                    <option value="gcash">GCash</option>
+                                    <option value="HMO">HMO</option>
+                                    <option value="CC">CC</option>
+                                    <option value="Debit">Debit</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" name="payment_amount[]" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-outline-danger btn-remove-payment w-100">
+                                    <i class="ri-delete-bin-6-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <h3 class="text-end text-success">Total Payments: <span id="totalPayment" class="fw-bold">₱0.00</span></h3>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                <label for="paymentType" class="form-label">Date</label>
-                <input type='date' name='date' class='form-control' value='{{date("Y-m-d")}}' max='{{date("Y-m-d")}}' readonly  required>
-                </div>
+                
+
+
+
+              
+               
 
                 <!-- Remarks -->
-                <div class="col-md-12">
-                <label for="remarks" class="form-label">Remarks</label>
-                <textarea class="form-control" id="remarks" name='remarks' rows="3" placeholder="Additional notes..."></textarea>
-                </div>
+              
             </div>
             </div>
 

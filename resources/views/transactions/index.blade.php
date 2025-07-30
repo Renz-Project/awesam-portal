@@ -109,7 +109,7 @@
             <input type="number" name="amount[]" class="form-control" placeholder="0.00" required>
           </div>
           <div class="col-md-2">
-            <button type="button" class="btn btn-danger btn-remove-treatment w-100">
+            <button type="button" class="btn btn-outline-danger btn-remove-treatment w-100">
               <i class="ri-delete-bin-6-line"></i>
             </button>
           </div>
@@ -133,11 +133,11 @@
           <div class="col-md-2">
             <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
          </div>
-          <div class="col-md-2">
+          <div class="col-md-3">
             <input type="number" name="product_amount[]" class="form-control" placeholder="0.00" required>
           </div>
           <div class="col-md-2">
-            <button type="button" class="btn btn-danger btn-remove-product w-100">
+            <button type="button" class="btn btn-outline-danger btn-remove-product w-100">
               <i class="ri-delete-bin-6-line"></i>
             </button>
           </div>
@@ -201,5 +201,111 @@ document.getElementById("searchInput").addEventListener("keyup", function() {
             ]
         });
     });
+</script>
+<script>
+function updateTotalAmount() {
+    let total = 0;
+
+    // Sum treatment amounts
+    document.querySelectorAll('input[name="amount[]"]').forEach(input => {
+        total += parseFloat(input.value) || 0;
+    });
+
+    // Sum product amounts
+    document.querySelectorAll('input[name="product_amount[]"]').forEach(input => {
+        total += parseFloat(input.value) || 0;
+    });
+
+    document.getElementById('totalAmount').textContent = '₱' + total.toFixed(2);
+    return total;
+}
+
+function updatePaymentTotal() {
+    let totalPayment = 0;
+    document.querySelectorAll('input[name="payment_amount[]"]').forEach(input => {
+        totalPayment += parseFloat(input.value) || 0;
+    });
+    document.getElementById('totalPayment').textContent = '₱' + totalPayment.toFixed(2);
+    return totalPayment;
+}
+function validatePaymentMatch() {
+    const total = updateTotalAmount();
+    const paymentTotal = updatePaymentTotal();
+    return Math.abs(total - paymentTotal) < 0.01; // accept small decimal tolerance
+}
+
+// Update totals on input change
+document.addEventListener('input', function (e) {
+    if (['amount[]', 'product_amount[]', 'payment_amount[]'].includes(e.target.name)) {
+        updateTotalAmount();
+        updatePaymentTotal();
+    }
+});
+
+// Remove item recalculations
+document.addEventListener('click', function (e) {
+    if (e.target.closest('.btn-remove-treatment') || e.target.closest('.btn-remove-product') || e.target.closest('.btn-remove-payment')) {
+        setTimeout(() => {
+            updateTotalAmount();
+            updatePaymentTotal();
+        }, 100);
+    }
+});
+
+// Add payment row
+document.getElementById('addPaymentBtn').addEventListener('click', function () {
+    const container = document.getElementById('payment-items');
+    const html = `
+    <div class="payment-item row g-3 align-items-end mb-2">
+        <div class="col-md-5">
+            <select name="payment_type[]" class="form-select" required>
+                <option value="">Select type...</option>
+                <option value="cash" selected>Cash</option>
+                <option value="gcash">GCash</option>
+                <option value="HMO">HMO</option>
+                <option value="CC">CC</option>
+                <option value="Debit">Debit</option>
+                <option value="Others">Others</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <input type="number" name="payment_amount[]" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-outline-danger btn-remove-payment w-100">
+                <i class="ri-delete-bin-6-line"></i>
+            </button>
+        </div>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+});
+
+// Final validation before submit
+document.querySelector('form').addEventListener('submit', function (e) {
+    if (!validatePaymentMatch()) {
+        e.preventDefault();
+        alert('Payment total must match the total amount to be paid.');
+    }
+});
+
+// Initial calculation when modal opens
+document.getElementById('newTransactionModal').addEventListener('shown.bs.modal', () => {
+    updateTotalAmount();
+    updatePaymentTotal();
+});
+</script>
+<script>
+document.addEventListener('click', function (e) {
+    // Check if the clicked element or its parent has the class .btn-remove-payment
+    const removeBtn = e.target.closest('.btn-remove-payment');
+    if (removeBtn) {
+        // Remove the whole .payment-item row
+        const paymentRow = removeBtn.closest('.payment-item');
+        if (paymentRow) {
+            paymentRow.remove();
+            updatePaymentTotal(); // Recalculate the total payments
+        }
+    }
+});
 </script>
 @endsection
