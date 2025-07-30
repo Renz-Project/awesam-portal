@@ -190,9 +190,9 @@
                                     <li class="nav-item">
                                         <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Sales Report </a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- <li class="nav-item">
                                         <a href="{{url('inventories-report')}}" class="nav-link" data-key="t-analytics"> Inventory </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </li>
@@ -240,9 +240,9 @@
                                     <li class="nav-item">
                                         <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Sales Report </a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- <li class="nav-item">
                                         <a href="{{url('inventories-report')}}" class="nav-link" data-key="t-analytics"> Inventory </a>
-                                    </li>
+                                    </li> --}}
                                     <li class="nav-item">
                                         <a href="{{url('audit-trails')}}" class="nav-link" data-key="t-analytics"> Audit Logs </a>
                                     </li>

@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="row">
-            <div class="col-xl-4 col-md-6">
+            <div class="col-xl-3 col-md-6">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -30,7 +30,7 @@
                 </div> <!-- end card-->
             </div> <!-- end col-->
         
-            <div class="col-xl-4 col-md-6">
+            <div class="col-xl-3 col-md-6">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -52,7 +52,7 @@
             </div> <!-- end col-->
         
         
-            <div class="col-xl-4 col-md-6">
+            <div class="col-xl-3 col-md-6">
                 <div class="card card-animate">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -72,6 +72,26 @@
                     </div><!-- end card body -->
                 </div> <!-- end card-->
             </div> <!-- end col-->
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-animate">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="fw-medium text-muted mb-0">Cash Voucher ({{date('d M, Y')}})</p>
+                                <h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="{{$expenses->sum('amount')}}">0</span></h2>
+                                {{-- <p class="mb-0 text-muted"><span class="badge bg-light text-success mb-0"><i class="ri-arrow-up-line align-middle"></i>0</span></p> --}}
+                            </div>
+                            <div>
+                                <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link text-info"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div> <!-- end card-->
+            </div> 
         </div>
         <div class="row">
             <div class="col-xl-7">

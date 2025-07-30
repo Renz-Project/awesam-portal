@@ -14,7 +14,7 @@ class TransactionController extends Controller
     //
     public function index(Request $request)
     {
-   
+        $selectedLocation = $request->location;
         $date_from = date('Y-m-d');
         $date_to =  date('Y-m-d');
         if($request->date_from)
@@ -25,11 +25,13 @@ class TransactionController extends Controller
         $locations = auth()->user()->locations;
        $locationIds = $locations->pluck('id');
        $locations_d = Location::whereIn('id',$locationIds)->get();
+
+       $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
         $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
             $query->whereIn('locations.id', $locationIds);
         })->with('locations')->get();
-         $transactions = Client::whereHas('locations', function ($query) use ($locationIds) {
-            $query->whereIn('locations.id', $locationIds);
+         $transactions = Client::whereHas('locations', function ($query) use ($selectedLocation) {
+            $query->where('locations.id', $selectedLocation);
         })->whereHas('transactions', function ($query)  {
             $query->where('date', date('Y-m-d'));
         }
@@ -49,6 +51,8 @@ class TransactionController extends Controller
                 'date_from' => $date_from,
                 'date_to' => $date_to,
                 'products' => $products,
+                'selectedLocation' => $selectedLocation,
+                'expenses' => $expenses,
             )
             );
     }
@@ -114,6 +118,7 @@ class TransactionController extends Controller
         })->with('locations')->get();
 
         $transactions = ClientTransaction::where('location_id',$selectedLocation)->whereIn('location_id',$locationIds)->whereBetween('date', [$date_from, $date_to])->get();
+        // dd($transactions);
          return view('transactions.report',
             array(
                 'clients' => $clients,

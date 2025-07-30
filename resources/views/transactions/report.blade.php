@@ -11,8 +11,8 @@
             <label class="form-label">Location</label>
             <select name="location" class="form-control" onchange="this.form.submit()">
                 <option value="">Select Location</option>
-                @foreach($locations as $location)
-                    <option value="{{ $location->id }}" @if($selectedLocation == $location->id) selected @endif>
+                @foreach($locations as $key => $location)
+                    <option value="{{ $location->id }}" @if($selectedLocation == $location->id) selected  @endif>
                         {{ $location->name }}
                     </option>
                 @endforeach
@@ -36,7 +36,7 @@
 </form>
 <div class="row">
     <div class="col-lg-12">
-               <div class="card">
+        <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Sales Report ({{date('M d, Y',strtotime($date_from))}} - {{date('M d, Y',strtotime($date_to))}})</h5>
                     </div>
@@ -77,51 +77,61 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td > Total Sales</td>
-                                    <td  class='text-success'>  <b>{{number_format($transactions->sum('amount_paid'),2)}}</b></td>
+                                    <td > Sales</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td colspan='2'></td>
+                                </tr>
+                                <tr>
+                                    <td > Product</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td colspan='2'></td>
+                                </tr>
+                                <tr>
+                                    <td > Total</td>
+                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid')+$transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Gcash</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > HMO</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Debit</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','Debit')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Debit')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                     
                                 </tr>
                                 <tr>
                                     <td > CC</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Others</td>
-                                    <td class='text-success'> <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
+                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 @foreach($expenses as $expense)
                                  <tr>
                                     <td > {{$expense->name}}</td>
-                                    <td class='text-danger'> <b>{{number_format($expenses->sum('amount_paid'),2)}}</b></td>
+                                    <td  @if($expense->payment_type == 'cash') class='text-danger' @else class='text-info' @endif> <b>{{number_format($expense->amount,2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 @endforeach
                                 <tr>
                                     <td > Cash On Hand</td>
-                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->sum('amount_paid'),2)}}</b></td>
+                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                             </tbody>
                          </table>
-                        <table id="" class=" table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th colspan='11' class='text-center'><b>Treatment</b></th>
@@ -160,7 +170,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <table id="" class=" table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="" class="example  table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th colspan='12' class='text-center'><b>Product</b></th>
@@ -205,6 +215,7 @@
                                 
                             </tbody>
                         </table>
+<<<<<<< HEAD
                         <table class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
@@ -242,6 +253,45 @@
                                 @endforeach
                             </tbody>
                         </table>
+=======
+                          <table class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <thead>
+                         <tr>
+                            <th colspan=8 class='text-center'>Expenses</th>
+                         </tr>
+                         </tr>
+                        <tr>
+                            <th>Expense Name</th>
+                            <th>Reference #</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Attachment</th>
+                            <th>Remarks</th>
+                            <th>Encoded By</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($expenses as $expense)
+                        <tr>
+                            <td>{{ $expense->name }}</td>
+                            <td>{{ $expense->reference_number }}</td>
+                            <td>{{ $expense->date }}</td>
+                            <td>{{ number_format($expense->amount, 2) }}</td>
+                            <td>
+                                @if($expense->attachment)
+                                    <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
+                                @endif
+                            </td>
+                            <td>{{ $expense->remarks }}</td>
+                            
+                            <td>{{ $expense->user->name }}</td>
+                            <td>{{ $expense->location->name }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+>>>>>>> 30d0541dcd28a032449f0a6fc54660f53927b312
                     </div>
                 </div>
     </div><!--end col-->
@@ -251,6 +301,7 @@
 @endforeach
 @endsection
 @section('js')
+<<<<<<< HEAD
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
@@ -268,4 +319,36 @@
                 ]
             });
     </script>
+=======
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+   <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
+
+{{-- <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script> --}}
+<!-- App js -->
+ <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
+ <script>
+    $(document).ready(function() {
+        $('.example').DataTable({
+            ordering: false,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'print',
+                    text: 'Print'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Export to Excel'
+                }
+            ]
+        });
+    });
+</script>
+>>>>>>> 30d0541dcd28a032449f0a6fc54660f53927b312
 @endsection
