@@ -205,43 +205,43 @@
                                 
                             </tbody>
                         </table>
-                          <table class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                    <thead>
-                         <tr>
-                            <th colspan=8 class='text-center'>Expenses</th>
-                         </tr>
-                         </tr>
-                        <tr>
-                            <th>Expense Name</th>
-                            <th>Reference #</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Attachment</th>
-                            <th>Remarks</th>
-                            <th>Encoded By</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($expenses as $expense)
-                        <tr>
-                            <td>{{ $expense->name }}</td>
-                            <td>{{ $expense->reference_number }}</td>
-                            <td>{{ $expense->date }}</td>
-                            <td>{{ number_format($expense->amount, 2) }}</td>
-                            <td>
-                                @if($expense->attachment)
-                                    <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
-                                @endif
-                            </td>
-                            <td>{{ $expense->remarks }}</td>
-                            
-                            <td>{{ $expense->user->name }}</td>
-                            <td>{{ $expense->location->name }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        <table class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th colspan=8 class='text-center'>Expenses</th>
+                                </tr>
+                                </tr>
+                                <tr>
+                                    <th>Expense Name</th>
+                                    <th>Reference #</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Attachment</th>
+                                    <th>Remarks</th>
+                                    <th>Encoded By</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($expenses as $expense)
+                                <tr>
+                                    <td>{{ $expense->name }}</td>
+                                    <td>{{ $expense->reference_number }}</td>
+                                    <td>{{ $expense->date }}</td>
+                                    <td>{{ number_format($expense->amount, 2) }}</td>
+                                    <td>
+                                        @if($expense->attachment)
+                                            <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
+                                        @endif
+                                    </td>
+                                    <td>{{ $expense->remarks }}</td>
+                                    
+                                    <td>{{ $expense->user->name }}</td>
+                                    <td>{{ $expense->location->name }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
     </div><!--end col-->
@@ -251,24 +251,21 @@
 @endforeach
 @endsection
 @section('js')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
- <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-   <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
+    <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
 
-   <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
-
-{{-- <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script> --}}
-<!-- App js -->
- <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
- <script>
-         $('.example').DataTable({
-            ordering: false,
-            dom: 'Bfrtip',
-            buttons: [
-                'excel'
-            ]
-        });
- </script>
+    <script>
+            $('.example').DataTable({
+                ordering: false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel'
+                ]
+            });
+    </script>
 @endsection
