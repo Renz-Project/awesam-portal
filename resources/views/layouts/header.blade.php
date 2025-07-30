@@ -23,6 +23,20 @@
     <!-- custom Css-->
     <link href="{{asset('inside_css/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
  
+    <style>
+        .loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url("{{ asset('login_css/images/loader.gif') }}") 50% 50% no-repeat white;
+            opacity: .8;
+            background-size: 120px 120px;
+        }   
+
+    </style>
     {{-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css"> --}}
 
   
@@ -318,7 +332,11 @@
 
     <!-- Theme Settings -->
     @include('change_password')
-
+    <script>
+         function show() {
+            document.getElementById("loader").style.display = "block";
+        }
+    </script>
     <!-- JAVASCRIPT -->
     <script src="{{asset('inside_css/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('inside_css/assets/libs/simplebar/simplebar.min.js')}}"></script>

@@ -9,18 +9,39 @@
 
 @endsection
 @section('content')
-<form  onsubmit="show();"   enctype="multipart/form-data">
+<form id='searchlocation' onsubmit="show();"   enctype="multipart/form-data">
     <div class='row mb-4'>
       <div class="col-md-2">
         <label class="form-label">Location</label>
-        <select name="location" class="form-control" onchange="this.form.submit()">
-            <option value="">Select Location</option>
-            @foreach($locations as $location)
-                <option value="{{ $location->id }}" @if($selectedLocation == $location->id) selected @endif>
-                    {{ $location->name }}
-                </option>
-            @endforeach
-        </select>
+        <select id="locationSelect" name="location" class="form-select" onchange="this.form.submit(),show();" required>
+          @foreach($locations as $key => $location)
+              <option value="{{ $location->id }}"
+                  @if(!empty($selectedLocation))
+                      {{ $selectedLocation == $location->id ? 'selected' : '' }}
+                  @elseif($key == 0)
+                      selected
+                  @endif
+              >
+                  {{ $location->name }}
+              </option>
+          @endforeach
+      </select>
+    @if(empty($selectedLocation))
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              const form = document.getElementById('searchlocation');
+              const select = document.getElementById('locationSelect');
+
+              if (form && select && !select.value) {
+                  select.selectedIndex = 0; // Select first location
+              }
+
+              if (form) {
+                  form.submit(); // Submit the form
+              }
+          });
+      </script>
+      @endif
     </div>
         <div class='col-xl-2'>
             <br>
