@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\Location;
 use App\Product;
+use App\ClientPayment;
 use App\ClientTransaction;
 use App\Expense;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class TransactionController extends Controller
         $clients = Client::whereHas('locations', function ($query) use ($selectedLocation) {
             $query->where('locations.id', $selectedLocation);
         })->with('locations')->get();
+        
          $transactions = Client::whereHas('locations', function ($query) use ($selectedLocation) {
             $query->where('locations.id', $selectedLocation);
         })->whereHas('transactions', function ($query)  {
@@ -59,9 +61,11 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        $first_id = 0;
            if (!empty($request->treatment)) {
                 foreach($request->treatment as $key => $treatment)
                 {
+                    
                     $transaction = new ClientTransaction;
                     $transaction->client_id = $request->client_id;
                     $transaction->dentist = $request->dentist;
@@ -75,6 +79,10 @@ class TransactionController extends Controller
                     $transaction->date = $request->date;
                     $transaction->user_id = auth()->user()->id;
                     $transaction->save();
+                    if($first_id == 0)
+                    {
+                        $first_id = $transaction->id;
+                    }
                 }
             }
         if (!empty($request->product)) {
@@ -94,7 +102,21 @@ class TransactionController extends Controller
                 $transaction->date = $request->date;
                 $transaction->user_id = auth()->user()->id;
                 $transaction->save();
+                 if($first_id == 0)
+                {
+                    $first_id = $transaction->id;
+                }
             }
+        }
+  
+        foreach($request->payment_type as $keyabs => $paymentd)
+        {
+        
+            $payment = new ClientPayment;
+            $payment->client_transaction_id = $first_id;
+            $payment->payment_type = $paymentd;
+            $payment->amount = $request->payment_amount[$keyabs];
+            $payment->save();
         }
          Alert::success('Successfully Encoded')->persistent('Dismiss');
         return back();

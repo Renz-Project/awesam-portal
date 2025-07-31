@@ -25,5 +25,9 @@ class ClientTransaction extends Model  implements Auditable
     {
         return $this->belongsTo(Product::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(ClientPayment::class);
+    }
     
 }

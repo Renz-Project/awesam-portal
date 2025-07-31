@@ -78,55 +78,69 @@
                             <tbody>
                                 <tr>
                                     <td > Sales</td>
-                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td  class='text-success'>  <b>₱ {{number_format($transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Product</td>
-                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td  class='text-success'>  <b>₱ {{number_format($transactions->where('product_id','!=',null)->sum('amount_paid'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                                 <tr>
                                     <td > Total</td>
-                                    <td  class='text-success'>  <b>{{number_format($transactions->where('product_id','!=',null)->sum('amount_paid')+$transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
+                                    <td  class='text-success'> <i> <b>₱ {{number_format($transactions->where('product_id','!=',null)->sum('amount_paid')+$transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></i></td>
                                     <td colspan='2'></td>
                                 </tr>
-                                <tr>
-                                    <td > Gcash</td>
-                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','gcash')->sum('amount_paid'),2)}}</b></td>
-                                    <td colspan='2'></td>
-                                </tr>
-                                <tr>
-                                    <td > HMO</td>
-                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','HMO')->sum('amount_paid'),2)}}</b></td>
-                                    <td colspan='2'></td>
-                                </tr>
-                                <tr>
-                                    <td > Debit</td>
-                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Debit')->sum('amount_paid'),2)}}</b></td>
-                                    <td colspan='2'></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td > CC</td>
-                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','CC')->sum('amount_paid'),2)}}</b></td>
-                                    <td colspan='2'></td>
-                                </tr>
-                                <tr>
-                                    <td > Others</td>
-                                    <td class='text-danger'> <b>{{number_format($transactions->where('type','Others')->sum('amount_paid'),2)}}</b></td>
-                                    <td colspan='2'></td>
-                                </tr>
-                                @foreach($expenses as $expense)
-                                 <tr>
-                                    <td > {{$expense->name}}</td>
-                                    <td  @if($expense->payment_type == 'cash') class='text-danger' @else class='text-info' @endif> <b>{{number_format($expense->amount,2)}}</b></td>
-                                    <td colspan='2'></td>
-                                </tr>
-                                @endforeach
+                               @php
+                                    $totals = [
+                                        'cash' => 0,
+                                        'gcash' => 0,
+                                        'HMO' => 0,
+                                        'CC' => 0,
+                                        'Debit' => 0,
+                                        'Others' => 0,
+                                    ];
+
+                                    $transactions->flatMap(fn($t) => $t->payments)->each(function ($payment) use (&$totals) {
+                                            $type = ($payment->payment_type);
+
+                                            if (array_key_exists($type, $totals)) {
+                                                $totals[$type] += $payment->amount;
+                                            } 
+                                        });
+                                    @endphp
+
+                                    @foreach($totals as $type => $amount)
+                                        @if($amount != 0)
+                                            @if($type != "cash")
+                                            <tr>
+                                                <td > {{ ucfirst($type) }}</td>
+                                                <td class='text-danger'> <b>₱ {{ number_format($amount, 2) }}</b></td>
+                                                <td colspan='2'></td>
+                                            </tr>
+                                            @endif
+                                        @endif
+                                    @endforeach
+
+                                    @php
+                                        $groupedExpenses = $expenses->groupBy('name');
+                                    @endphp
+                                @foreach($groupedExpenses as $name => $group)
+                                        @php
+                                            $totalAmount = $group->sum('amount');
+                                            // Get the first payment type for styling, or set default
+                                            $firstPaymentType = $group->first()->payment_type ?? 'cash';
+                                            $class = $firstPaymentType === 'cash' ? 'text-danger' : 'text-info';
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $name }}</td>
+                                            <td class="{{ $class }}"><b>₱ {{ number_format($totalAmount, 2) }}</b></td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    @endforeach
                                 <tr>
                                     <td > Cash On Hand</td>
-                                    <td > <b>{{number_format($transactions->where('type','cash')->sum('amount_paid')-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
+                                    <td > <b>₱ {{number_format($totals['cash']-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
                                     <td colspan='2'></td>
                                 </tr>
                             </tbody>
@@ -142,7 +156,7 @@
                                     <th >Dentist</th>
                                     <th >Dentist 2</th>
                                     <th >Dentist 3</th>
-                                    <th>Type</th>
+                                    <th>Payment</th>
                                     <th>Remarks</th>
                                     <th>Location</th>
                                     <th>Encoded by</th>
@@ -159,7 +173,32 @@
                                     <td>{{$transaction->dentist}}</td>
                                     <td>{{$transaction->dentist_2}}</td>
                                     <td>{{$transaction->dentist_3}}</td>
-                                    <td>{{$transaction->type}}</td>
+                                    <td>
+                                         @php
+                                            $totals = [
+                                                'cash' => 0,
+                                                'gcash' => 0,
+                                                'HMO' => 0,
+                                                'CC' => 0,
+                                                'Debit' => 0,
+                                                'Others' => 0,
+                                            ];
+                                        @endphp
+                                        @foreach($transaction->payments as $payment)
+                                            @php
+                                                $type = ($payment->payment_type);
+                                                if(array_key_exists($type, $totals)) {
+                                                    $totals[$type] += $payment->amount;
+                                                }
+                                            @endphp
+                                        @endforeach
+                                        @foreach($totals as $type => $amount)
+                                            @if($amount != 0)
+                                                <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                            @endif
+                                        @endforeach
+
+                                    </td>
                                     <td>{{$transaction->remarks}}</td>
                                     <td>{{$transaction->location->name}}</td>
                                     <td>{{$transaction->user->name}}</td>
@@ -181,7 +220,7 @@
                                     <th >Dentist</th>
                                     <th >Dentist 2</th>
                                     <th >Dentist 3</th>
-                                    <th>Type</th>
+                                    <th>Payment</th>
                                     <th>Remarks</th>
                                     <th>Location</th>
                                     <th>Encoded by</th>
@@ -201,7 +240,21 @@
                                     <td>{{$transaction->dentist}}</td>
                                     <td>{{$transaction->dentist_2}}</td>
                                     <td>{{$transaction->dentist_3}}</td>
-                                    <td>{{$transaction->type}}</td>
+                                    <td>
+                                          @foreach($transaction->payments as $payment)
+                                            @php
+                                                $type = ($payment->payment_type);
+                                                if(array_key_exists($type, $totals)) {
+                                                    $totals[$type] += $payment->amount;
+                                                }
+                                            @endphp
+                                        @endforeach
+                                        @foreach($totals as $type => $amount)
+                                            @if($amount != 0)
+                                                <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                            @endif
+                                        @endforeach
+                                    </td>
                                     <td>{{$transaction->remarks}}</td>
                                     <td>{{$transaction->location->name}}</td>
                                     <td>{{$transaction->user->name}}</td>
@@ -215,45 +268,6 @@
                                 
                             </tbody>
                         </table>
-<<<<<<< HEAD
-                        <table class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th colspan=8 class='text-center'>Expenses</th>
-                                </tr>
-                                </tr>
-                                <tr>
-                                    <th>Expense Name</th>
-                                    <th>Reference #</th>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Attachment</th>
-                                    <th>Remarks</th>
-                                    <th>Encoded By</th>
-                                    <th>Location</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($expenses as $expense)
-                                <tr>
-                                    <td>{{ $expense->name }}</td>
-                                    <td>{{ $expense->reference_number }}</td>
-                                    <td>{{ $expense->date }}</td>
-                                    <td>{{ number_format($expense->amount, 2) }}</td>
-                                    <td>
-                                        @if($expense->attachment)
-                                            <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
-                                        @endif
-                                    </td>
-                                    <td>{{ $expense->remarks }}</td>
-                                    
-                                    <td>{{ $expense->user->name }}</td>
-                                    <td>{{ $expense->location->name }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-=======
                           <table class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                          <tr>
@@ -291,7 +305,6 @@
                         @endforeach
                     </tbody>
                 </table>
->>>>>>> 30d0541dcd28a032449f0a6fc54660f53927b312
                     </div>
                 </div>
     </div><!--end col-->
@@ -301,29 +314,12 @@
 @endforeach
 @endsection
 @section('js')
-<<<<<<< HEAD
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
-    <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
-
-    <script>
-            $('.example').DataTable({
-                ordering: false,
-                dom: 'Bfrtip',
-                buttons: [
-                    'excel'
-                ]
-            });
-    </script>
-=======
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -350,5 +346,4 @@
         });
     });
 </script>
->>>>>>> 30d0541dcd28a032449f0a6fc54660f53927b312
 @endsection

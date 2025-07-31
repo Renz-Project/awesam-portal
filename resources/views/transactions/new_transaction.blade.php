@@ -146,11 +146,6 @@
                             <div class="col-md-5">
                                 <input type="number" name="payment_amount[]" class="form-control" placeholder="0.00" step="0.01" min="0" required>
                             </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-outline-danger btn-remove-payment w-100">
-                                    <i class="ri-delete-bin-6-line"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 mt-2">

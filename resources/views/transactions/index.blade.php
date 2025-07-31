@@ -64,11 +64,11 @@
                         <tr>   
                             <th >Client</th>
                             <th >Dentist</th>
-                            <th >Product</th>
                             <th >Treatment</th>
+                            <th >Product</th>
                             <th >Total Amount</th>
                             <th>Location</th>
-                            <th>Type</th>
+                            <th>Payment</th>
                             <th>Remarks</th>
                         </tr>
                     </thead>
@@ -90,7 +90,35 @@
                                 </td>
                                 <td >{{number_format($client->transactions->sum('amount_paid'),2)}}</td>
                                 <td>{{$client->transactions['0']->location->name}}</td>
-                                <td>{{$client->transactions['0']->type}}</td>
+                                <td>
+                                    @php
+                                        $totals = [
+                                            'cash' => 0,
+                                            'gcash' => 0,
+                                            'HMO' => 0,
+                                            'CC' => 0,
+                                            'Debit' => 0,
+                                            'Others' => 0,
+                                        ];
+                                    @endphp
+                                   @foreach($client->transactions as $transaction)
+                                        @foreach($transaction->payments as $payment)
+                                            @php
+                                                $type = ($payment->payment_type);
+                                                if(array_key_exists($type, $totals)) {
+                                                    $totals[$type] += $payment->amount;
+                                                }
+                                            @endphp
+                                        @endforeach
+                                    @endforeach
+
+                                   @foreach($totals as $type => $amount)
+                                    @if($amount != 0)
+                                        <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                    @endif
+                                @endforeach
+
+                                </td>
                                 <td>{{$client->transactions['0']->remarks}}</td>
                             </tr>
                         @endforeach
@@ -180,11 +208,13 @@
   });
 </script>
    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> --}}
-   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
    <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script>
    <!-- App js -->

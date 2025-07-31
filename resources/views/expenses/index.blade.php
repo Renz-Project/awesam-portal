@@ -18,7 +18,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>Expense Name</th>
@@ -50,7 +50,9 @@
                             <td>{{ $expense->location->name }}</td>
                             <td>
                                 <!-- Action buttons here -->
+                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin"))
                                 <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">Edit</button>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -135,9 +137,25 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#example').DataTable();
+    $(document).ready(function() {
+        $('.example').DataTable({
+            ordering: false,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'print',
+                    text: 'Print'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Export to Excel'
+                }
+            ]
         });
-    </script>
+    });
+</script>
 @endsection
