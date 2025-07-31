@@ -123,21 +123,29 @@
                                     @endforeach
 
                                     @php
-                                        $groupedExpenses = $expenses->groupBy('name');
+                                    $groupedExpenses = $expenses->groupBy('name');
+                                @endphp
+                                
+                                @foreach($groupedExpenses as $name => $expensesByName)
+                                    @php
+                                        $groupedByPaymentType = $expensesByName->groupBy('payment_type');
                                     @endphp
-                                @foreach($groupedExpenses as $name => $group)
+                                
+                                    @foreach($groupedByPaymentType as $paymentType => $group)
                                         @php
                                             $totalAmount = $group->sum('amount');
-                                            // Get the first payment type for styling, or set default
-                                            $firstPaymentType = $group->first()->payment_type ?? 'cash';
-                                            $class = $firstPaymentType === 'cash' ? 'text-danger' : 'text-info';
+                                            $class = $paymentType === 'cash' ? 'text-danger' : 'text-info';
                                         @endphp
                                         <tr>
                                             <td>{{ $name }}</td>
-                                            <td class="{{ $class }}"><b>₱ {{ number_format($totalAmount, 2) }}</b></td>
+                                            <td class="{{ $class }}">
+                                                <b>₱ {{ number_format($totalAmount, 2) }}</b>
+                                                <small>({{ ucfirst($paymentType) }})</small>
+                                            </td>
                                             <td colspan="2"></td>
                                         </tr>
                                     @endforeach
+                                @endforeach
                                 <tr>
                                     <td > Cash On Hand</td>
                                     <td > <b>₱ {{number_format($totals['cash']-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>

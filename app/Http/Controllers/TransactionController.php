@@ -6,6 +6,7 @@ use App\Location;
 use App\Product;
 use App\ClientPayment;
 use App\ClientTransaction;
+use App\ClientAttachment;
 use App\Expense;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -118,6 +119,21 @@ class TransactionController extends Controller
             $payment->amount = $request->payment_amount[$keyabs];
             $payment->save();
         }
+        if($request->hasFile('file'))
+        {
+            $client = new ClientAttachment;
+            $client->client_id = $request->client_id;
+
+            $attachment = $request->file('file');
+            $original_name = $attachment->getClientOriginalName();
+            $name = time().'_'.$attachment->getClientOriginalName();
+            $attachment->move(public_path().'/attachments/', $name);
+            $file_name = '/attachments/'.$name;
+            $client->document_name = $original_name;
+            $client->file = $file_name;
+            $client->save();
+        }
+        
          Alert::success('Successfully Encoded')->persistent('Dismiss');
         return back();
     }

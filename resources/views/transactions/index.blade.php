@@ -75,7 +75,7 @@
                     <tbody>
                         @foreach($transactions as $client)
                              <tr>   
-                                <td ><a href="#"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
+                                <td ><a href="{{ url('client/' . $client->id) }}" target="_blank"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
                                 <td > {{$client->transactions[0]->dentist}} <br>{{$client->transactions[0]->dentist_2}}<br>{{$client->transactions[0]->dentist_3}}</td>
                                 <td > 
                                   @foreach($client->transactions->where('product_id',null) as $transaction)

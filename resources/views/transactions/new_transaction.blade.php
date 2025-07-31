@@ -118,6 +118,17 @@
                         <input type='date' name='date' class='form-control' value='{{date("Y-m-d")}}' max='{{date("Y-m-d")}}' readonly  required>
                     </div>
                     <div class="col-md-8">
+                        <label for="upload_file" class="form-label">Upload File</label>
+                        <input 
+                        type="file" 
+                        class="form-control" 
+                        name="file" 
+                        id="upload_file"
+                        accept="image/*,application/pdf" 
+                        
+                    >
+                    </div>
+                    <div class="col-md-8">
                         <label for="remarks" class="form-label">Remarks</label>
                         <textarea class="form-control" id="remarks" name='remarks' rows="3" placeholder="Additional notes..."></textarea>
                     </div>
