@@ -168,9 +168,12 @@
               
             </div>
             </div>
-
+               <div class="col-md-12 mt-2">
+                        <h3 class="text-end text-warning"><span id="notequalmessage" class="fw-bold"></span></h3>
+                    </div>
             <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save Transaction</button>
+                
+            <button type="submit" class="btn btn-primary" id='save_transaction' disabled>Save Transaction</button>
             </div>
       </form>
     </div>

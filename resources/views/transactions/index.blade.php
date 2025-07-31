@@ -179,22 +179,6 @@
     });
   });
 </script>
-<script>
-document.getElementById("searchInput").addEventListener("keyup", function() {
-    const keyword = this.value.toLowerCase();
-    const cards = document.querySelectorAll(".col-xl-3");
-
-    cards.forEach(card => {
-        const cardText = card.innerText.toLowerCase();
-        if (cardText.includes(keyword)) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-    });
-});
-
-</script>
    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> --}}
    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -238,6 +222,7 @@ function updateTotalAmount() {
     });
 
     document.getElementById('totalAmount').textContent = '₱' + total.toFixed(2);
+    toggleSubmitButton();
     return total;
 }
 
@@ -247,13 +232,10 @@ function updatePaymentTotal() {
         totalPayment += parseFloat(input.value) || 0;
     });
     document.getElementById('totalPayment').textContent = '₱' + totalPayment.toFixed(2);
+    toggleSubmitButton();
     return totalPayment;
 }
-function validatePaymentMatch() {
-    const total = updateTotalAmount();
-    const paymentTotal = updatePaymentTotal();
-    return Math.abs(total - paymentTotal) < 0.01; // accept small decimal tolerance
-}
+
 
 // Update totals on input change
 document.addEventListener('input', function (e) {
@@ -328,5 +310,25 @@ document.addEventListener('click', function (e) {
         }
     }
 });
+
+function validatePaymentMatch() {
+   let totalAmountText = document.getElementById('totalAmount').textContent;
+let total = parseFloat(totalAmountText.replace(/[₱,]/g, '').trim());
+ let paymentTotalText = document.getElementById('totalPayment').textContent;
+let paymentTotal = parseFloat(paymentTotalText.replace(/[₱,]/g, '').trim());
+
+    return Math.abs(total - paymentTotal) == 0; // accept small decimal tolerance
+}
+
+function toggleSubmitButton() {
+const submitBtn = document.getElementById('save_transaction');
+    if (validatePaymentMatch() == true) {
+        submitBtn.disabled = false;
+         document.getElementById('notequalmessage').textContent = '';
+    } else {
+        submitBtn.disabled = true;
+        document.getElementById('notequalmessage').textContent = '⚠️ Total Payments must equal the Total Amount to be Paid before submitting.';
+    }
+}
 </script>
 @endsection
