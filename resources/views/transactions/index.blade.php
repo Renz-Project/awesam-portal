@@ -51,84 +51,209 @@
         </div>
     </div>
 </form> 
-    <div class="col-lg-12">
-        <div class="card">
-          
-            <div class="card-header">
-              <h5 class="card-title mb-0">Transactions <button type="button" class="btn btn-success btn-icon waves-effect waves-light" title='New Transaction' data-bs-toggle="modal" data-bs-target="#newTransactionModal"><i class=" ri-add-box-line"></i></button></h5>
-          </div>
-            <div class="card-body">
-                    
-                <table class=" example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                    <thead>
-                        <tr>   
-                            <th >Client</th>
-                            <th >Dentist</th>
-                            <th >Treatment</th>
-                            <th >Product</th>
-                            <th >Total Amount</th>
-                            <th>Location</th>
-                            <th>Payment</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($transactions as $client)
-                             <tr>   
-                                <td ><a href="{{ url('client/' . $client->id) }}" target="_blank"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
-                                <td > {{$client->transactions[0]->dentist}} <br>{{$client->transactions[0]->dentist_2}}<br>{{$client->transactions[0]->dentist_3}}</td>
-                                <td > 
-                                  @foreach($client->transactions->where('product_id',null) as $transaction)
-                                  @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
-                              @endforeach
-                                </td>
-                                <td > 
-                                  @foreach($client->transactions->where('product_id',"!=",null) as $transaction)
-                                  @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
-                              @endforeach
-                                  
-                                </td>
-                                <td >{{number_format($client->transactions->sum('amount_paid'),2)}}</td>
-                                <td>{{$client->transactions['0']->location->name}}</td>
-                                <td>
-                                    @php
-                                        $totals = [
-                                            'cash' => 0,
-                                            'gcash' => 0,
-                                            'HMO' => 0,
-                                            'CC' => 0,
-                                            'Debit' => 0,
-                                            'Others' => 0,
-                                        ];
-                                    @endphp
-                                   @foreach($client->transactions as $transaction)
-                                        @foreach($transaction->payments as $payment)
-                                            @php
-                                                $type = ($payment->payment_type);
-                                                if(array_key_exists($type, $totals)) {
-                                                    $totals[$type] += $payment->amount;
-                                                }
-                                            @endphp
+    @if($selectedLocation)
+        <div class='row'> 
+        <div class="col-lg-8">
+            <div class="card">
+            
+                <div class="card-header">
+                <h5 class="card-title mb-0">Transactions <button type="button" class="btn btn-success btn-icon waves-effect waves-light" title='New Transaction' data-bs-toggle="modal" data-bs-target="#newTransactionModal"><i class=" ri-add-box-line"></i></button></h5>
+            </div>
+                <div class="card-body">
+                        
+                    <table class=" example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <thead>
+                            <tr>   
+                                <th >Client</th>
+                                <th >Dentist</th>
+                                <th >Treatment</th>
+                                <th >Product</th>
+                                <th >Total Amount</th>
+                                <th>Location</th>
+                                <th>Payment</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($transaction_clients as $client)
+                                <tr>   
+                                    <td ><a href="{{ url('client/' . $client->id) }}" target="_blank"><img src="{{asset($client->avatar)}}" onerror="this.src='{{URL::asset('/images/aaa.png')}}';"  alt="" class="avatar-xs rounded-circle me-2 material-shadow"> {{ $client->last_name }}, {{ $client->first_name }}</a></td>
+                                    <td > {{$client->transactions[0]->dentist}} <br>{{$client->transactions[0]->dentist_2}}<br>{{$client->transactions[0]->dentist_3}}</td>
+                                    <td > 
+                                    @foreach($client->transactions->where('product_id',null) as $transaction)
+                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
+                                @endforeach
+                                    </td>
+                                    <td > 
+                                    @foreach($client->transactions->where('product_id',"!=",null) as $transaction)
+                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
+                                @endforeach
+                                    
+                                    </td>
+                                    <td >{{number_format($client->transactions->sum('amount_paid'),2)}}</td>
+                                    <td>{{$client->transactions['0']->location->name}}</td>
+                                    <td>
+                                        @php
+                                            $totals = [
+                                                'cash' => 0,
+                                                'gcash' => 0,
+                                                'HMO' => 0,
+                                                'CC' => 0,
+                                                'Debit' => 0,
+                                                'Others' => 0,
+                                            ];
+                                        @endphp
+                                    @foreach($client->transactions as $transaction)
+                                            @foreach($transaction->payments as $payment)
+                                                @php
+                                                    $type = ($payment->payment_type);
+                                                    if(array_key_exists($type, $totals)) {
+                                                        $totals[$type] += $payment->amount;
+                                                    }
+                                                @endphp
+                                            @endforeach
                                         @endforeach
+
+                                    @foreach($totals as $type => $amount)
+                                        @if($amount != 0)
+                                            <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                        @endif
                                     @endforeach
 
-                                   @foreach($totals as $type => $amount)
+                                    </td>
+                                    <td>{{$client->transactions['0']->remarks}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Sales Report ({{date('M d, Y')}})</h5>
+                </div>
+                <div class="card-body">
+                        <table id="" class=" table table-bordered " >
+                        <thead>
+                            <tr>
+                                <td colspan=2 class='text-center'>
+                                    <img class="" src="{{asset('images/logo_mo.png')}}" width='400px' alt="Header Avatar">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 class='text-center'>
+                                    Sales Report
+                                </td>
+                            </tr>
+                            <tr>
+                                <td > Date: </td>
+                                <td>({{date('M d, Y')}})</td>
+                                
+                            </tr>
+                            <tr>
+                                <td > Location: </td>
+                                <td>
+                                    @php
+                                        $sele = $locations->where('id',$selectedLocation)->first();
+                                    @endphp
+                                    @if($sele)
+                                    {{$sele->name}}
+                                @endif
+                            </td>
+                            </tr>
+                            <tr>
+                                <td > Generated by: </td>
+                                <td>{{auth()->user()->name}}</td>
+                                    
+                            </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td > Sales</td>
+                                <td  class='text-success'>  <b>₱ {{number_format($transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></td>
+                            
+                            </tr>
+                            <tr>
+                                <td > Product</td>
+                                <td  class='text-success'>  <b>₱ {{number_format($transactions->where('product_id','!=',null)->sum('amount_paid'),2)}}</b></td>
+                        
+                            </tr>
+                            <tr>
+                                <td > Total</td>
+                                <td  class='text-success'> <i> <b>₱ {{number_format($transactions->where('product_id','!=',null)->sum('amount_paid')+$transactions->where('product_id',null)->sum('amount_paid'),2)}}</b></i></td>
+                            
+                            </tr>
+                            @php
+                                $totals = [
+                                    'cash' => 0,
+                                    'gcash' => 0,
+                                    'HMO' => 0,
+                                    'CC' => 0,
+                                    'Debit' => 0,
+                                    'Others' => 0,
+                                ];
+
+                                $transactions->flatMap(fn($t) => $t->payments)->each(function ($payment) use (&$totals) {
+                                        $type = ($payment->payment_type);
+
+                                        if (array_key_exists($type, $totals)) {
+                                            $totals[$type] += $payment->amount;
+                                        } 
+                                    });
+                                @endphp
+
+                                @foreach($totals as $type => $amount)
                                     @if($amount != 0)
-                                        <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                        @if($type != "cash")
+                                        <tr>
+                                            <td > {{ ucfirst($type) }}</td>
+                                            <td class='text-danger'> <b>₱ {{ number_format($amount, 2) }}</b></td>
+                                            <td colspan='2'></td>
+                                        </tr>
+                                        @endif
                                     @endif
                                 @endforeach
 
-                                </td>
-                                <td>{{$client->transactions['0']->remarks}}</td>
+                                @php
+                                $groupedExpenses = $expenses->groupBy('name');
+                            @endphp
+                            
+                            @foreach($groupedExpenses as $name => $expensesByName)
+                                @php
+                                    $groupedByPaymentType = $expensesByName->groupBy('payment_type');
+                                @endphp
+                            
+                                @foreach($groupedByPaymentType as $paymentType => $group)
+                                    @php
+                                        $totalAmount = $group->sum('amount');
+                                        $class = $paymentType === 'cash' ? 'text-danger' : 'text-info';
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $name }}</td>
+                                        <td class="{{ $class }}">
+                                            <b>₱ {{ number_format($totalAmount, 2) }}</b>
+                                            <small>({{ ucfirst($paymentType) }})</small>
+                                        </td>
+                                    
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                            <tr>
+                                <td > Cash On Hand</td>
+                                <td > <b>₱ {{number_format($totals['cash']-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
+                            
                             </tr>
-                        @endforeach
-                    </tbody>
-                   
-                </table>
+                        </tbody>
+                        </table>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        </div>
+    @endif
 @include('transactions.new_transaction')
 @endsection
 @section('js')
