@@ -163,7 +163,7 @@
                         </li>
                         @endif
                         @if(auth()->user()->role != "Dental Assistant")
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/transactions')}}">
                                 <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
                             </a>
@@ -172,7 +172,7 @@
                             <a class="nav-link menu-link" href="{{url('/expenses')}}">
                                 <i class="ri-money-dollar-circle-line"></i> <span data-key="t-transactions">Expenses</span>
                             </a>
-                        </li>
+                        </li> --}}
                         @endif
                         @if(auth()->user()->role != "Front Desk Officer")
                         <li class="nav-item">
