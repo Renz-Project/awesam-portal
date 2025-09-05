@@ -29,6 +29,7 @@
                 <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
+                                  <th>Action</th>
                         <th>Product Code</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -38,13 +39,19 @@
                         <th>Available Stock</th>
                         <th>Notification</th>
                         {{-- <th>Available Stock Value</th> --}}
-                        <th>Action</th>
+                  
 
                     </tr>
                     </thead>
                     <tbody>
                         @foreach($report as $key => $row)
                             <tr>
+                                 <td>
+                                    <button class="btn btn-sm btn-success"  data-bs-toggle="modal" data-bs-target="#newStack-{{$key}}">+</button>
+                                    <button class="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target="#reduceStock-{{$key}}">−</button>
+                                    @include('inventory.addstack')
+                                    @include('inventory.reducestock')
+                                </td>
                                 <td>{{ $row['product_code'] }}</td>
                                 <td>{{ $row['product_name'] }}</td>
                                 <td>{{ $row['category']->category }}</td>
@@ -54,12 +61,7 @@
                                 <td><a href='#' data-bs-toggle="modal" data-bs-target="#inventory{{$key}}">{{  number_format($row['available_stock'],2) }}</a></td>
                                 <td><span class="text-danger">{{ $row['notification'] }} </span></td>
                                 {{-- <td>{{ number_format($row['available_stock_value'], 2) }}</td> --}}
-                                <td>
-                                    <button class="btn btn-sm btn-success"  data-bs-toggle="modal" data-bs-target="#newStack-{{$key}}">+</button>
-                                    <button class="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target="#reduceStock-{{$key}}">−</button>
-                                    @include('inventory.addstack')
-                                    @include('inventory.reducestock')
-                                </td>
+                               
                             </tr>
                         @endforeach
                     </tbody>
