@@ -12,19 +12,53 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ClientController extends Controller
 {
     //
-    public function index()
+    public function search(Request $request)
     {
-       $locations = auth()->user()->locations;
-       $locationIds = $locations->pluck('id');
-        $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
-            $query->whereIn('locations.id', $locationIds);
-        })->with('locations')->get();
+        $selectedLocation = $request->selectedLocation;
+        $term = $request->get('q');
+        // return $locationIds;
+        $clients = Client::where(function ($q) use ($term) {
+                $q->where('first_name', 'like', "%{$term}%")
+                  ->orWhere('last_name', 'like', "%{$term}%");
+            })
+            ->whereHas('locations', function ($query) use ($selectedLocation) {
+                $query->where('locations.id', $selectedLocation);
+            })
+            ->orderBy('last_name')
+            ->limit(20)
+            ->get();
 
-         return view('clients.index',
-        array(
-            'locations' => $locations,
-            'clients' => $clients
-        ));
+        return response()->json($clients);
+    }
+    public function index(Request $request)
+    {
+        $locations = auth()->user()->locations;
+        $locationIds = $locations->pluck('id');
+
+        $query = Client::whereHas('locations', function ($q) use ($locationIds) {
+            $q->whereIn('locations.id', $locationIds);
+        })->with('locations');
+
+        // 🔹 Filter by location
+        if ($request->filled('location_id')) {
+            $query->whereHas('locations', function ($q) use ($request) {
+                $q->where('locations.id', $request->location_id);
+            });
+        }
+
+        // 🔹 Search by name, email, or contact
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('middle_name', 'like', "%{$search}%");
+            });
+        }
+
+        $clients = $query->paginate(10);
+
+        return view('clients.index', compact('locations', 'clients'));
     }
     public function store(Request $request)
     {

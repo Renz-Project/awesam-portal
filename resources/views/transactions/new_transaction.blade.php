@@ -12,13 +12,8 @@
             <div class="row g-3">
                 <!-- Client (Select2) -->
                 <div class="col-md-12">
-                <label for="client" class="form-label">Client</label>
-                <select id="client" class="form-select" name='client_id' required>
-                    <option value="">Search client...</option>
-                    @foreach($clients as $client)
-                    <option value="{{$client->id}}">{{$client->last_name}}, {{$client->first_name}}</option>
-                    @endforeach
-                </select>
+                    <label for="client" class="form-label">Client</label>
+                    <select id="client" class="form-select" name="client_id" required></select>
                 </div>
 
                 <!-- Dentist -->

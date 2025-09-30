@@ -33,7 +33,7 @@
                                 <label for="location" class="form-label">Location</label>
                                 <select class="form-control required" id="locations" data-choices   name="locations[]" required>
                                     @foreach($locations as $location)
-                                    <option value='{{$location->id}}' selected>{{$location->name}}</option>
+                                    <option value='{{$location->id}}' {{ request('location_id') == $location->id ? 'selected' : '' }}>{{$location->name}}</option>
                                     @endforeach
                                 </select>
                               

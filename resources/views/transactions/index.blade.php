@@ -263,14 +263,41 @@
 <script>
   $(document).ready(function () {
     // Initialize Select2
+    // $('#client').select2({
+    //   placeholder: "Search client...",
+    //   dropdownParent: $('#newTransactionModal')
+    // });
     $('#client').select2({
-      placeholder: "Search client...",
-      dropdownParent: $('#newTransactionModal')
+        dropdownParent: $('#newTransactionModal'),
+        placeholder: "Search client...",
+        allowClear: true,
+        ajax: {
+            url: "{{ route('clients.search') }}", // 🔹 create this route
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    selectedLocation: "{{ $selectedLocation ?? '' }}" // 🔹 pass from Blade
+                };
+            },
+            processResults: function (data) {
+                console.log(data);
+                return {
+                    results: data.map(function (item) {
+                        return { id: item.id, text: item.last_name + ", " + item.first_name };
+                    })
+                };
+            },
+            cache: true
+        }
     });
     $('.products').select2({
       placeholder: "Search Product...",
       dropdownParent: $('#newTransactionModal')
     });
+    
+    
 
     // Add treatment row
     $('#addTreatmentBtn').on('click', function () {
@@ -486,4 +513,5 @@ const submitBtn = document.getElementById('save_transaction');
     }
 }
 </script>
+
 @endsection

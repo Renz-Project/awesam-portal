@@ -70,4 +70,6 @@ Route::post('expenses/update/{id}','ExpenseController@update')->name('index');
 
 Route::get('audit-trails','AuditTrailController@index')->name('audit');
 
+Route::get('/clients/search', 'ClientController@search')->name('clients.search');
+
 });
