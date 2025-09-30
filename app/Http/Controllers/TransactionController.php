@@ -29,12 +29,7 @@ class TransactionController extends Controller
        $locations_d = Location::whereIn('id',$locationIds)->get();
 
         $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
-       $clients = Client::select('clients.id', 'clients.first_name', 'clients.last_name')
-    ->whereHas('locations', function ($query) use ($selectedLocation) {
-        $query->where('locations.id', $selectedLocation);
-    })
-    ->with('locations') // keep only id + name from locations
-    ->get();
+      
          $transactions = ClientTransaction::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
          $transaction_clients = Client::whereHas('locations', function ($query) use ($selectedLocation) {
             $query->where('locations.id', $selectedLocation);
@@ -51,7 +46,6 @@ class TransactionController extends Controller
         $products = Product::select('id', 'product_name', 'unit_price')->get();
          return view('transactions.index',
             array(
-                'clients' => $clients,
                 'transactions' => $transactions,
                 'transaction_clients' => $transaction_clients,
                 'locations' => $locations_d,
