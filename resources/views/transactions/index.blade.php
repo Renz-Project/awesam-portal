@@ -285,7 +285,7 @@
                 console.log(data);
                 return {
                     results: data.map(function (item) {
-                        return { id: item.id, text: item.last_name + ", " + item.first_name };
+                        return { id: item.id, text: item.last_name + ", " + item.first_name + " " +item.middle_name };
                     })
                 };
             },
