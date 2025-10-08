@@ -5,6 +5,8 @@ use App\User;
 use App\Location;
 use App\UserLocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 use RealRashid\SweetAlert\Facades\Alert;
 class UserController extends Controller
@@ -94,5 +96,27 @@ class UserController extends Controller
 
         Alert::success('Password Updated')->persistent('Dismiss');
         return redirect('/users');
+    }
+    public function deactivate($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Update fields
+        $user->status = 'Inactive';
+        $user->role = '';
+        $user->password = bcrypt(str_random(16)); // safer than blank
+        $user->save();
+
+        // If currently logged-in user is deactivated
+        if (Auth::check() && Auth::id() == $id) {
+            Auth::logout();
+            Session::flush();
+            Alert::success('Deactivated', 'Your account has been deactivated.')->persistent('Dismiss');
+            return redirect('/login');
+        }
+
+        // For admin or another user deactivating someone else
+        Alert::success('Success', 'User has been deactivated successfully.')->persistent('Dismiss');
+        return redirect()->back();
     }
 }

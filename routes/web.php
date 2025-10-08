@@ -32,6 +32,7 @@ Route::get('/users','UserController@index')->name('users');
 Route::post('/new-user','UserController@store')->name('new-user');
 Route::post('/edit-user/{id}','UserController@editUser')->name('edit-user');
 Route::post('/update-user-password','UserController@updatePassword');
+Route::get('/deactivate-user/{id}', 'UserController@deactivate')->name('user.deactivate');
 
 
 

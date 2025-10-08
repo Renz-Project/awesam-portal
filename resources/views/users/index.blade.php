@@ -50,7 +50,7 @@
                                           @if(Auth::user()->id != $user->id)
                                         <li>
                                           
-                                            <a  href='#' class="dropdown-item remove-item-btn deactivate-user">
+                                            <a  href='{{url('deactivate-user/'.$user->id)}}' class="dropdown-item remove-item-btn deactivate-user">
                                                 <i class="ri-delete-bin-fill align-bottom me-2 text-muted "></i> Deactivate
                                             </a>
                                             @endif
