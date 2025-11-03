@@ -8,6 +8,8 @@ use App\ClientAttachment;
 use App\ClientLocation;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Storage;
+
 
 class ClientController extends Controller
 {
@@ -91,6 +93,21 @@ class ClientController extends Controller
             'locations' => $locations,
         ));
     }
+    public function viewAttachment(Request $request,$id)
+    {
+        
+        $attachment = ClientAttachment::findOrFail($id);
+        $filePath = $attachment->file;
+        // dd($filePath);
+        // If using S3, generate a temporary URL
+        if (Storage::disk('s3')->exists($filePath)) {
+            $url = Storage::disk('s3')->temporaryUrl($filePath, now()->addMinutes(5));
+            return redirect($url);
+        }
+
+        // If the file does not exist, return a 404 error
+        abort(404, 'File not found');
+    }
     public function updateLocation(Request $request,$id)
     {
    
@@ -114,12 +131,10 @@ class ClientController extends Controller
         $client = new ClientAttachment;
         $client->client_id = $id;
 
-        $attachment = $request->file('file');
-        $original_name = $attachment->getClientOriginalName();
-        $name = time().'_'.$attachment->getClientOriginalName();
-        $attachment->move(public_path().'/attachments/', $name);
-        $file_name = '/attachments/'.$name;
-        $client->document_name = $original_name;
+        $file = $request->file('file');
+        $path = Storage::disk('s3')->put('client-attachments', $file);
+        $file_name = $path;
+        $client->document_name = $file->getClientOriginalName();
         $client->file = $file_name;
         $client->save();
 

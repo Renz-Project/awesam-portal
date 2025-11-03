@@ -73,4 +73,7 @@ Route::get('audit-trails','AuditTrailController@index')->name('audit');
 
 Route::get('/clients/search', 'ClientController@search')->name('clients.search');
 
+Route::get('/view-attachment/{id}', 'ClientController@viewAttachment')->name('view.attachment');
+
+
 });

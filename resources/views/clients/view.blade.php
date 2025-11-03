@@ -268,7 +268,7 @@
                                         <div class="vstack gap-3">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1">
-                                                    <h5 class="fs-13 mb-0 text-success"><a href="{{url($attachment->file)}}" target='_blank' class="text-body d-block text-success"><i class="ri-attachment-2 text-success"></i>{{$attachment->document_name}}</a></h5>
+                                                    <h5 class="fs-13 mb-0 text-success"><a href="{{ url('view-attachment/'.$attachment->id) }}" target='_blank' class="text-body d-block text-success"><i class="ri-attachment-2 text-success"></i>{{$attachment->document_name}}</a></h5>
                                                 </div>
                                             </div>
                                             <!-- end member item -->
