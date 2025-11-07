@@ -90,17 +90,17 @@
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label>Type</label>
-                    <input type="text" class="form-control" id="editType" name="type" readonly>
+                    <input type="text" class="form-control" id="editType" name="type" required >
                 </div>
 
                 <div class="form-group mb-2">
                     <label>Remarks</label>
-                    <input type="text" class="form-control" id="editRemarks" name="remarks" required>
+                    <input type="text" class="form-control" id="editRemarks" name="remarks" >
                 </div>
 
                 <div class="form-group mb-2">
                     <label>Quantity</label>
-                    <input type="number" step="0.01" class="form-control" id="editQuantity" name="quantity" required>
+                    <input type="number" class="form-control" id="editQuantity" name="quantity" required>
                 </div>
             </div>
 

@@ -114,6 +114,7 @@ foreach ($products as $product) {
 
     $movement = StockMovement::findOrFail($request->id);
     $movement->update([
+        'type' => $request->type,
         'remarks' => $request->remarks,
         'quantity' => $request->quantity,
     ]);
