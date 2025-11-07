@@ -42,38 +42,60 @@ class StockMovementController extends Controller
     }
     public function index(Request $request)
     {
-        $selectedLocation = $request->get('location');
-        $products = Product::with('stockMovements','transactions')->get();
-        $locations = auth()->user()->locations;
-        $locationIds = $locations->pluck('id');
-        $locations = Location::whereIn('id',$locationIds)->get();
-        // dd($selectedLocation);
-        $report = [];
+       $selectedLocation = $request->get('location');
 
-        foreach ($products as $product) {
-            foreach ($locations->where('id',$selectedLocation) as $location) {
-                $in = $product->stockMovements->where('location_id', $location->id)->where('type', 'inflow')->sum('quantity');
-                $out = $product->stockMovements->where('location_id', $location->id)->where('type', 'outflow')->sum('quantity');
-                $out_transactions = $product->transactions->where('location_id', $location->id)->sum('qty');
-                $available = $in - $out- $out_transactions;
-                $report[] = [
-                    'location_id' => $location->id,
-                    'transactions' => $product->transactions->where('location_id', $location->id),
-                    'stockMovements' => $product->stockMovements->where('location_id', $location->id),
-                    'product_id' => $product->id,
-                    'product_code' => $product->product_code,
-                    'product_name' => $product->product_name,
-                    'category' => $product->category,
-                    'unit_price' => $product->unit_price,
-                    'ideal_stock' => $product->ideal_stock,
-                    'location' => $location->name,
-                    'available_stock' => $available,
-                    'notification' => $available < $product->ideal_stock ? '⚠ Low Stock' : '',
-                    'available_stock_value' => $available * $product->unit_price,
-                    'total_stock_value' => $in * $product->unit_price,
-                ];
-            }
-        }
+$products = Product::with(['stockMovements', 'transactions', 'idealStocks'])->get();
+
+$locations = auth()->user()->locations;
+$locationIds = $locations->pluck('id');
+$locations = Location::whereIn('id', $locationIds)->get();
+
+$report = [];
+
+foreach ($products as $product) {
+    // Filter only the selected location
+    foreach ($locations->where('id', $selectedLocation) as $location) {
+        // Compute inflow, outflow, and transactions
+        $in = $product->stockMovements
+            ->where('location_id', $location->id)
+            ->where('type', 'inflow')
+            ->sum('quantity');
+
+        $out = $product->stockMovements
+            ->where('location_id', $location->id)
+            ->where('type', 'outflow')
+            ->sum('quantity');
+
+        $outTransactions = $product->transactions
+            ->where('location_id', $location->id)
+            ->sum('qty');
+
+        $available = $in - $out - $outTransactions;
+
+        // ✅ Get ideal stock from product_ideal_stock table
+        $idealStock = optional(
+            $product->idealStocks->firstWhere('location_id', $location->id)
+        )->ideal_stock ?? 0;
+
+        $report[] = [
+            'location_id' => $location->id,
+            'transactions' => $product->transactions->where('location_id', $location->id),
+            'stockMovements' => $product->stockMovements->where('location_id', $location->id),
+            'product_id' => $product->id,
+            'product_code' => $product->product_code,
+            'product_name' => $product->product_name,
+            'category' => $product->category,
+            'unit_price' => $product->unit_price,
+            'ideal_stock' => $idealStock,
+            'location' => $location->name,
+            'available_stock' => $available,
+            'notification' => $available < $idealStock ? '⚠ Low Stock' : '',
+            'available_stock_value' => $available * $product->unit_price,
+            'total_stock_value' => $in * $product->unit_price,
+        ];
+    
+    }}
+
 
         return view('inventory.index', compact('report', 'products', 'locations','selectedLocation'));
     }

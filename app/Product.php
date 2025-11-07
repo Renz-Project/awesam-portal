@@ -9,6 +9,12 @@ class Product extends Model implements Auditable
 {
     //
     use \OwenIt\Auditing\Auditable;
+       protected $fillable = [
+        'product_code',
+        'product_name',
+        'category_id',
+        'unit_price',
+    ];
     public function stockMovements()
     {
         return $this->hasMany(StockMovement::class);
@@ -20,5 +26,9 @@ class Product extends Model implements Auditable
     public function transactions()
     {
         return $this->hasMany(ClientTransaction::class,'product_id','id');
+    }
+    public function idealStocks()
+    {
+        return $this->hasMany(ProductIdealStock::class, 'product_id');
     }
 }
