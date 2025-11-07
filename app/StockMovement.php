@@ -8,7 +8,7 @@ class StockMovement extends Model implements Auditable
 {
     //
       use \OwenIt\Auditing\Auditable;
-      protected $fillable = ['remarks', 'quantity'];
+      protected $fillable = ['remarks', 'quantity','type'];
     public function product()
     {
         return $this->belongsTo(Product::class);
