@@ -24,10 +24,11 @@
                             <th>Unit Price</th>
                             @foreach($locations as $location)
                                 @php
-                                    // Get only the first word of the location name
                                     $shortName = explode(' ', trim($location->name))[0];
                                 @endphp
-                                <th title="{{ $location->name }}">{{ $shortName }}</th>
+                                <th title="{{ $location->name }}" style="white-space: normal; word-wrap: break-word; max-width: 100px;">
+                                    {{ $location->name }}
+                                </th>
                             @endforeach
                             <th>Actions</th>
                         </tr>
