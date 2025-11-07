@@ -16,4 +16,8 @@ class OfficeSupply extends Model implements Auditable
     {
         return $this->belongsTo(OfficeCategory::class);
     }
+   public function idealStocks()
+    {
+        return $this->hasMany(OfficeSupplyIdealStock::class, 'office_supply_id');
+    }
 }
