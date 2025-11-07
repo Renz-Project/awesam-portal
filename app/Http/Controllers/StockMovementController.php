@@ -99,4 +99,27 @@ foreach ($products as $product) {
 
         return view('inventory.index', compact('report', 'products', 'locations','selectedLocation'));
     }
+    public function update(Request $request)
+{
+    // dd($request->all());
+    if (auth()->user()->role !== 'Super Admin') {
+        abort(403, 'Unauthorized');
+    }
+
+    $validated = $request->validate([
+        // 'id' => 'required|integer|exists:stock_movements,id',
+        // 'remarks' => 'required|string|max:255',
+        'quantity' => 'required|numeric|min:0',
+    ]);
+
+    $movement = StockMovement::findOrFail($request->id);
+    $movement->update([
+        'remarks' => $request->remarks,
+        'quantity' => $request->quantity,
+    ]);
+
+     Alert::success('Successfully Edit')->persistent('Dismiss');
+        return back();
+}
+
 }

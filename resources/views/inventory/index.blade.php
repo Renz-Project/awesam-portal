@@ -73,6 +73,46 @@
 @foreach($report as $key => $row)
     @include('inventory.show_history')
 @endforeach
+<!-- Edit Stock Movement Modal -->
+<div class="modal fade" id="editMovementModal" tabindex="-1" aria-labelledby="editMovementModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('stock.update') }}">
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="id" id="editMovementId">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Stock Movement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group mb-2">
+                    <label>Type</label>
+                    <input type="text" class="form-control" id="editType" name="type" readonly>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Remarks</label>
+                    <input type="text" class="form-control" id="editRemarks" name="remarks" required>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Quantity</label>
+                    <input type="number" step="0.01" class="form-control" id="editQuantity" name="quantity" required>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
+
 @endsection
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -83,6 +123,21 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.editMovementBtn').forEach(button => {
+        button.addEventListener('click', function () {
+            document.getElementById('editMovementId').value = this.dataset.id;
+            document.getElementById('editType').value = this.dataset.type;
+            document.getElementById('editRemarks').value = this.dataset.remarks;
+            document.getElementById('editQuantity').value = this.dataset.quantity;
+
+            let modal = new bootstrap.Modal(document.getElementById('editMovementModal'));
+            modal.show();
+        });
+    });
+});
+</script>
 
 {{-- <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script> --}}
 <!-- App js -->
