@@ -27,7 +27,7 @@
                                     $shortName = explode(' ', trim($location->name))[0];
                                 @endphp
                                 <th title="{{ $location->name }}" style="white-space: normal; word-wrap: break-word; max-width: 100px;">
-                                    {{ $location->name }}
+                                    Ideal Stock ({{ $location->name }})
                                 </th>
                             @endforeach
                             <th>Actions</th>
