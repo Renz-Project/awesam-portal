@@ -38,12 +38,12 @@ class TransactionController extends Controller
         }
         
         )->with([
-    'locations',
-    'transactions' => function ($query) {
+        'locations',
+        'transactions' => function ($query) {
         $query->whereDate('date', date('Y-m-d'));
-    }
-])->get();
-        $products = Product::select('id', 'product_name', 'unit_price')->get();
+        }
+        ])->get();
+            $products = Product::select('id', 'product_name', 'unit_price')->get();
          return view('transactions.index',
             array(
                 'transactions' => $transactions,
@@ -149,15 +149,12 @@ class TransactionController extends Controller
        $locationIds = $locations->pluck('id');
        $locations_d = Location::whereIn('id',$locationIds)->get();
        $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->get();
-        $clients = Client::whereHas('locations', function ($query) use ($locationIds) {
-            $query->whereIn('locations.id', $locationIds);
-        })->with('locations')->get();
+        
 
         $transactions = ClientTransaction::where('location_id',$selectedLocation)->whereIn('location_id',$locationIds)->whereBetween('date', [$date_from, $date_to])->get();
         // dd($transactions);
          return view('transactions.report',
             array(
-                'clients' => $clients,
                 'transactions' => $transactions,
                 'locations' => $locations_d,
                 'selectedLocation' => $selectedLocation,
@@ -166,5 +163,13 @@ class TransactionController extends Controller
                 'expenses' => $expenses,
             )
             );
+    }
+    public function destroy($id)
+    {
+        $transaction = ClientTransaction::findOrFail($id);
+        $transaction->delete(); // soft delete if model uses SoftDeletes, else hard delete
+
+       Alert::success('Successfully Deleted')->persistent('Dismiss');
+        return back();
     }
 }

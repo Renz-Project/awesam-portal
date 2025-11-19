@@ -154,6 +154,85 @@
                                 </tr>
                             </tbody>
                          </table>
+                         @if(auth()->user()->role == "Super Admin")
+                         <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th colspan='12' class='text-center'><b>Overall Transactions</b></th>
+                                </tr>
+                                <tr>
+                                    <th >#Id</th>
+                                    <th >Client</th>
+                                    <th >Dentist</th>
+                                    <th >Dentist 2</th>
+                                    <th >Dentist 3</th>
+                                    <th>Payment</th>
+                                    <th>Remarks</th>
+                                    <th>Location</th>
+                                    <th>Encoded by</th>
+                                    <th >Treatment/Product</th>
+                                    <th >Total Amount</th>
+                                    <th >Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($transactions->sortByDesc('id') as $transaction)
+                                <tr>
+                                    
+                                    <td>#{{$transaction->id}}</td>
+                                    <td>{{$transaction->client->last_name}}, {{$transaction->client->first_name}}</td>
+                                    <td>{{$transaction->dentist}}</td>
+                                    <td>{{$transaction->dentist_2}}</td>
+                                    <td>{{$transaction->dentist_3}}</td>
+                                    <td>
+                                         @php
+                                            $totals = [
+                                                'cash' => 0,
+                                                'gcash' => 0,
+                                                'HMO' => 0,
+                                                'CC' => 0,
+                                                'Debit' => 0,
+                                                'Others' => 0,
+                                            ];
+                                        @endphp
+                                        @foreach($transaction->payments as $payment)
+                                            @php
+                                                $type = ($payment->payment_type);
+                                                if(array_key_exists($type, $totals)) {
+                                                    $totals[$type] += $payment->amount;
+                                                }
+                                            @endphp
+                                        @endforeach
+                                        @foreach($totals as $type => $amount)
+                                            @if($amount != 0)
+                                                <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
+                                            @endif
+                                        @endforeach
+
+                                    </td>
+                                    <td>{{$transaction->remarks}}</td>
+                                    <td>{{$transaction->location->name}}</td>
+                                    <td>{{$transaction->user->name}}</td>
+                                    
+                                    <td>@if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}@endif</td>
+                                    <td>{{number_format($transaction->amount_paid,2)}}</td>
+                                    <td>
+                                        <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete this?')">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                            
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @endif
                         <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
@@ -278,42 +357,42 @@
                             </tbody>
                         </table>
                           <table class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                    <thead>
-                         <tr>
-                            <th colspan=8 class='text-center'>Expenses</th>
-                         </tr>
-                         </tr>
-                        <tr>
-                            <th>Expense Name</th>
-                            <th>Reference #</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Attachment</th>
-                            <th>Remarks</th>
-                            <th>Encoded By</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($expenses as $expense)
-                        <tr>
-                            <td>{{ $expense->name }}</td>
-                            <td>{{ $expense->reference_number }}</td>
-                            <td>{{ $expense->date }}</td>
-                            <td>{{ number_format($expense->amount, 2) }}</td>
-                            <td>
-                                @if($expense->attachment)
-                                    <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
-                                @endif
-                            </td>
-                            <td>{{ $expense->remarks }}</td>
-                            
-                            <td>{{ $expense->user->name }}</td>
-                            <td>{{ $expense->location->name }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            <thead>
+                                <tr>
+                                    <th colspan=8 class='text-center'>Expenses</th>
+                                </tr>
+                                </tr>
+                                <tr>
+                                    <th>Expense Name</th>
+                                    <th>Reference #</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Attachment</th>
+                                    <th>Remarks</th>
+                                    <th>Encoded By</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($expenses as $expense)
+                                <tr>
+                                    <td>{{ $expense->name }}</td>
+                                    <td>{{ $expense->reference_number }}</td>
+                                    <td>{{ $expense->date }}</td>
+                                    <td>{{ number_format($expense->amount, 2) }}</td>
+                                    <td>
+                                        @if($expense->attachment)
+                                            <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
+                                        @endif
+                                    </td>
+                                    <td>{{ $expense->remarks }}</td>
+                                    
+                                    <td>{{ $expense->user->name }}</td>
+                                    <td>{{ $expense->location->name }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
     </div><!--end col-->
