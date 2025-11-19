@@ -5,6 +5,13 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+<style>
+@media print {
+    button {
+        display: none;
+    }
+}
+</style>
 
 
 @endsection
@@ -136,11 +143,12 @@
                     <h5 class="card-title mb-0">Sales Report ({{date('M d, Y')}})</h5>
                 </div>
                 <div class="card-body">
-                        <table id="" class=" table table-bordered " >
+                        <button class="btn btn-primary mb-3" onclick="printTable()">Print Report</button>
+                        <table id="salesReportTable" class=" table table-bordered " >
                         <thead>
                             <tr>
                                 <td colspan=2 class='text-center'>
-                                    <img class="" src="{{asset('images/logo_mo.png')}}" width='400px' alt="Header Avatar">
+                                    <img class="" src="{{asset('images/logo_mo.png')}}" width='200px' alt="Header Avatar">
                                 </td>
                             </tr>
                             <tr>
@@ -513,5 +521,32 @@ const submitBtn = document.getElementById('save_transaction');
     }
 }
 </script>
-
+<script>
+function printTable() {
+    var table = document.getElementById("salesReportTable").outerHTML;
+    var newWindow = window.open("", "", "width=900,height=650");
+    newWindow.document.write(`
+        <html>
+            <head>
+                <title>Sales Report</title>
+                <style>
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    table, th, td {
+                        border: 1px solid black;
+                        padding: 8px;
+                    }
+                </style>
+            </head>
+            <body>
+                ${table}
+            </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+}
+</script>
 @endsection

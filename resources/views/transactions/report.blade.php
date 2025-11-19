@@ -41,7 +41,8 @@
                         <h5 class="card-title mb-0">Sales Report ({{date('M d, Y',strtotime($date_from))}} - {{date('M d, Y',strtotime($date_to))}})</h5>
                     </div>
                     <div class="card-body">
-                         <table id="" class=" table table-bordered " >
+                        <button class="btn btn-primary mb-3" onclick="printTable()">Print Report</button>
+                         <table id="salesReportTable" class=" table table-bordered " >
                             <thead>
                                 <tr>
                                     <td colspan=4 class='text-center'>
@@ -353,5 +354,33 @@
             ]
         });
     });
+</script>
+<script>
+function printTable() {
+    var table = document.getElementById("salesReportTable").outerHTML;
+    var newWindow = window.open("", "", "width=900,height=650");
+    newWindow.document.write(`
+        <html>
+            <head>
+                <title>Sales Report</title>
+                <style>
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    table, th, td {
+                        border: 1px solid black;
+                        padding: 8px;
+                    }
+                </style>
+            </head>
+            <body>
+                ${table}
+            </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+}
 </script>
 @endsection
