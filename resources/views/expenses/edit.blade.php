@@ -55,24 +55,3 @@
     </form>
   </div>
 </div>
-
-<!-- View Attachment Modal -->
-@if($expense->attachment)
-<div class="modal fade" id="viewAttachment{{ $expense->id }}" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Attachment Preview</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center">
-        @if(preg_match('/\.(jpg|jpeg|png)$/i', $expense->attachment))
-            <img src="{{ asset('uploads/expenses/' . $expense->attachment) }}" class="img-fluid">
-        @else
-            <iframe src="{{ asset('uploads/expenses/' . $expense->attachment) }}" width="100%" height="600px"></iframe>
-        @endif
-      </div>
-    </div>
-  </div>
-</div>
-@endif
