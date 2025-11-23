@@ -44,6 +44,7 @@ Route::get('/client/{id}','ClientController@view')->name('view-client');
 Route::post('client/edit-client-information/{id}','ClientController@updateInformation')->name('edit-client');
 Route::post('/client/update-location/{id}','ClientController@updateLocation')->name('update-location-client');
 Route::post('/change-avatar/{id}','ClientController@changeAvatar')->name('change-avatar-client');
+Route::delete('delete-client/{id}', 'ClientController@deleteClient')->name('delete-client');
 
 Route::get('/locations','LocationController@index')->name('locations');
 
@@ -70,6 +71,7 @@ Route::put('/stock/update', 'StockMovementController@update')->name('stock.updat
 Route::get('/expenses','ExpenseController@index')->name('index');
 Route::post('/expenses/store','ExpenseController@store')->name('index');
 Route::post('expenses/update/{id}','ExpenseController@update')->name('index');
+Route::delete('delete-expense/{id}', 'ExpenseController@destroy')->name('delete-expense');
 
 Route::get('audit-trails','AuditTrailController@index')->name('audit');
 

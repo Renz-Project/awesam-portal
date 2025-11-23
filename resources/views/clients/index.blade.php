@@ -38,9 +38,8 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Contact Number</th>
                             <th>Last Transaction</th>
+                            <th>Attachments</th>
                             <th>Locations</th>
                         </tr>
                     </thead>
@@ -55,9 +54,24 @@
                                     {{ $client->last_name }}, {{ $client->first_name }}
                                 </a>
                             </td>
-                            <td>{{ $client->email }}</td>
-                            <td>{{ $client->contact_number }}</td>
-                            <td>{{ date('d M, Y', strtotime($client->updated_at)) }}</td>
+                            <td>
+                                @if($client->transactions->count() > 0)
+                                    {{ date('d M, Y', strtotime($client->transactions->sortByDesc('created_at')->first()->created_at)) }}
+                                @else
+                                    No transaction yet
+                                @endif
+                            </td>
+                            <td>
+                                @forelse($client->attachments as $attachment)
+                                    <div>
+                                        <a href="{{ url('view-attachment/'.$attachment->id) }}" target="_blank">
+                                            {{ $attachment->file_name ?? 'Attachment' }}
+                                        </a>
+                                    </div>
+                                @empty
+                                    No attachments yet
+                                @endforelse
+                            </td>
                             <td>
                                 @foreach($client->locations as $location)
                                     {{ $location->name }} <br>

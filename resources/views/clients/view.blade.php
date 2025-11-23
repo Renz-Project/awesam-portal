@@ -26,7 +26,20 @@
                                 </div>
                                 <div class="col-md">
                                     <div>
-                                        <h4 class="fw-bold">{{$client->last_name}}, {{$client->first_name}}</h4>
+                                        <h4 class="fw-bold">{{$client->last_name}}, {{$client->first_name}} 
+                                        @if(auth()->user()->role == 'Super Admin')
+                                        <form action="{{ url('delete-client/'.$client->id) }}" 
+                                            method="POST" 
+                                            onsubmit="return confirm('Are you sure you want to delete this client?');"
+                                            class="d-inline">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="btn btn-danger btn-sm">
+                                              <i class="ri-delete-bin-line"></i> Delete Client
+                                          </button>
+                                      </form>
+                                      @endif
+                                    </h4>
                                         <div class="hstack gap-3 flex-wrap">
                                             {{-- <div><i class="ri-building-line align-bottom me-1"></i> Themesbrand</div> --}}
                                             {{-- <div class="vr"></div> --}}

@@ -84,4 +84,12 @@ class ExpenseController extends Controller
         Alert::success('Expense updated successfully.')->persistent('Dismiss');
         return back();
     }
+    public function destroy($id)
+    {
+        $expense = Expense::findOrFail($id);
+        $expense->delete();
+
+        Alert::success('Expense deleted successfully.')->persistent('Dismiss');
+        return back();
+    }
 }
