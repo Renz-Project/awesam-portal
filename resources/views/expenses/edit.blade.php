@@ -2,7 +2,7 @@
 <!-- Edit Modal -->
 <div class="modal fade" id="editExpense{{ $expense->id }}" tabindex="-1" aria-labelledby="editExpenseLabel{{ $expense->id }}" aria-hidden="true">
   <div class="modal-dialog">
-    <form method="POST" action="{{ url('expenses/update', $expense->id) }}" enctype="multipart/form-data" class="modal-content">
+    <form method="POST" action="{{ url('expenses/update', $expense->id) }}" onsubmit="show();" enctype="multipart/form-data" class="modal-content">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title" id="editExpenseLabel{{ $expense->id }}">Edit Expense</h5>
