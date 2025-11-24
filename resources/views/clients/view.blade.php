@@ -132,7 +132,7 @@
                                         <div class="col-xxl-2 col-md-6">
                                             <div>
                                                 <label for="Birthdate" class="form-label">Birthdate</label>
-                                                <input type="date" class="form-control" id="Birthdate" placeholder="Birthdate" value="{{$client->birthdate}}" name="birthdate" > 
+                                                <input type="date" class="form-control" id="Birthdate" placeholder="Birthdate" value="{{$client->birth_date}}" name="birthdate" > 
                                             </div>
                                         </div>
                                         <div class="col-xxl-2 col-md-6">
