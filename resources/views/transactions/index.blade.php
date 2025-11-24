@@ -11,6 +11,15 @@
         display: none;
     }
 }
+table td {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+table td:nth-child(3),
+table td:nth-child(4) {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
 </style>
 
 
@@ -68,7 +77,7 @@
             </div>
                 <div class="card-body">
                         
-                    <table class=" example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <table class=" example table table-bordered dt-responsive table-striped align-middle" style="width:100%">
                         <thead>
                             <tr>   
                                 <th >Client</th>
@@ -88,13 +97,15 @@
                                     <td > {{$client->transactions[0]->dentist}} <br>{{$client->transactions[0]->dentist_2}}<br>{{$client->transactions[0]->dentist_3}}</td>
                                     <td > 
                                     @foreach($client->transactions->where('product_id',null) as $transaction)
-                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
-                                @endforeach
+                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}}    <hr> @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}     <hr> @endif <br>
+                                        
+                                    @endforeach
                                     </td>
                                     <td > 
                                     @foreach($client->transactions->where('product_id',"!=",null) as $transaction)
-                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}   @endif <br>
-                                @endforeach
+                                    @if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}}    <hr> @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}     <hr> @endif <br>
+                                     
+                                    @endforeach
                                     
                                     </td>
                                     <td >{{number_format($client->transactions->sum('amount_paid'),2)}}</td>
