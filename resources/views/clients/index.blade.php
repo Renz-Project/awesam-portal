@@ -56,7 +56,7 @@
                                     {{ $client->last_name }}, {{ $client->first_name }}
                                 </a>
                             </td>
-                            <td>{{date('M d, Y',strtotime($client->birth_date))}}</td>
+                            <td>@if($client->birth_date){{date('M d, Y',strtotime($client->birth_date))}}@endif</td>
                             <td>{{$client->sex}}</td>
                             <td>
                                 @if($client->transactions->count() > 0)
