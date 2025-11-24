@@ -38,6 +38,8 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Birth Date</th>
+                            <th>Gender</th>
                             <th>Last Transaction</th>
                             <th>Attachments</th>
                             <th>Locations</th>
@@ -54,6 +56,8 @@
                                     {{ $client->last_name }}, {{ $client->first_name }}
                                 </a>
                             </td>
+                            <td>{{date('M d, Y',strtotime($client->birth_date))}}</td>
+                            <td>{{$client->sex}}</td>
                             <td>
                                 @if($client->transactions->count() > 0)
                                     {{ date('d M, Y', strtotime($client->transactions->sortByDesc('created_at')->first()->created_at)) }}
