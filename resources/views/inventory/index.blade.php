@@ -60,9 +60,12 @@
                                 <td>{{ number_format($row['ideal_stock'], 2) }}</td>
 
                                 <!-- The stock value we will update -->
-                                <td id="stock-{{$key}}">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory{{$key}}">
-                                        {{ number_format($row['available_stock'], 2) }}
+                               <td>
+                                    <a href="#" class="openMovementModal"
+                                    data-key="{{ $key }}"
+                                    data-product="{{ $row['product_id'] }}"
+                                    data-location="{{ $row['location_id'] }}">
+                                    {{ number_format($row['available_stock'], 2) }}
                                     </a>
                                 </td>
 
@@ -77,47 +80,61 @@
         </div>
     </div><!--end col-->
 </div>
-@foreach($report as $key => $row)
+{{-- @foreach($report as $key => $row)
     @include('inventory.show_history')
-@endforeach
-<!-- Edit Stock Movement Modal -->
-<div class="modal fade" id="editMovementModal" tabindex="-1" aria-labelledby="editMovementModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" action="{{ route('stock.update') }}">
-        @csrf
-        @method('PUT')
-        <input type="hidden" name="id" id="editMovementId">
-
+@endforeach --}}
+<div class="modal fade" id="movementModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Stock Movement</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 id="movementModalTitle" class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-                <div class="form-group mb-2">
-                    <label>Type</label>
-                    <input type="text" class="form-control" id="editType" name="type" required >
+            <div class="modal-body" id="movementModalBody">
+                <div class="text-center p-5">
+                    <div class="spinner-border text-success"></div>
                 </div>
-
-                <div class="form-group mb-2">
-                    <label>Remarks</label>
-                    <input type="text" class="form-control" id="editRemarks" name="remarks" >
-                </div>
-
-                <div class="form-group mb-2">
-                    <label>Quantity</label>
-                    <input type="number" class="form-control" id="editQuantity" name="quantity" required>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Save Changes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
-    </form>
-  </div>
+    </div>
+</div>
+<!-- Edit Stock Movement Modal -->
+<div class="modal fade" id="editMovementModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editMovementForm">
+                @csrf
+                <input type="hidden" id="movement_id" name="movement_id">
+
+                <div class="modal-body">
+
+                    <div class="mb-2">
+                        <label>Type</label>
+                        <select id="edit_type" name="type" class="form-control">
+                            <option value="inflow">Inflow</option>
+                            <option value="outflow">Outflow</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Quantity</label>
+                        <input type="number" id="edit_quantity" name="quantity" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Remarks</label>
+                        <textarea id="edit_remarks" name="remarks" class="form-control"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -280,5 +297,82 @@ $(document).ready(function () {
     });
 
 });
+$(document).on("click", ".openMovementModal", function (e) {
+    e.preventDefault();
+
+    let product_id = $(this).data("product");
+    let location_id = $(this).data("location");
+
+    $("#movementModalTitle").html("Loading...");
+    $("#movementModalBody").html(`
+        <div class="text-center p-5">
+            <div class="spinner-border text-success"></div>
+        </div>
+    `);
+
+    let modal = new bootstrap.Modal(document.getElementById("movementModal"));
+    modal.show();
+
+    $.ajax({
+        url: "{{ url('stock-history') }}",
+        type: "GET",
+        data: {
+            product_id: product_id,
+            location_id: location_id
+        },
+        success: function (response) {
+
+            $("#movementModalTitle").html(response.title);
+            $("#movementModalBody").html(response.html);
+
+            // reinitialize DataTable inside modal
+            $(".movement-table").DataTable({
+                ordering: false,
+                searching: false,
+                paging: false,
+                info: false
+            });
+        }
+    });
+});
+$(document).on("click", ".editMovementBtn", function () {
+    let id = $(this).data("id");
+    let type = $(this).data("type");
+    let quantity = $(this).data("quantity");
+    let remarks = $(this).data("remarks");
+
+    // Fill modal fields
+    $("#movement_id").val(id);
+    $("#edit_type").val(type);
+    $("#edit_quantity").val(quantity);
+    $("#edit_remarks").val(remarks);
+
+    // Open modal
+    $("#editMovementModal").modal("show");
+});
+$("#editMovementForm").submit(function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: "{{ url('/stock/update') }}",
+        method: "PUT",
+        data: $(this).serialize(),
+        success: function (res) {
+            $("#editMovementModal").modal("hide");
+             $('.modal.show').each(function () {
+                let modal = bootstrap.Modal.getInstance(this);
+                if(modal) modal.hide();
+            });
+            Swal.fire({
+                icon: "success",
+                title: "Updated successfully",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        }
+    });
+});
+
 </script>
+
 @endsection

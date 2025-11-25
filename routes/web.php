@@ -79,5 +79,7 @@ Route::get('/clients/search', 'ClientController@search')->name('clients.search')
 
 Route::get('/view-attachment/{id}', 'ClientController@viewAttachment')->name('view.attachment');
 
+Route::get('/stock-history', 'StockMovementController@history');
+
 
 });

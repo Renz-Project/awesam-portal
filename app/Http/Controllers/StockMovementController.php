@@ -156,15 +156,77 @@ class StockMovementController extends Controller
         'quantity' => 'required|numeric|min:0',
     ]);
 
-    $movement = StockMovement::findOrFail($request->id);
+    $movement = StockMovement::findOrFail($request->movement_id);
     $movement->update([
         'type' => $request->type,
         'remarks' => $request->remarks,
         'quantity' => $request->quantity,
     ]);
 
-     Alert::success('Successfully Edit')->persistent('Dismiss');
-        return back();
-}
+     $product = Product::with(['stockMovements', 'idealStocks'])
+            ->find($movement->product_id);
 
+        // total inflow
+        $inflow = $product->stockMovements()
+            ->where('location_id', $request->location_id)
+            ->where('type', 'inflow')
+            ->sum('quantity');
+
+        // total outflow
+        $outflow = $product->stockMovements()
+            ->where('location_id', $request->location_id)
+            ->where('type', 'outflow')
+            ->sum('quantity');
+
+        $updatedStock = $inflow - $outflow;
+
+        // ===================================
+        // 🔥 GENERATE LOW-STOCK NOTIFICATION
+        // ===================================
+        $ideal = $product->idealStocks()
+            ->where('location_id', $request->location_id)
+            ->value('ideal_stock') ?? 0;
+
+        if ($updatedStock <= 0) {
+            $notificationText = "⚠ Out of Stock";
+        } elseif ($updatedStock < $ideal) {
+            $notificationText = "⚠ Low Stock";
+        } else {
+            $notificationText = "";
+        }
+
+        // ===========================
+        // 🔥 RETURN JSON TO AJAX
+        // ===========================
+        return response()->json([
+            'success' => true,
+            'key' => $request->key,
+            'new_stock' => $updatedStock,
+            'new_notification' => $notificationText
+        ]);
+}
+public function history(Request $request)
+{
+    $product = Product::with(['stockMovements.user', 'transactions.user', 'transactions.client'])
+        ->findOrFail($request->product_id);
+
+    $location_id = $request->location_id;
+
+    $stockMovements = $product->stockMovements()
+        ->where('location_id', $location_id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $transactions = $product->transactions()
+        ->where('location_id', $location_id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $html = view('inventory.ajax_history', compact('product','stockMovements','transactions'))->render();
+
+    return response()->json([
+        'title' => "Stock Movement — {$product->name}",
+        'html' => $html
+    ]);
+}
 }
