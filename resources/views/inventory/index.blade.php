@@ -45,10 +45,10 @@
                     </thead>
                     <tbody>
                         @foreach($report as $key => $row)
-                            <tr>
-                                 <td>
-                                    <button class="btn btn-sm btn-success"  data-bs-toggle="modal" data-bs-target="#newStack-{{$key}}">+</button>
-                                    <button class="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target="#reduceStock-{{$key}}">−</button>
+                            <tr id="row-{{$key}}">
+                                <td>
+                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#newStack-{{$key}}">+</button>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#reduceStock-{{$key}}">−</button>
                                     @include('inventory.addstack')
                                     @include('inventory.reducestock')
                                 </td>
@@ -57,11 +57,18 @@
                                 <td>{{ $row['category']->category }}</td>
                                 <td>{{ $row['location'] }}</td>
                                 <td>{{ number_format($row['unit_price'], 2) }}</td>
-                                <td>{{  number_format($row['ideal_stock'],2) }}</td>
-                                <td><a href='#' data-bs-toggle="modal" data-bs-target="#inventory{{$key}}">{{  number_format($row['available_stock'],2) }}</a></td>
-                                <td><span class="text-danger">{{ $row['notification'] }} </span></td>
-                                {{-- <td>{{ number_format($row['available_stock_value'], 2) }}</td> --}}
-                               
+                                <td>{{ number_format($row['ideal_stock'], 2) }}</td>
+
+                                <!-- The stock value we will update -->
+                                <td id="stock-{{$key}}">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory{{$key}}">
+                                        {{ number_format($row['available_stock'], 2) }}
+                                    </a>
+                                </td>
+
+                                <td id="notif-{{$key}}">
+                                    <span class="text-danger">{{ $row['notification'] }}</span>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -151,4 +158,127 @@ document.addEventListener('DOMContentLoaded', function () {
             ]
         });
  </script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script>
+$(document).ready(function () {
+
+    $(".add-stock-form").on("submit", function (e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "{{ url('new-stock') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            beforeSend: function () {
+                form.find("button[type=submit]").prop("disabled", true).text("Saving...");
+            },
+
+            success: function (response) {
+                // Update stock on page
+                $("#stock-" + response.key).html(`
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory${response.key}">
+                        ${parseFloat(response.new_stock).toFixed(2)}
+                    </a>
+                `);
+
+                // Update notification
+                $("#notif-" + response.key).html(`
+                    <span class="text-danger">${response.new_notification}</span>
+                `);
+
+                // Close modal & reset
+                form.closest(".modal").modal("hide");
+                form[0].reset();
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Stock updated!",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            },
+
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: xhr.responseText
+                });
+            },
+
+            complete: function () {
+                form.find("button[type=submit]").prop("disabled", false).text("Submit");
+            }
+        });
+    });
+
+});
+</script>
+<script>
+$(document).ready(function () {
+
+    $(".reduce-stock-form").on("submit", function (e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "{{ url('new-stock') }}",    // same endpoint
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            beforeSend: function () {
+                form.find("button[type=submit]").prop("disabled", true).text("Saving...");
+            },
+
+           success: function (response) {
+                // Update stock on page
+                $("#stock-" + response.key).html(`
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory${response.key}">
+                        ${parseFloat(response.new_stock).toFixed(2)}
+                    </a>
+                `);
+
+                // Update notification
+                $("#notif-" + response.key).html(`
+                    <span class="text-danger">${response.new_notification}</span>
+                `);
+
+                // Close modal & reset
+                form.closest(".modal").modal("hide");
+                form[0].reset();
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Stock updated!",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            },
+
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: xhr.responseText
+                });
+            },
+
+            complete: function () {
+                form.find("button[type=submit]").prop("disabled", false).text("Submit");
+            }
+        });
+    });
+
+});
+</script>
 @endsection
