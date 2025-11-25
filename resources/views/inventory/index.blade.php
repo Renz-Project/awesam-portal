@@ -180,130 +180,135 @@ document.addEventListener('DOMContentLoaded', function () {
  <script>
 $(document).ready(function () {
 
-    $(".add-stock-form").on("submit", function (e) {
-        e.preventDefault();
+   $(document).on("submit", ".add-stock-form", function (e) {
+    e.preventDefault();  // STOP PAGE RELOAD
 
-        let form = $(this);
-        let formData = new FormData(this);
+    let form = $(this);
+    let formData = new FormData(this);
 
-        $.ajax({
-            url: "{{ url('new-stock') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
+    $.ajax({
+        url: "{{ url('new-stock') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
 
-            beforeSend: function () {
-                form.find("button[type=submit]").prop("disabled", true).text("Saving...");
-            },
+        beforeSend: function () {
+            form.find("button[type=submit]").prop("disabled", true).text("Saving...");
+        },
 
-            success: function (response) {
-                // Update stock on page
-             $("#stock-" + response.key).html(`
-                    <a href="#"
-                    class="openMovementModal"
-                    data-key="${response.key}"
-                    data-product="${response.product_id}"
-                    data-location="${response.location_id}">
-                        ${parseFloat(response.new_stock).toFixed(2)}
-                    </a>
-                `);
+        success: function (response) {
 
-                // Update notification
-                $("#notif-" + response.key).html(`
-                    <span class="text-danger">${response.new_notification}</span>
-                `);
+            // Update stock cell
+            $("#stock-" + response.key).html(`
+                <a href="#"
+                   class="openMovementModal"
+                   data-key="${response.key}"
+                   data-product="${response.product_id}"
+                   data-location="${response.location_id}">
+                    ${parseFloat(response.new_stock).toFixed(2)}
+                </a>
+            `);
 
-                // Close modal & reset
-                form.closest(".modal").modal("hide");
-                form[0].reset();
+            // Update notification
+            $("#notif-" + response.key).html(`
+                <span class="text-danger">${response.new_notification}</span>
+            `);
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Stock updated!",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            },
+            // Close modal
+            form.closest(".modal").modal("hide");
 
-            error: function (xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed',
-                    text: xhr.responseText
-                });
-            },
+            // Reset form
+            form[0].reset();
 
-            complete: function () {
-                form.find("button[type=submit]").prop("disabled", false).text("Submit");
-            }
-        });
+            Swal.fire({
+                icon: "success",
+                title: "Stock updated!",
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: xhr.responseText
+            });
+        },
+
+        complete: function () {
+            form.find("button[type=submit]").prop("disabled", false).text("Submit");
+        }
     });
+});
+
 
 });
 </script>
 <script>
 $(document).ready(function () {
 
-    $(".reduce-stock-form").on("submit", function (e) {
-        e.preventDefault();
+ $(document).on("submit", ".reduce-stock-form", function (e) {
+    e.preventDefault();   // stop reload
 
-        let form = $(this);
-        let formData = new FormData(this);
+    let form = $(this);
+    let formData = new FormData(this);
 
-        $.ajax({
-            url: "{{ url('new-stock') }}",    // same endpoint
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
+    $.ajax({
+        url: "{{ url('new-stock') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
 
-            beforeSend: function () {
-                form.find("button[type=submit]").prop("disabled", true).text("Saving...");
-            },
+        beforeSend: function () {
+            form.find("button[type=submit]").prop("disabled", true).text("Saving...");
+        },
 
-           success: function (response) {
-                // Update stock on page
-               $("#stock-" + response.key).html(`
-                    <a href="#"
-                    class="openMovementModal"
-                    data-key="${response.key}"
-                    data-product="${response.product_id}"
-                    data-location="${response.location_id}">
-                        ${parseFloat(response.new_stock).toFixed(2)}
-                    </a>
-                `);
+        success: function (response) {
 
-                // Update notification
-                $("#notif-" + response.key).html(`
-                    <span class="text-danger">${response.new_notification}</span>
-                `);
+            // Update stock on page
+            $("#stock-" + response.key).html(`
+                <a href="#"
+                   class="openMovementModal"
+                   data-key="${response.key}"
+                   data-product="${response.product_id}"
+                   data-location="${response.location_id}">
+                    ${parseFloat(response.new_stock).toFixed(2)}
+                </a>
+            `);
 
-                // Close modal & reset
-                form.closest(".modal").modal("hide");
-                form[0].reset();
+            // Update notification
+            $("#notif-" + response.key).html(`
+                <span class="text-danger">${response.new_notification}</span>
+            `);
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Stock updated!",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            },
+            // Close modal & reset
+            form.closest(".modal").modal("hide");
+            form[0].reset();
 
-            error: function (xhr) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: xhr.responseText
-                });
-            },
+            Swal.fire({
+                icon: "success",
+                title: "Stock reduced!",
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
 
-            complete: function () {
-                form.find("button[type=submit]").prop("disabled", false).text("Submit");
-            }
-        });
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: xhr.responseText
+            });
+        },
+
+        complete: function () {
+            form.find("button[type=submit]").prop("disabled", false).text("Submit");
+        }
     });
+});
 
 });
 $(document).on("click", ".openMovementModal", function (e) {
