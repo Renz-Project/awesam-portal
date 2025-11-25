@@ -60,7 +60,7 @@
                                 <td>{{ number_format($row['ideal_stock'], 2) }}</td>
 
                                 <!-- The stock value we will update -->
-                               <td>
+                               <td id='stock-{{$key}}'>
                                     <a href="#" class="openMovementModal"
                                     data-key="{{ $key }}"
                                     data-product="{{ $row['product_id'] }}"
