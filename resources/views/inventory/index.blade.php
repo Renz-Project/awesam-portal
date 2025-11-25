@@ -60,14 +60,15 @@
                                 <td>{{ number_format($row['ideal_stock'], 2) }}</td>
 
                                 <!-- The stock value we will update -->
-                               <td id='stock-{{$key}}'>
-                                    <a href="#" class="openMovementModal"
-                                    data-key="{{ $key }}"
-                                    data-product="{{ $row['product_id'] }}"
-                                    data-location="{{ $row['location_id'] }}">
+                             <td id="stock-{{ $key }}">
+                                <a href="#"
+                                class="openMovementModal"
+                                data-key="{{ $key }}"
+                                data-product="{{ $row['product_id'] }}"
+                                data-location="{{ $row['location_id'] }}">
                                     {{ number_format($row['available_stock'], 2) }}
-                                    </a>
-                                </td>
+                                </a>
+                            </td>
 
                                 <td id="notif-{{$key}}">
                                     <span class="text-danger">{{ $row['notification'] }}</span>
@@ -198,8 +199,12 @@ $(document).ready(function () {
 
             success: function (response) {
                 // Update stock on page
-                $("#stock-" + response.key).html(`
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory${response.key}">
+             $("#stock-" + response.key).html(`
+                    <a href="#"
+                    class="openMovementModal"
+                    data-key="${response.key}"
+                    data-product="${response.product_id}"
+                    data-location="${response.location_id}">
                         ${parseFloat(response.new_stock).toFixed(2)}
                     </a>
                 `);
@@ -259,8 +264,12 @@ $(document).ready(function () {
 
            success: function (response) {
                 // Update stock on page
-                $("#stock-" + response.key).html(`
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#inventory${response.key}">
+               $("#stock-" + response.key).html(`
+                    <a href="#"
+                    class="openMovementModal"
+                    data-key="${response.key}"
+                    data-product="${response.product_id}"
+                    data-location="${response.location_id}">
                         ${parseFloat(response.new_stock).toFixed(2)}
                     </a>
                 `);

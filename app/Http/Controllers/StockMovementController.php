@@ -77,11 +77,13 @@ class StockMovementController extends Controller
         // ===========================
         // 🔥 RETURN JSON TO AJAX
         // ===========================
-        return response()->json([
-            'success' => true,
-            'key' => $request->key,
-            'new_stock' => $updatedStock,
-            'new_notification' => $notificationText
+       return response()->json([
+            'success'        => true,
+            'key'            => $request->key,
+            'new_stock'      => $updatedStock,
+            'new_notification' => $notificationText,
+            'product_id'     => $request->product_id,
+            'location_id'    => $request->location_id,
         ]);
     }
     public function index(Request $request)
