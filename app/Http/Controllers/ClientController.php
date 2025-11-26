@@ -6,6 +6,7 @@ use App\UserLocation;
 use App\Client;
 use App\ClientAttachment;
 use App\ClientLocation;
+use App\Product;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Storage;
@@ -84,13 +85,17 @@ class ClientController extends Controller
 
     public function view(Request $request,$id)
     {
-        
+        $products = Product::select('id', 'product_name', 'unit_price')->get();
+        $selectedLocation = ClientLocation::where('client_id',$id)->orderBy('id','desc')->first()->location_id;
+        // dd($selectedLocation);
         $client = Client::with('locations')->findOrfail($id);
         $locations = auth()->user()->locations;
          return view('clients.view',
         array(
             'client' => $client,
             'locations' => $locations,
+            'selectedLocation' => $selectedLocation,
+            'products' => $products,
         ));
     }
     public function viewAttachment(Request $request,$id)
