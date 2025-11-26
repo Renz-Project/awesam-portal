@@ -27,7 +27,7 @@ class ClientController extends Controller
                 $query->where('locations.id', $selectedLocation);
             })
             ->orderBy('last_name')
-            ->limit(20)
+            ->limit(100)
             ->get();
 
         return response()->json($clients);
