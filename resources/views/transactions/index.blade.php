@@ -231,7 +231,7 @@ table td:nth-child(4) {
                                         <tr>
                                             <td > {{ ucfirst($type) }}</td>
                                             <td class='text-danger'> <b>₱ {{ number_format($amount, 2) }}</b></td>
-                                            <td colspan='2'></td>
+                                           
                                         </tr>
                                         @endif
                                     @endif
