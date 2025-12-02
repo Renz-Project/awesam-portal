@@ -382,7 +382,11 @@
                                     <td>{{ number_format($expense->amount, 2) }}</td>
                                     <td>
                                         @if($expense->attachment)
-                                            <button class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#viewAttachment{{ $expense->id }}">View Attachment</button>
+                                            <a href="{{ asset('uploads/expenses/' . $expense->attachment) }}" 
+                                            target="_blank" 
+                                            class="btn btn-sm btn-soft-primary">
+                                            View Attachment
+                                            </a>
                                         @endif
                                     </td>
                                     <td>{{ $expense->remarks }}</td>
