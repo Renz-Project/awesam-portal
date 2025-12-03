@@ -31,6 +31,12 @@ table td:nth-child(4) {
         <label class="form-label">Location</label>
         <select id="locationSelect" name="location" class="form-select" onchange="this.form.submit(),show();" required>
           @foreach($locations as $key => $location)
+              @if($latest_transaction)
+                    @if($latest_transaction->location_id == $location->id)
+                     <option value="{{ $location->id }}" selected>{{$location->name}}</option>
+                     @break
+                    @endif
+              @else
               <option value="{{ $location->id }}"
                   @if(!empty($selectedLocation))
                       {{ $selectedLocation == $location->id ? 'selected' : '' }}
@@ -40,6 +46,7 @@ table td:nth-child(4) {
               >
                   {{ $location->name }}
               </option>
+              @endif
           @endforeach
       </select>
     @if(empty($selectedLocation))

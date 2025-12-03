@@ -16,6 +16,10 @@ class TransactionController extends Controller
     //
     public function index(Request $request)
     {
+        $latest_transaction = ClientTransaction::whereUserId(auth()->id())
+    ->whereDate('date', today())
+    ->latest()
+    ->first();
         $selectedLocation = $request->location;
         $date_from = date('Y-m-d');
         $date_to =  date('Y-m-d');
@@ -54,6 +58,7 @@ class TransactionController extends Controller
                 'products' => $products,
                 'selectedLocation' => $selectedLocation,
                 'expenses' => $expenses,
+                'latest_transaction' => $latest_transaction,
             )
             );
     }
