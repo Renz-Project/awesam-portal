@@ -373,6 +373,7 @@
                                 <tr>
                                     <th>Expense Name</th>
                                     <th>Reference #</th>
+                                    <th>Payment Type</th>
                                     <th>Date</th>
                                     <th>Amount</th>
                                     <th>Attachment</th>
@@ -386,6 +387,7 @@
                                 <tr>
                                     <td>{{ $expense->name }}</td>
                                     <td>{{ $expense->reference_number }}</td>
+                                    <td>{{ $expense->payment_type }}</td>
                                     <td>{{ $expense->date }}</td>
                                     <td>{{ number_format($expense->amount, 2) }}</td>
                                     <td>
@@ -396,6 +398,13 @@
                                             View Attachment
                                             </a>
                                         @endif
+                                         @foreach($expense->attachments as $attachment)
+                                            <a href="{{ asset('uploads/expenses/' . $attachment->attachment) }}" 
+                                            target="_blank" 
+                                            class="btn btn-sm btn-soft-primary d-block mb-1">
+                                            {{ $attachment->file_name }}
+                                            </a>
+                                        @endforeach
                                     </td>
                                     <td>{{ $expense->remarks }}</td>
                                     

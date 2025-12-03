@@ -83,15 +83,6 @@
                     </div>
 
                     <div class="d-flex align-items-center">
-
-
-                     
-
-
-                    
-                       
-
-
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
@@ -163,35 +154,66 @@
                         </li>
                         @endif
                         @if(auth()->user()->role != "Dental Assistant")
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{url('/transactions')}}">
-                                <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
-                            </a>
-                        </li>
+                         @if(auth()->user()->role != "Finance")
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{url('/transactions')}}">
+                                    <i class="ri-file-list-line"></i> <span data-key="t-transactions">Transactions</span>
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/expenses')}}">
                                 <i class="ri-money-dollar-circle-line"></i> <span data-key="t-transactions">Expenses</span>
                             </a>
                         </li>
                         @endif
+                       
                         @if(auth()->user()->role != "Front Desk Officer")
+                        @if(auth()->user()->role != "Finance")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/inventory')}}">
                                 <i class="ri-list-check-2"></i> <span data-key="t-inventory">DA Inventory</span>
                             </a>
                         </li>
                         @endif
+                        @endif
                         @if(auth()->user()->role != "Dental Assistant")
+                        @if(auth()->user()->role != "Finance")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/office-supplies/inventory')}}">
                                 <i class="ri-list-check-2"></i> <span data-key="t-inventory">FDO Inventory</span>
                             </a>
                         </li>
+                        @endif
+                          @if(auth()->user()->role != "Finance")
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{url('/clients')}}">
                                 <i class=" ri-folder-user-line"></i> <span data-key="t-clients">Clients</span>
                             </a>
                         </li>
+                        @endif
+                        @endif
+                        @if(auth()->user()->role == "Finance")
+                         <li class="nav-item">
+                              <a class="nav-link menu-link" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
+                                <i class="ri-dashboard-2-line"></i> <span data-key="t-reports">Reports</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="reports">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{url('transactions-report')}}" class="nav-link" data-key="t-analytics"> Sales Report </a>
+                                    </li>
+                                    {{-- <li class="nav-item">
+                                        <a href="{{url('inventories-report')}}" class="nav-link" data-key="t-analytics"> Inventory </a>
+                                    </li> --}}
+                                    {{-- <li class="nav-item">
+                                        <a href="{{url('audit-trails')}}" class="nav-link" data-key="t-analytics"> Audit Logs </a>
+                                    </li> --}}
+                                  
+                                </ul>
+                            </div>
+                        </li>
+                      
                         @endif
                         @if(auth()->user()->role == 'Admin')
                         <li class="menu-title"><span data-key="t-menu">Admin</span></li>

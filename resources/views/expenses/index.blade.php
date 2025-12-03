@@ -23,6 +23,7 @@
                         <tr>
                             <th>Expense Name</th>
                             <th>Reference #</th>
+                            <th>Payment Type</th>
                             <th>Date</th>
                             <th>Amount</th>
                             <th>Attachment</th>
@@ -37,6 +38,7 @@
                         <tr>
                             <td>{{ $expense->name }}</td>
                             <td>{{ $expense->reference_number }}</td>
+                            <td>{{ $expense->payment_type }}</td>
                             <td>{{ $expense->date }}</td>
                             <td>{{ number_format($expense->amount, 2) }}</td>
                             <td>
@@ -47,6 +49,13 @@
                                        View Attachment
                                     </a>
                                 @endif
+                                @foreach($expense->attachments as $attachment)
+                                    <a href="{{ asset('uploads/expenses/' . $attachment->attachment) }}" 
+                                    target="_blank" 
+                                    class="btn btn-sm btn-soft-primary d-block mb-1">
+                                     {{ $attachment->file_name }}
+                                    </a>
+                                @endforeach
                             </td>
                             <td>{{ $expense->remarks }}</td>
                             
@@ -101,7 +110,11 @@
             </div>
             <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
+                @if(auth()->user()->role == 'Finance')
+                  <input type="date" class="form-control" id="date" name="date" value='{{date('Y-m-d')}}' required>
+                @else
                 <input type="date" class="form-control" id="date" name="date" min='{{date('Y-m-d', strtotime('-2 days'))}}' max='{{date('Y-m-d')}}' value='{{date('Y-m-d')}}' required>
+                @endif
             </div>
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount</label>
@@ -128,8 +141,15 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="attachment" class="form-label">Attachment</label>
-                <input type="file" class="form-control" id="attachment" name="attachment" required>
+                <label class="form-label">Attachment</label>
+
+                <div id="attachment-wrapper">
+                    <div class="d-flex gap-2 mb-2">
+                        <input type="file" class="form-control" name="attachment[]" required>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-sm btn-primary" id="add-attachment">+ Add Attachment</button>
             </div>
             <div class="mb-3">
                 <label for="remarks" class="form-label">Remarks</label>
@@ -147,6 +167,23 @@
 </div>
 @endsection
 @section('js')
+<script>
+    document.getElementById('add-attachment').addEventListener('click', function () {
+        const wrapper = document.getElementById('attachment-wrapper');
+        
+        let row = document.createElement('div');
+        row.className = 'd-flex gap-2 mb-2';
+
+        row.innerHTML = `
+            <input type="file" class="form-control" name="attachment[]">
+            <button type="button" class="btn btn-danger btn-sm remove">x</button>
+        `;
+
+        wrapper.appendChild(row);
+
+        row.querySelector('.remove').onclick = () => row.remove();
+    });
+</script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>

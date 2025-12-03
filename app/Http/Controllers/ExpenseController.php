@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Expense;
+use App\ExpenseAttachment;
 use App\Location;
 use Illuminate\Http\Request;
 
@@ -23,21 +24,21 @@ class ExpenseController extends Controller
     }
      public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'reference_number' => 'nullable|string|max:100',
             'date' => 'required|date',
             'amount' => 'required|numeric',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xlsx,xls|max:2048',
             'remarks' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/expenses'), $filename);
-            $validated['attachment'] = $filename;
-        }
+        // if ($request->hasFile('attachment')) {
+        //     $file = $request->file('attachment');
+        //     $filename = time() . '_' . $file->getClientOriginalName();
+        //     $file->move(public_path('uploads/expenses'), $filename);
+        //     $validated['attachment'] = $filename;
+        // }
 
         $expense = new Expense();
         $expense->name = $request->name;
@@ -47,9 +48,25 @@ class ExpenseController extends Controller
         $expense->amount = $request->amount;
         $expense->remarks = $request->remarks;
         $expense->payment_type = $request->type;
-        $expense->attachment = $validated['attachment'] ?? null;
         $expense->user_id = auth()->user()->id ?? null; // optional if you want to track who added it
         $expense->save();
+
+        if ($request->hasFile('attachment')) {
+            foreach ($request->file('attachment') as $file) {
+
+                $filename = time() . '_' . $file->getClientOriginalName();
+                // dd($filename);
+                $file->move(public_path('uploads/expenses'), $filename);
+
+                $expense_attachment = new ExpenseAttachment;
+                $expense_attachment->expense_id = $expense->id;         // expense FK
+                $expense_attachment->file_name = $file->getClientOriginalName(); // original filename
+                $expense_attachment->attachment = $filename;            // stored name
+                $expense_attachment->save();
+            }
+        }
+
+
         Alert::success('Expense added successfully.')->persistent('Dismiss');
         return back();
     }

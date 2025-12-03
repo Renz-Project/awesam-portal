@@ -40,6 +40,7 @@
                                 <label for="role" class="form-label">Role</label>
                                 <select class='form-control' name='role' required>
                                     <option value=''>Select</option>
+                                    <option value='Finance'>Finance</option>
                                     <option value='Front Desk Officer'>Front Desk Officer</option>
                                     <option value='Dental Assistant'>Dental Assistant</option>
                                     <option value='Admin'>Admin</option>
