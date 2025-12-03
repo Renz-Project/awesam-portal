@@ -140,14 +140,14 @@
                                             $totalExpenses = $totalExpenses + $totalAmount;
                                             $class = $paymentType === 'cash' ? 'text-danger' : 'text-info';
                                         @endphp
-                                        <tr>
+                                        {{-- <tr>
                                             <td>{{ $name }}</td>
                                             <td class="{{ $class }}">
                                                 <b>₱ {{ number_format($totalAmount, 2) }}</b>
                                                 <small>({{ ucfirst($paymentType) }})</small>
                                             </td>
                                             <td colspan="2"></td>
-                                        </tr>
+                                        </tr> --}}
                                     @endforeach
                                 @endforeach
                                 <tr>
