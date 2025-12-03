@@ -47,6 +47,7 @@ Route::post('/change-avatar/{id}','ClientController@changeAvatar')->name('change
 Route::delete('delete-client/{id}', 'ClientController@deleteClient')->name('delete-client');
 
 Route::get('/locations','LocationController@index')->name('locations');
+Route::post('/new-location','LocationController@store')->name('locations');
 
 
 

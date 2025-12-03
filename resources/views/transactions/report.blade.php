@@ -126,7 +126,9 @@
                                     @php
                                     $groupedExpenses = $expenses->groupBy('name');
                                 @endphp
-                                
+                                @php
+                                    $totalExpenses = 0;
+                                @endphp
                                 @foreach($groupedExpenses as $name => $expensesByName)
                                     @php
                                         $groupedByPaymentType = $expensesByName->groupBy('payment_type');
@@ -135,6 +137,7 @@
                                     @foreach($groupedByPaymentType as $paymentType => $group)
                                         @php
                                             $totalAmount = $group->sum('amount');
+                                            $totalExpenses = $totalExpenses + $totalAmount;
                                             $class = $paymentType === 'cash' ? 'text-danger' : 'text-info';
                                         @endphp
                                         <tr>
@@ -147,6 +150,11 @@
                                         </tr>
                                     @endforeach
                                 @endforeach
+                                <tr>
+                                    <td >Total Expenses</td>
+                                     <td class='text-danger'> <b>₱ {{number_format($totalExpenses,2)}}</b></td>
+                                    <td colspan='2'></td>
+                                </tr>
                                 <tr>
                                     <td > Cash On Hand</td>
                                     <td > <b>₱ {{number_format($totals['cash']-$expenses->where('payment_type','cash')->sum('amount'),2)}}</b></td>
