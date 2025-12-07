@@ -54,7 +54,7 @@ class ProductController extends Controller
     if ($request->has('ideal_stock')) {
         foreach ($request->ideal_stock as $locationId => $idealStock) {
             if ($idealStock !== null && $idealStock !== '') {
-                \App\Models\ProductIdealStock::create([
+                \App\ProductIdealStock::create([
                     'product_id' => $product->id,
                     'location_id' => $locationId,
                     'ideal_stock' => $idealStock,
