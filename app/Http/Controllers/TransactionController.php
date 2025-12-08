@@ -17,9 +17,9 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $latest_transaction = ClientTransaction::whereUserId(auth()->id())
-    ->whereDate('date', today())
-    ->latest()
-    ->first();
+        ->whereDate('date', today())
+        ->latest()
+        ->first();
         $selectedLocation = $request->location;
         $date_from = date('Y-m-d');
         $date_to =  date('Y-m-d');
@@ -140,8 +140,38 @@ class TransactionController extends Controller
          Alert::success('Successfully Encoded')->persistent('Dismiss');
         return back();
     }
+     public function update(Request $request, $id)
+    {
+        $transaction = ClientTransaction::findOrFail($id);
+
+        // Validation
+        if ($request->has('product_id')) {
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'qty' => 'required|integer|min:1'
+            ]);
+
+            $transaction->product_id = $request->product_id;
+            $transaction->qty = $request->qty;
+            $transaction->treatment = null; // clear treatment if product is selected
+        } elseif ($request->has('treatment')) {
+            $request->validate([
+                'treatment' => 'required|string|max:255',
+            ]);
+
+            $transaction->treatment = $request->treatment;
+            $transaction->product_id = null; // clear product if treatment is selected
+            $transaction->qty = null;
+        }
+
+        $transaction->save();
+
+          Alert::success('Successfully updated')->persistent('Dismiss');
+        return back();
+    }
     public function report(Request $request)
     {
+        $products = Product::get();
         $selectedLocation = $request->location;
         $date_from = date('Y-m-d');
         $date_to =  date('Y-m-d');
@@ -166,6 +196,7 @@ class TransactionController extends Controller
                 'date_from' => $date_from,
                 'date_to' => $date_to,
                 'expenses' => $expenses,
+                'products' => $products,
             )
             );
     }

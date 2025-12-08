@@ -1,5 +1,6 @@
 @extends('layouts.header')
 @section('css')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -186,26 +187,18 @@
                             <tbody>
                                 @foreach($transactions->sortByDesc('id') as $transaction)
                                 <tr>
-                                    
                                     <td>#{{$transaction->id}}</td>
                                     <td>{{$transaction->client->last_name}}, {{$transaction->client->first_name}}</td>
                                     <td>{{$transaction->dentist}}</td>
                                     <td>{{$transaction->dentist_2}}</td>
                                     <td>{{$transaction->dentist_3}}</td>
                                     <td>
-                                         @php
-                                            $totals = [
-                                                'cash' => 0,
-                                                'gcash' => 0,
-                                                'HMO' => 0,
-                                                'CC' => 0,
-                                                'Debit' => 0,
-                                                'Others' => 0,
-                                            ];
+                                        @php
+                                            $totals = ['cash' => 0,'gcash' => 0,'HMO' => 0,'CC' => 0,'Debit' => 0,'Others' => 0];
                                         @endphp
                                         @foreach($transaction->payments as $payment)
                                             @php
-                                                $type = ($payment->payment_type);
+                                                $type = $payment->payment_type;
                                                 if(array_key_exists($type, $totals)) {
                                                     $totals[$type] += $payment->amount;
                                                 }
@@ -216,17 +209,26 @@
                                                 <p>{{ ucfirst($type) }}: ₱{{ number_format($amount, 2) }}</p>
                                             @endif
                                         @endforeach
-
                                     </td>
                                     <td>{{$transaction->remarks}}</td>
                                     <td>{{$transaction->location->name}}</td>
                                     <td>{{$transaction->user->name}}</td>
-                                    
-                                    <td>@if($transaction->treatment){{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}} @else{{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}@endif</td>
+                                    <td>
+                                        @if($transaction->treatment)
+                                            {{$transaction->treatment}} = {{number_format($transaction->amount_paid,2)}}
+                                        @else
+                                            {{$transaction->product->product_name}}({{$transaction->qty}}) = {{number_format($transaction->amount_paid,2)}}
+                                        @endif
+                                    </td>
                                     <td>{{number_format($transaction->amount_paid,2)}}</td>
                                     <td>
+                                        <!-- Edit Button -->
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editTransactionModal{{$transaction->id}}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </button>
+
+                                        <!-- Delete Button -->
                                         <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display:inline;">
-                                            <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm"
@@ -235,8 +237,8 @@
                                             </button>
                                         </form>
                                     </td>
-                            
                                 </tr>
+                               
                                 @endforeach
                             </tbody>
                         </table>
@@ -421,6 +423,54 @@
 @foreach($expenses as $expense)
 @include('expenses.edit')
 @endforeach
+ @foreach($transactions->sortByDesc('id') as $transaction)
+  <!-- Edit Modal -->
+<div class="modal fade prod" id="editTransactionModal{{$transaction->id}}" tabindex="-1" aria-labelledby="editTransactionModalLabel{{$transaction->id}}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('transactions.update', $transaction->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTransactionModalLabel{{$transaction->id}}">Edit Transaction #{{$transaction->id}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Dentist -->
+                    
+                    <!-- Product or Service -->
+                    @if($transaction->product)
+                        <div class="mb-3">
+                            <label for="product{{$transaction->id}}" class="form-label">Product</label>
+                            <select name="product_id" class="form-select products" id="product{{$transaction->id}}">
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}" @if($transaction->product_id == $product->id) selected @endif>
+                                        {{$product->product_name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="qty{{$transaction->id}}" class="form-label">Quantity</label>
+                            <input type="number" name="qty" class="form-control" id="qty{{$transaction->id}}" value="{{$transaction->qty}}">
+                        </div>
+                    @elseif($transaction->treatment)
+                        <div class="mb-3">
+                            <label for="treatment{{$transaction->id}}" class="form-label">Service / Treatment</label>
+                            <input type="text" name="treatment" class="form-control" id="treatment{{$transaction->id}}" value="{{$transaction->treatment}}">
+                        </div>
+                    @endif
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+ @endforeach
 @endsection
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -482,5 +532,24 @@ function printTable() {
     newWindow.document.close();
     newWindow.print();
 }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    // Use event delegation: initialize Select2 when modal is shown
+    $('[id^=editTransactionModal]').on('shown.bs.modal', function () {
+        // Find the select inside this modal only
+        $(this).find('.products').select2({
+            placeholder: "Search Product...",
+            dropdownParent: $(this).find('.modal-content'), // important for modals
+            width: '100%' // ensures it fits nicely
+        });
+    });
+
+    // Optional: destroy Select2 when modal is hidden to avoid duplicates
+    $('[id^=editTransactionModal]').on('hidden.bs.modal', function () {
+        $(this).find('.products').select2('destroy');
+    });
 </script>
 @endsection

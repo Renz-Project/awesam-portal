@@ -26,7 +26,7 @@ Route::post('/new-transaction','TransactionController@store')->name('store-trans
 Route::get('/transactions-report','TransactionController@report')->name('transactions-report');
 Route::delete('/transactions/{id}', [App\Http\Controllers\TransactionController::class, 'destroy'])
     ->name('transactions.destroy');
-
+Route::put('transactions-update/{id}','TransactionController@update')->name('transactions.update');
 
 //Users
 Route::get('/users','UserController@index')->name('users');
