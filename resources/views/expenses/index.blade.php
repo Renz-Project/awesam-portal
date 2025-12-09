@@ -142,7 +142,7 @@
                 @if(auth()->user()->role == 'Finance')
                   <input type="date" class="form-control" id="date" name="date" value='{{date('Y-m-d')}}' required>
                 @else
-                <input type="date" class="form-control" id="date" name="date" min='{{date('Y-m-d', strtotime('-2 days'))}}' max='{{date('Y-m-d')}}' value='{{date('Y-m-d')}}' required>
+                <input type="date" class="form-control" id="date" name="date" min='{{date('Y-m-d', strtotime('-7 days'))}}' max='{{date('Y-m-d')}}' value='{{date('Y-m-d')}}' required>
                 @endif
             </div>
             <div class="mb-3">
