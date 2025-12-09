@@ -7,6 +7,35 @@
 @section('content')
 
  @include('error')
+ <form method="GET" >
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Location</label>
+            <select name="location" class="form-control" onchange="this.form.submit()">
+                <option value="">Select Location</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}" {{ $selectedLocation == $location->id ? 'selected' : '' }}>
+                        {{ $location->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Date From</label>
+            <input type='date' name='date_from' class='form-control' value='{{$date_from}}'   required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Date To</label>
+            <input type='date' name='date_to' class='form-control' value='{{$date_to}}' required>
+        </div>
+        <div class='col-xl-2'>
+            <br>
+                <button type="submit" class="btn btn-success" >
+                <i class="ri-search-fill me-1"></i> Search
+                </button>
+        </div>
+    </div>
+</form>
  <div class="row">
     <div class="col-lg-12">
         <div class="card">

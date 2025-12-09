@@ -11,14 +11,20 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ExpenseController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
         $locations = auth()->user()->locations;
+        $selectedLocation = $request->location;
+        $date_from = date('Y-m-d');
+        $date_to =  date('Y-m-d');
         $locationIds = $locations->pluck('id');
         $locations_d = Location::whereIn('id',$locationIds)->get();
-        $expenses = Expense::whereIn('location_id', $locationIds)->latest()->get();
+        $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->whereIn('location_id', $locationIds)->latest()->get();
         return view('expenses.index', array('expenses' => $expenses,
-        'locations' => $locations_d
+        'locations' => $locations_d,
+        'selectedLocation' => $selectedLocation,
+        'date_from' => $date_from,
+        'date_to' => $date_to,
         
     ));
     }
