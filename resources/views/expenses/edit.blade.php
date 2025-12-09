@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body">
           <div class="mb-3">
-              <label class="form-label">Expense Name</label>
+              <label class="form-label">Payee Name</label>
               <input type="text" name="name" value="{{ $expense->name }}" class="form-control" required>
           </div>
           <div class="mb-3">

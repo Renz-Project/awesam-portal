@@ -50,7 +50,7 @@
                 <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Expense Name</th>
+                            <th>Payee Name</th>
                             <th>Reference #</th>
                             <th>Payment Type</th>
                             <th>Date</th>
@@ -130,7 +130,7 @@
         @csrf
         <div class="modal-body">
             <div class="mb-3">
-                <label for="name" class="form-label">Expense Name</label>
+                <label for="name" class="form-label">Payee Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="mb-3">
