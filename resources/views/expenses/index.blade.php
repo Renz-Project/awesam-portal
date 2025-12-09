@@ -92,7 +92,7 @@
                             <td>{{ $expense->location->name }}</td>
                             <td>
                                 <!-- Action buttons here -->
-                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin"))
+                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin") || (auth()->user()->role == "Finance"))
                                 <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">Edit</button>
                                  <!-- Delete Button -->
                                     <form action="{{ url('delete-expense/'.$expense->id) }}" 
