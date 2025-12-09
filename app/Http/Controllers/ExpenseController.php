@@ -16,7 +16,7 @@ class ExpenseController extends Controller
         $locations = auth()->user()->locations;
         $selectedLocation = $request->location;
         $date_from = $request->date_from;
-        $date_to = $request->to;
+        $date_to = $request->date_to;
         $locationIds = $locations->pluck('id');
         $locations_d = Location::whereIn('id',$locationIds)->get();
         $expenses = Expense::where('location_id',$selectedLocation)->whereBetween('date', [$date_from, $date_to])->whereIn('location_id', $locationIds)->latest()->get();
