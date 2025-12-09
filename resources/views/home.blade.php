@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 @endsection
 @section('content')
-@if((auth()->user()->role == "Super Admin") || (auth()->user()->role == "Admin") || (auth()->user()->role == "Finances"))
+@if((auth()->user()->role == "Super Admin") || (auth()->user()->role == "Admin") || (auth()->user()->role == "Finance"))
 <div class="row">
     <div class="col-lg-12">
         <div class="row">
