@@ -69,9 +69,10 @@
                              <td>
                                 <!-- Action buttons here -->
                                 @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin") || (auth()->user()->role == "Finance"))
-                                <br>
-                                <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">Edit</button>
-                                 <!-- Delete Button -->
+                              
+                                <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">
+                                    <i class="fas fa-edit"></i>
+                                </button> <!-- Delete Button -->
                                     <form action="{{ url('delete-expense/'.$expense->id) }}" 
                                             method="POST" 
                                             onsubmit="return confirm('Are you sure you want to delete this expense?');" 
@@ -79,7 +80,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm btn-soft-danger">
-                                            Delete
+                                            <i class="fas fa-trash me-1"></i> Delete
                                         </button>
                                     </form>
                                 @endif
