@@ -47,12 +47,12 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table id="" class="example table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                <table id="" class="example table table-bordered nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>Payee Name</th>
                             <th>Reference #</th>
-                            <th>Payment Type</th>
+                            <th>Payment <br>Type</th>
                             <th>Date</th>
                             <th>Amount</th>
                             <th>Attachment</th>
