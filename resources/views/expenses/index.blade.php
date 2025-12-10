@@ -50,6 +50,8 @@
                 <table id="" class="example table table-bordered  dt-responsive  table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
+                            
+                            <th></th>
                             <th>Payee Name</th>
                             <th>Reference #</th>
                             <th>Payment <br>Type</th>
@@ -59,12 +61,28 @@
                             <th>Remarks</th>
                             <th>Encoded By</th>
                             <th>Location</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($expenses as $expense)
                         <tr>
+                             <td>
+                                <!-- Action buttons here -->
+                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin") || (auth()->user()->role == "Finance"))
+                                <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">Edit</button>
+                                 <!-- Delete Button -->
+                                    <form action="{{ url('delete-expense/'.$expense->id) }}" 
+                                            method="POST" 
+                                            onsubmit="return confirm('Are you sure you want to delete this expense?');" 
+                                            class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-soft-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                @endif
+                            </td>
                             <td>{{ $expense->name }}</td>
                             <td>{{ $expense->reference_number }}</td>
                             <td>{{ $expense->payment_type }}</td>
@@ -91,30 +109,14 @@
                             
                             <td>{{ $expense->user->name }}</td>
                             <td>{{ $expense->location->name }}</td>
-                            <td>
-                                <!-- Action buttons here -->
-                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin") || (auth()->user()->role == "Finance"))
-                                <button class="btn btn-sm btn-soft-secondary" data-bs-toggle="modal" data-bs-target="#editExpense{{ $expense->id }}">Edit</button>
-                                 <!-- Delete Button -->
-                                    <form action="{{ url('delete-expense/'.$expense->id) }}" 
-                                            method="POST" 
-                                            onsubmit="return confirm('Are you sure you want to delete this expense?');" 
-                                            class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-soft-danger">
-                                            Delete
-                                        </button>
-                                    </form>
-                                @endif
-                            </td>
+                           
                         </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                          <tr>
                             <th colspan='4' class='text-right'>Total:</th>
-                            <td colspan='6'>{{number_format($expenses->sum('amount'),2)}}</th>
+                            <td colspan='6'> <b>{{number_format($expenses->sum('amount'),2)}}</b></th>
                            
                          </tr>
                     </tfoot>
