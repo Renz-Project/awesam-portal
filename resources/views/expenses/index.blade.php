@@ -84,6 +84,7 @@
                                     class="btn btn-sm btn-soft-primary">
                                      {{ $attachment->file_name }}
                                     </a>
+                                    <br>
                                 @endforeach
                             </td>
                             <td>{{ $expense->remarks }}</td>
