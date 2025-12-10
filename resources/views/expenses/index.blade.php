@@ -110,6 +110,13 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                         <tr>
+                            <th colspan='4' class='text-right'>Total:</th>
+                            <td colspan='6'>{{number_format($expenses->sum('amount'),2)}}</th>
+                           
+                         </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
