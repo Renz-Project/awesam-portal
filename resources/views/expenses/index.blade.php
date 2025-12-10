@@ -47,7 +47,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table id="" class="example table table-bordered nowrap table-striped align-middle" style="width:100%">
+                <table id="" class="example table table-bordered  dt-responsive  table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>Payee Name</th>
@@ -81,7 +81,7 @@
                                 @foreach($expense->attachments as $attachment)
                                     <a href="{{ asset('uploads/expenses/' . $attachment->attachment) }}" 
                                     target="_blank" 
-                                    class="btn btn-sm btn-soft-primary">
+                                    class="btn btn-sm btn-soft-primary mb-1">
                                      {{ $attachment->file_name }}
                                     </a>
                                     <br>
