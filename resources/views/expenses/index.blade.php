@@ -119,8 +119,9 @@
                     </tbody>
                     <tfoot>
                          <tr>
-                            <th colspan='4' class='text-right'>Total:</th>
-                            <td colspan='6'> <b>{{number_format($expenses->sum('amount'),2)}}</b></th>
+                            <th colspan='4' class='text-right'></th>
+                            <th colspan='1' class='text-right'><b>Total: </b></th>
+                            <td colspan='5'> <b>{{number_format($expenses->sum('amount'),2)}}</b></th>
                            
                          </tr>
                     </tfoot>
