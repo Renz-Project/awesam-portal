@@ -239,6 +239,8 @@
     $(document).ready(function() {
         $('.example').DataTable({
             ordering: false,
+            paging: false,        // 🔥 Disable pagination
+            pageLength: -1,       // 🔥 Show all rows
             dom: 'Bfrtip',
             buttons: [
                 {
@@ -253,4 +255,5 @@
         });
     });
 </script>
+
 @endsection
