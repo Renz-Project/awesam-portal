@@ -81,7 +81,7 @@
                                 @foreach($expense->attachments as $attachment)
                                     <a href="{{ asset('uploads/expenses/' . $attachment->attachment) }}" 
                                     target="_blank" 
-                                    class="btn btn-sm btn-soft-primary d-block mb-1">
+                                    class="btn btn-sm btn-soft-primary">
                                      {{ $attachment->file_name }}
                                     </a>
                                 @endforeach
