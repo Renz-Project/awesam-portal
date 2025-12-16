@@ -26,19 +26,21 @@
                                 </div>
                                 <div class="col-md">
                                     <div>
-                                        <h4 class="fw-bold">{{$client->last_name}}, {{$client->first_name}} 
-                                        @if(auth()->user()->role == 'Super Admin')
-                                        <form action="{{ url('delete-client/'.$client->id) }}" 
-                                            method="POST" 
-                                            onsubmit="return confirm('Are you sure you want to delete this client?');"
-                                            class="d-inline">
-                                          @csrf
-                                          @method('DELETE')
-                                          <button type="submit" class="btn btn-danger btn-sm">
-                                              <i class="ri-delete-bin-line"></i> Delete Client
-                                          </button>
-                                      </form>
-                                      @endif
+                                        <h4 class="fw-bold">{{$client->last_name}}, {{$client->first_name}}
+                                            @if(count($client->transactions) == 0) 
+                                                    @if(auth()->user()->role == 'Super Admin')
+                                                    <form action="{{ url('delete-client/'.$client->id) }}" 
+                                                        method="POST" 
+                                                        onsubmit="return confirm('Are you sure you want to delete this client?');"
+                                                        class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="ri-delete-bin-line"></i> Delete Client
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            @endif
                                     </h4>
                                         <div class="hstack gap-3 flex-wrap">
                                             {{-- <div><i class="ri-building-line align-bottom me-1"></i> Themesbrand</div> --}}
@@ -276,19 +278,40 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    @foreach(($client->attachments)->sortByDesc('id') as $attachment)
-                                    <div data-simplebar  class="mx-n3 px-3 mb-1">
+                                  @foreach(($client->attachments)->sortByDesc('id') as $attachment)
+                                    <div data-simplebar class="mx-n3 px-3 mb-1">
                                         <div class="vstack gap-3">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-grow-1">
-                                                    <h5 class="fs-13 mb-0 text-success"><a href="{{ url('view-attachment/'.$attachment->id) }}" target='_blank' class="text-body d-block text-success"><i class="ri-attachment-2 text-success"></i>{{$attachment->document_name}}</a></h5>
+                                                    <h5 class="fs-13 mb-0">
+                                                        <a href="{{ url('view-attachment/'.$attachment->id) }}" 
+                                                        target="_blank" 
+                                                        class="text-success d-block">
+                                                            <i class="ri-attachment-2"></i>
+                                                            {{ $attachment->document_name }}
+                                                        </a>
+                                                    </h5>
                                                 </div>
+
+                                                <!-- DELETE BUTTON -->
+                                                @if((auth()->user()->role == "Admin") || (auth()->user()->role == "Super Admin"))
+                                                <div class="flex-shrink-0 ms-2">
+                                                    <form action="{{ url('delete-attachment/'.$attachment->id) }}" 
+                                                        method="POST"
+                                                        onsubmit="return confirm('Are you sure you want to delete this attachment?');">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                @endif
                                             </div>
-                                            <!-- end member item -->
                                         </div>
-                                        <!-- end list -->
                                     </div>
-                                    @endforeach
+                                @endforeach
                                 </div>
                             <!-- end card body -->
                         </div>

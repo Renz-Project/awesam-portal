@@ -113,6 +113,18 @@ class ClientController extends Controller
         // If the file does not exist, return a 404 error
         abort(404, 'File not found');
     }
+    public function destroyAttachment($id)
+    {
+        $attachment = ClientAttachment::findOrFail($id);
+
+        // Optional: delete file from storage
+        // Storage::delete($attachment->file_path);
+
+        $attachment->delete();
+
+        Alert::success('Successfully Deleted')->persistent('Dismiss');
+        return back();
+    }
     public function updateLocation(Request $request,$id)
     {
    

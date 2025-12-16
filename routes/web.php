@@ -79,6 +79,7 @@ Route::get('audit-trails','AuditTrailController@index')->name('audit');
 Route::get('/clients/search', 'ClientController@search')->name('clients.search');
 
 Route::get('/view-attachment/{id}', 'ClientController@viewAttachment')->name('view.attachment');
+Route::delete('delete-attachment/{id}', 'ClientController@destroyAttachment');
 
 Route::get('/stock-history', 'StockMovementController@history');
 
