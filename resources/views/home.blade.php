@@ -304,7 +304,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($transactions->sortByDesc('id') as $transaction)
+                                @foreach($transactions->sortByDesc('id')->get('20') as $transaction)
                                 <tr>
                                     
                                     <td>#{{$transaction->id}}</td>
