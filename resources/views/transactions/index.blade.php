@@ -32,10 +32,10 @@ table td:nth-child(4) {
         <select id="locationSelect" name="location" class="form-select" onchange="this.form.submit(),show();" required>
           @foreach($locations as $key => $location)
               @if($latest_transaction)
-                    @if($latest_transaction->location_id == $location->id)
+                    {{-- @if($latest_transaction->location_id == $location->id) --}}
                      <option value="{{ $location->id }}" selected>{{$location->name}}</option>
-                     @break
-                    @endif
+                     {{-- @break
+                    @endif --}}
               @else
               <option value="{{ $location->id }}"
                   @if(!empty($selectedLocation))
