@@ -10,6 +10,7 @@ use App\Product;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class ClientController extends Controller
@@ -210,4 +211,52 @@ class ClientController extends Controller
         Alert::success('Successfully Deleted')->persistent('Dismiss');
         return redirect('/clients');
     }
+  public function export(Request $request)
+{
+    $clients = Client::with(['locations', 'transactions'])
+        ->when($request->location_id, function ($q) use ($request) {
+            $q->whereHas('locations', function ($qq) use ($request) {
+                $qq->where('locations.id', $request->location_id);
+            });
+        })
+        ->when($request->search, function ($q) use ($request) {
+            $q->where(function ($qq) use ($request) {
+                $qq->where('first_name', 'like', "%{$request->search}%")
+                   ->orWhere('last_name', 'like', "%{$request->search}%")
+                   ->orWhere('email', 'like', "%{$request->search}%")
+                   ->orWhere('contact', 'like', "%{$request->search}%");
+            });
+        })
+        ->get(); // ✅ EXPORT ALL (no pagination)
+
+    $filename = 'clients_' . now()->format('Ymd_His') . '.csv';
+
+    return response()->streamDownload(function () use ($clients) {
+
+        $handle = fopen('php://output', 'w');
+
+        // CSV Header
+        fputcsv($handle, [
+            'Name',
+            'Birth Date',
+            'Gender',
+            'Last Transaction',
+            'Locations'
+        ]);
+
+        foreach ($clients as $client) {
+            fputcsv($handle, [
+                $client->last_name . ', ' . $client->first_name,
+                optional($client->birth_date)->format('Y-m-d'),
+                $client->sex,
+                optional($client->transactions->sortByDesc('created_at')->first())->created_at,
+                $client->locations->pluck('name')->implode(', ')
+            ]);
+        }
+
+        fclose($handle);
+    }, $filename, [
+        'Content-Type' => 'text/csv',
+    ]);
+}
 }

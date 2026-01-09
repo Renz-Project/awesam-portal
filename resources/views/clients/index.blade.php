@@ -8,6 +8,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
+               
                 <h5 class="card-title mb-0">Clients <button type="button" class="btn btn-success btn-icon waves-effect waves-light" title='New Client' data-bs-toggle="modal" data-bs-target="#newClient"><i class=" ri-add-box-line"></i></button>
                 <form method="GET" action="{{ url('clients') }}" class="d-flex align-items-center">
                     <!-- Location Filter -->
@@ -29,7 +30,11 @@
                     <a href="{{ url('clients') }}" class="btn btn-secondary btn-sm me-2">Reset</a>
 
                     <!-- Export Button -->
-                    <button type="button" id="exportExcel" class="btn btn-success btn-sm">Export Excel</button>
+                    {{-- <button type="button" id="exportExcel" class="">Export Excel</button> --}}
+                     <a href="{{ url('clients/export') . '?' . http_build_query(request()->query()) }}"
+                        class="btn btn-success btn-sm">
+                    Export
+                </a>
                 </form>
                 </h5>
             </div>

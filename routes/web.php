@@ -77,6 +77,7 @@ Route::delete('delete-expense/{id}', 'ExpenseController@destroy')->name('delete-
 Route::get('audit-trails','AuditTrailController@index')->name('audit');
 
 Route::get('/clients/search', 'ClientController@search')->name('clients.search');
+Route::get('clients/export', 'ClientController@export')->name('clients.export');
 
 Route::get('/view-attachment/{id}', 'ClientController@viewAttachment')->name('view.attachment');
 Route::delete('delete-attachment/{id}', 'ClientController@destroyAttachment');
