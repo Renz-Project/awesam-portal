@@ -31,10 +31,12 @@
 
                     <!-- Export Button -->
                     {{-- <button type="button" id="exportExcel" class="">Export Excel</button> --}}
+                    @if(auth()->user()->role == 'Super Admin')
                      <a href="{{ url('clients/export') . '?' . http_build_query(request()->query()) }}"
                         class="btn btn-success btn-sm">
-                    Export
-                </a>
+                        Export
+                    </a>
+                    @endif
                 </form>
                 </h5>
             </div>
