@@ -51,13 +51,12 @@ class ClientController extends Controller
         }
 
         // 🔹 Search by name, email, or contact
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('middle_name', 'like', "%{$search}%");
-            });
+       if ($request->filled('first_name')) {
+            $query->where('first_name', 'like', "%{$request->first_name}%");
+        }
+
+        if ($request->filled('last_name')) {
+            $query->where('last_name', 'like', "%{$request->last_name}%");
         }
 
         $clients = $query->paginate(10);
@@ -219,12 +218,14 @@ class ClientController extends Controller
                 $qq->where('locations.id', $request->location_id);
             });
         })
-        ->when($request->search, function ($q) use ($request) {
+        ->when($request->first_name, function ($q) use ($request) {
             $q->where(function ($qq) use ($request) {
-                $qq->where('first_name', 'like', "%{$request->search}%")
-                   ->orWhere('last_name', 'like', "%{$request->search}%")
-                   ->orWhere('email', 'like', "%{$request->search}%")
-                   ->orWhere('contact', 'like', "%{$request->search}%");
+                $qq->where('first_name', 'like', "%{$request->first_name}%");
+            });
+        })
+         ->when($request->last_name, function ($q) use ($request) {
+            $q->where(function ($qq) use ($request) {
+                $qq->where('last_name', 'like', "%{$request->last_name}%");
             });
         })
         ->get(); // ✅ EXPORT ALL (no pagination)

@@ -22,9 +22,12 @@
                     </select>
 
                     <!-- Search Field -->
-                    <input type="text" name="search" class="form-control form-control-sm me-2"
-                        placeholder="Search name, email, contact"
+                    <input type="text" name="last_name" class="form-control form-control-sm me-2"
+                        placeholder="Search Last Name"
                         value="{{ request('search') }}">
+                        <input type="text" name="first_name" class="form-control form-control-sm me-2"
+                        placeholder="Search First Name"
+                        value="{{ request('first_name') }}">
 
                     <button type="submit" class="btn btn-primary btn-sm me-2">Search</button>
                     <a href="{{ url('clients') }}" class="btn btn-secondary btn-sm me-2">Reset</a>
