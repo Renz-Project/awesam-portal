@@ -105,9 +105,14 @@ class ClientController extends Controller
         $filePath = $attachment->file;
         // dd($filePath);
         // If using S3, generate a temporary URL
+        
         if (Storage::disk('s3')->exists($filePath)) {
             $url = Storage::disk('s3')->temporaryUrl($filePath, now()->addMinutes(5));
             return redirect($url);
+        }
+        else
+        {
+            return redirect(url($filePath));
         }
 
         // If the file does not exist, return a 404 error
