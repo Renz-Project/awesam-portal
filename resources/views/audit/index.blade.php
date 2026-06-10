@@ -13,6 +13,25 @@
                 <h5 class="card-title mb-0">Audit Logs</h5>
             </div>
             <div class="card-body">
+                <form method="GET" action="{{ route('audit') }}" class="row g-3 align-items-end mb-3">
+                    <div class="col-md-4">
+                        <label for="user_id" class="form-label">Filter by User</label>
+                        <select name="user_id" id="user_id" class="form-select">
+                            <option value="">All Users</option>
+                            <option value="system" {{ request('user_id') === 'system' ? 'selected' : '' }}>System</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ (string) request('user_id') === (string) $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-auto">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a href="{{ route('audit') }}" class="btn btn-light">Reset</a>
+                    </div>
+                </form>
+
                 <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                          <tr>
@@ -48,11 +67,15 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">No audit records found.</td>
+                                <td colspan="8" class="text-center">No audit records found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+
+                <div class="mt-3">
+                    {{ $audits->appends(request()->query())->links() }}
+                </div>
             </div>
         </div>
     </div><!--end col-->
@@ -71,7 +94,10 @@
      <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
      <script>
         $('#example').DataTable({
-            ordering: false
+            ordering: false,
+            paging: false,
+            searching: false,
+            info: false
         });
 </script>
 @endsection
