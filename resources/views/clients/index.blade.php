@@ -105,7 +105,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#mergeClients"
                                         data-client-id="{{ $client->id }}"
-                                        data-client-name="{{ $client->last_name }}, {{ $client->first_name }}">
+                                        data-client-name="#{{ $client->id }} - {{ $client->last_name }}, {{ $client->first_name }}">
                                         <i class="ri-git-merge-line"></i> Merge
                                     </button>
                                 </td>
@@ -149,7 +149,7 @@
         }
 
         let birthDate = client.birth_date ? ' - ' + client.birth_date : '';
-        return client.last_name + ', ' + client.first_name + birthDate;
+        return '#' + client.id + ' - ' + client.last_name + ', ' + client.first_name + birthDate;
     }
 
     function initClientMergeSelect(selector) {
@@ -172,7 +172,7 @@
                         results: data.map(function (client) {
                             return {
                                 id: client.id,
-                                text: client.last_name + ', ' + client.first_name,
+                                text: '#' + client.id + ' - ' + client.last_name + ', ' + client.first_name,
                                 first_name: client.first_name,
                                 last_name: client.last_name,
                                 birth_date: client.birth_date
