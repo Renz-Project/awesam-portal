@@ -40,6 +40,7 @@ Route::get('/deactivate-user/{id}', 'UserController@deactivate')->name('user.dea
 Route::get('/clients','ClientController@index')->name('clients');
 Route::post('client/upload-document/{id}','ClientController@upload')->name('upload');
 Route::post('/new-client','ClientController@store')->name('new-client');
+Route::post('/clients/merge','ClientController@merge')->name('clients.merge');
 Route::get('/client/{id}','ClientController@view')->name('view-client');
 Route::post('client/edit-client-information/{id}','ClientController@updateInformation')->name('edit-client');
 Route::post('/client/update-location/{id}','ClientController@updateLocation')->name('update-location-client');

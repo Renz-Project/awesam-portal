@@ -6,9 +6,11 @@ use App\UserLocation;
 use App\Client;
 use App\ClientAttachment;
 use App\ClientLocation;
+use App\ClientTransaction;
 use App\Product;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -19,14 +21,20 @@ class ClientController extends Controller
     public function search(Request $request)
     {
         $selectedLocation = $request->selectedLocation;
+        $locationIds = auth()->user()->locations->pluck('id');
         $term = $request->get('q');
         // return $locationIds;
         $clients = Client::where(function ($q) use ($term) {
                 $q->where('first_name', 'like', "%{$term}%")
+                  ->orWhere('middle_name', 'like', "%{$term}%")
                   ->orWhere('last_name', 'like', "%{$term}%");
             })
-            ->whereHas('locations', function ($query) use ($selectedLocation) {
-                $query->where('locations.id', $selectedLocation);
+            ->whereHas('locations', function ($query) use ($locationIds, $selectedLocation) {
+                $query->whereIn('locations.id', $locationIds);
+
+                if ($selectedLocation) {
+                    $query->where('locations.id', $selectedLocation);
+                }
             })
             ->orderBy('last_name')
             ->limit(100)
@@ -201,6 +209,61 @@ class ClientController extends Controller
         
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
+    }
+    public function merge(Request $request)
+    {
+        abort_unless(auth()->user()->role == 'Super Admin', 403);
+
+        $request->validate([
+            'primary_client_id' => 'required|integer|exists:clients,id',
+            'duplicate_client_id' => 'required|integer|exists:clients,id|different:primary_client_id',
+        ]);
+
+        $locationIds = auth()->user()->locations->pluck('id');
+
+        $primaryClient = Client::whereHas('locations', function ($query) use ($locationIds) {
+                $query->whereIn('locations.id', $locationIds);
+            })
+            ->findOrFail($request->primary_client_id);
+
+        $duplicateClient = Client::whereHas('locations', function ($query) use ($locationIds) {
+                $query->whereIn('locations.id', $locationIds);
+            })
+            ->findOrFail($request->duplicate_client_id);
+
+        DB::transaction(function () use ($primaryClient, $duplicateClient) {
+            ClientTransaction::where('client_id', $duplicateClient->id)
+                ->update(['client_id' => $primaryClient->id]);
+
+            ClientAttachment::where('client_id', $duplicateClient->id)
+                ->update(['client_id' => $primaryClient->id]);
+
+            $primaryLocationIds = ClientLocation::where('client_id', $primaryClient->id)
+                ->pluck('location_id')
+                ->toArray();
+
+            $duplicateLocationIds = ClientLocation::where('client_id', $duplicateClient->id)
+                ->pluck('location_id');
+
+            foreach ($duplicateLocationIds as $locationId) {
+                if (! in_array($locationId, $primaryLocationIds)) {
+                    $clientLocation = new ClientLocation;
+                    $clientLocation->client_id = $primaryClient->id;
+                    $clientLocation->location_id = $locationId;
+                    $clientLocation->save();
+                }
+            }
+
+            ClientLocation::where('client_id', $duplicateClient->id)->delete();
+            $duplicateClient->delete();
+        });
+
+        Alert::success(
+            'Clients Merged',
+            $duplicateClient->last_name . ', ' . $duplicateClient->first_name . ' was merged into ' . $primaryClient->last_name . ', ' . $primaryClient->first_name
+        )->persistent('Dismiss');
+
+        return redirect('/clients');
     }
     public function deleteClient($id)
     {
