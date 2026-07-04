@@ -31,7 +31,9 @@
                                 data-id="{{ $m->id }}"
                                 data-type="{{ $m->type }}"
                                 data-remarks="{{ $m->remarks }}"
-                                data-quantity="{{ $m->quantity }}">
+                                data-quantity="{{ $m->quantity }}"
+                                data-product="{{ $m->product_id }}"
+                                data-location="{{ $m->location_id }}">
                                 Edit
                             </button>
                         </td>
@@ -52,15 +54,7 @@
                     </td>
                     <td class="text-danger">{{ number_format($t->qty,2) }}</td>
                     @if(auth()->user()->role == 'Super Admin')
-                        <td>
-                            <button class="btn btn-warning btn-sm editMovementBtn"
-                                data-id="{{ $t->id }}"
-                                data-type="outflow"
-                                data-remarks="{{ $t->remarks }}"
-                                data-quantity="{{ $t->qty }}">
-                                Edit
-                            </button>
-                        </td>
+                        <td class="text-muted">Transaction</td>
                     @endif
                 </tr>
 

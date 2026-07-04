@@ -10,6 +10,42 @@ use Illuminate\Http\Request;
 class StockMovementController extends Controller
 {
     //
+    private function stockSummary(Product $product, $locationId)
+    {
+        $inflow = $product->stockMovements()
+            ->where('location_id', $locationId)
+            ->where('type', 'inflow')
+            ->sum('quantity');
+
+        $outflow = $product->stockMovements()
+            ->where('location_id', $locationId)
+            ->where('type', 'outflow')
+            ->sum('quantity');
+
+        $transactionOutflow = $product->transactions()
+            ->where('location_id', $locationId)
+            ->sum('qty');
+
+        $updatedStock = $inflow - $outflow - $transactionOutflow;
+
+        $ideal = $product->idealStocks()
+            ->where('location_id', $locationId)
+            ->value('ideal_stock') ?? 0;
+
+        if ($updatedStock <= 0) {
+            $notificationText = "⚠ Out of Stock";
+        } elseif ($updatedStock < $ideal) {
+            $notificationText = "⚠ Low Stock";
+        } else {
+            $notificationText = "";
+        }
+
+        return [
+            'new_stock' => $updatedStock,
+            'new_notification' => $notificationText,
+        ];
+    }
+
     public function create()
     {
         $products = Product::all();
@@ -74,14 +110,16 @@ class StockMovementController extends Controller
             $notificationText = "";
         }
 
+        $summary = $this->stockSummary($product, $request->location_id);
+
         // ===========================
         // 🔥 RETURN JSON TO AJAX
         // ===========================
        return response()->json([
             'success'        => true,
             'key'            => $request->key,
-            'new_stock'      => $updatedStock,
-            'new_notification' => $notificationText,
+            'new_stock'      => $summary['new_stock'],
+            'new_notification' => $summary['new_notification'],
             'product_id'     => $request->product_id,
             'location_id'    => $request->location_id,
         ]);
@@ -152,10 +190,13 @@ class StockMovementController extends Controller
         abort(403, 'Unauthorized');
     }
 
-    $validated = $request->validate([
-        // 'id' => 'required|integer|exists:stock_movements,id',
-        // 'remarks' => 'required|string|max:255',
+    $request->validate([
+        'movement_id' => 'required|integer|exists:stock_movements,id',
+        'type' => 'required|in:inflow,outflow',
         'quantity' => 'required|numeric|min:0',
+        'remarks' => 'nullable|string',
+        'key' => 'nullable',
+        'location_id' => 'nullable|integer|exists:locations,id',
     ]);
 
     $movement = StockMovement::findOrFail($request->movement_id);
@@ -165,18 +206,20 @@ class StockMovementController extends Controller
         'quantity' => $request->quantity,
     ]);
 
+    $locationId = $request->location_id ?: $movement->location_id;
+
      $product = Product::with(['stockMovements', 'idealStocks'])
             ->find($movement->product_id);
 
         // total inflow
         $inflow = $product->stockMovements()
-            ->where('location_id', $request->location_id)
+            ->where('location_id', $locationId)
             ->where('type', 'inflow')
             ->sum('quantity');
 
         // total outflow
         $outflow = $product->stockMovements()
-            ->where('location_id', $request->location_id)
+            ->where('location_id', $locationId)
             ->where('type', 'outflow')
             ->sum('quantity');
 
@@ -186,7 +229,7 @@ class StockMovementController extends Controller
         // 🔥 GENERATE LOW-STOCK NOTIFICATION
         // ===================================
         $ideal = $product->idealStocks()
-            ->where('location_id', $request->location_id)
+            ->where('location_id', $locationId)
             ->value('ideal_stock') ?? 0;
 
         if ($updatedStock <= 0) {
@@ -197,14 +240,18 @@ class StockMovementController extends Controller
             $notificationText = "";
         }
 
+        $summary = $this->stockSummary($product, $locationId);
+
         // ===========================
         // 🔥 RETURN JSON TO AJAX
         // ===========================
         return response()->json([
             'success' => true,
             'key' => $request->key,
-            'new_stock' => $updatedStock,
-            'new_notification' => $notificationText
+            'new_stock' => $summary['new_stock'],
+            'new_notification' => $summary['new_notification'],
+            'product_id' => $movement->product_id,
+            'location_id' => $locationId,
         ]);
 }
 public function history(Request $request)
@@ -227,7 +274,7 @@ public function history(Request $request)
     $html = view('inventory.ajax_history', compact('product','stockMovements','transactions'))->render();
 
     return response()->json([
-        'title' => "Stock Movement — {$product->name}",
+        'title' => "Stock Movement - {$product->product_name}",
         'html' => $html
     ]);
 }

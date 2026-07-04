@@ -11,7 +11,7 @@
             <select name="location" class="form-control" onchange="this.form.submit()">
                 <option value="">Select Location</option>
                 @foreach($locations as $location)
-                    <option value="{{ $location->id }}" {{ $selectedLocation == $location->name ? 'selected' : '' }}>
+                    <option value="{{ $location->id }}" {{ $selectedLocation == $location->id ? 'selected' : '' }}>
                         {{ $location->name }}
                     </option>
                 @endforeach
@@ -106,6 +106,9 @@
             <form id="editMovementForm">
                 @csrf
                 <input type="hidden" id="movement_id" name="movement_id">
+                <input type="hidden" id="edit_key" name="key">
+                <input type="hidden" id="edit_product_id" name="product_id">
+                <input type="hidden" id="edit_location_id" name="location_id">
 
                 <div class="modal-body">
 
@@ -148,22 +151,6 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.editMovementBtn').forEach(button => {
-        button.addEventListener('click', function () {
-            document.getElementById('editMovementId').value = this.dataset.id;
-            document.getElementById('editType').value = this.dataset.type;
-            document.getElementById('editRemarks').value = this.dataset.remarks;
-            document.getElementById('editQuantity').value = this.dataset.quantity;
-
-            let modal = new bootstrap.Modal(document.getElementById('editMovementModal'));
-            modal.show();
-        });
-    });
-});
-</script>
-
 {{-- <script src="{{asset('inside_css/assets/js/pages/datatables.init.js')}}"></script> --}}
 <!-- App js -->
  <script src="{{asset('inside_css/assets/libs/prismjs/prism.js')}}"></script>
@@ -311,12 +298,31 @@ $(document).ready(function () {
 });
 
 });
-$(document).on("click", ".openMovementModal", function (e) {
-    e.preventDefault();
+let currentInventoryKey = null;
+let currentProductId = null;
+let currentLocationId = null;
 
-    let product_id = $(this).data("product");
-    let location_id = $(this).data("location");
+function updateInventoryStockCell(response) {
+    if (response.key === null || response.key === undefined || response.key === '') {
+        return;
+    }
 
+    $("#stock-" + response.key).html(`
+        <a href="#"
+           class="openMovementModal"
+           data-key="${response.key}"
+           data-product="${response.product_id}"
+           data-location="${response.location_id}">
+            ${parseFloat(response.new_stock).toFixed(2)}
+        </a>
+    `);
+
+    $("#notif-" + response.key).html(`
+        <span class="text-danger">${response.new_notification}</span>
+    `);
+}
+
+function loadMovementHistory(productId, locationId) {
     $("#movementModalTitle").html("Loading...");
     $("#movementModalBody").html(`
         <div class="text-center p-5">
@@ -324,22 +330,17 @@ $(document).on("click", ".openMovementModal", function (e) {
         </div>
     `);
 
-    let modal = new bootstrap.Modal(document.getElementById("movementModal"));
-    modal.show();
-
     $.ajax({
         url: "{{ url('stock-history') }}",
         type: "GET",
         data: {
-            product_id: product_id,
-            location_id: location_id
+            product_id: productId,
+            location_id: locationId
         },
         success: function (response) {
-
             $("#movementModalTitle").html(response.title);
             $("#movementModalBody").html(response.html);
 
-            // reinitialize DataTable inside modal
             $(".movement-table").DataTable({
                 ordering: false,
                 searching: false,
@@ -348,15 +349,33 @@ $(document).on("click", ".openMovementModal", function (e) {
             });
         }
     });
+}
+
+$(document).on("click", ".openMovementModal", function (e) {
+    e.preventDefault();
+
+    currentInventoryKey = $(this).data("key");
+    currentProductId = $(this).data("product");
+    currentLocationId = $(this).data("location");
+
+    let modal = new bootstrap.Modal(document.getElementById("movementModal"));
+    modal.show();
+
+    loadMovementHistory(currentProductId, currentLocationId);
 });
 $(document).on("click", ".editMovementBtn", function () {
     let id = $(this).data("id");
     let type = $(this).data("type");
     let quantity = $(this).data("quantity");
     let remarks = $(this).data("remarks");
+    let productId = $(this).data("product") || currentProductId;
+    let locationId = $(this).data("location") || currentLocationId;
 
     // Fill modal fields
     $("#movement_id").val(id);
+    $("#edit_key").val(currentInventoryKey);
+    $("#edit_product_id").val(productId);
+    $("#edit_location_id").val(locationId);
     $("#edit_type").val(type);
     $("#edit_quantity").val(quantity);
     $("#edit_remarks").val(remarks);
@@ -372,11 +391,9 @@ $("#editMovementForm").submit(function (e) {
         method: "PUT",
         data: $(this).serialize(),
         success: function (res) {
+            updateInventoryStockCell(res);
             $("#editMovementModal").modal("hide");
-             $('.modal.show').each(function () {
-                let modal = bootstrap.Modal.getInstance(this);
-                if(modal) modal.hide();
-            });
+            loadMovementHistory(res.product_id, res.location_id);
             Swal.fire({
                 icon: "success",
                 title: "Updated successfully",
