@@ -49,6 +49,10 @@
                     <table id="products-table" class="table table-bordered table-striped align-middle nowrap" style="width:100%">
                         <thead>
                             <tr>
+                                <th colspan="4">Products Details</th>
+                                <th colspan="{{ count($locations) }}+1">Ideal Stock</th>
+                            </tr>
+                            <tr>
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Category</th>
@@ -56,7 +60,7 @@
 
                                 {{-- Generate a column per location --}}
                                 @foreach($locations as $location)
-                                    <th>Ideal Stock ({{ $location->name }})</th>
+                                    <th> ({{ $location->name }})</th>
                                 @endforeach
 
                                 <th>Actions</th>
