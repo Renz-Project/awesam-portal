@@ -49,8 +49,8 @@
                     <table id="products-table" class="table table-bordered table-striped align-middle nowrap" style="width:100%">
                         <thead>
                             <tr>
-                                <th colspan="4">Products Details</th>
-                                <th colspan="{{ count($locations)+1 }}">Ideal Stock</th>
+                                <th colspan="4" class="text-center">Products Details</th>
+                                <th colspan="{{ count($locations)+1 }}" class="text-center">Ideal Stock</th>
                             </tr>
                             <tr>
                                 <th>Code</th>
@@ -60,7 +60,11 @@
 
                                 {{-- Generate a column per location --}}
                                 @foreach($locations as $location)
-                                    <th> ({{ $location->name }})</th>
+                                    <th>
+                                        @foreach(preg_split('/\s+/', trim($location->name)) as $word)
+                                            {{ $word }}@if(!$loop->last)<br>@endif
+                                        @endforeach
+                                    </th>
                                 @endforeach
 
                                 <th>Actions</th>
