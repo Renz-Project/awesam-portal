@@ -2,8 +2,34 @@
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap5.min.css">
+<style>
+    #products-table_wrapper .dataTables_filter {
+        text-align: right;
+    }
+
+    #products-table_wrapper .dataTables_filter input {
+        margin-left: .5rem;
+    }
+
+    #products-table_wrapper .dt-buttons .btn {
+        margin-right: .5rem;
+    }
+
+    #products-table_wrapper .dataTables_paginate .pagination {
+        justify-content: flex-end;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        #products-table_wrapper .dataTables_filter,
+        #products-table_wrapper .dataTables_paginate .pagination {
+            justify-content: flex-start;
+            text-align: left;
+        }
+    }
+</style>
 @endsection
 
 @section('content')
@@ -14,51 +40,53 @@
                 <h5 class="card-title mb-0">Products</h5>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddProduct">+ Add Product</button>
             </div>
-            <div class="card-body table-responsive">
-                <table id="example" class="table table-bordered table-striped align-middle" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Unit Price</th>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="products-table" class="table table-bordered table-striped align-middle nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Unit Price</th>
 
-                            {{-- Generate a column per location --}}
-                            @foreach($locations as $location)
-                                <th>Ideal Stock ({{ $location->name }})</th>
+                                {{-- Generate a column per location --}}
+                                @foreach($locations as $location)
+                                    <th>Ideal Stock ({{ $location->name }})</th>
+                                @endforeach
+
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($products as $product)
+                            <tr>
+                                <td>{{ $product->product_code }}</td>
+                                <td>{{ $product->product_name }}</td>
+                                <td>{{ $product->category->category }}</td>
+                                <td>{{ number_format($product->unit_price, 2) }}</td>
+
+                                {{-- Show ideal stock per location --}}
+                                @foreach($locations as $location)
+                                    @php
+                                        $idealStock = optional(
+                                            $product->idealStocks->firstWhere('location_id', $location->id)
+                                        )->ideal_stock ?? 0;
+                                    @endphp
+                                    <td>{{ $idealStock }}</td>
+                                @endforeach
+
+                                <td>
+                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                        data-bs-target="#editProductModal{{ $product->id }}">
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
                             @endforeach
-
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($products as $product)
-                        <tr>
-                            <td>{{ $product->product_code }}</td>
-                            <td>{{ $product->product_name }}</td>
-                            <td>{{ $product->category->category }}</td>
-                            <td>{{ number_format($product->unit_price, 2) }}</td>
-
-                            {{-- Show ideal stock per location --}}
-                            @foreach($locations as $location)
-                                @php
-                                    $idealStock = optional(
-                                        $product->idealStocks->firstWhere('location_id', $location->id)
-                                    )->ideal_stock ?? 0;
-                                @endphp
-                                <td>{{ $idealStock }}</td>
-                            @endforeach
-
-                            <td>
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal{{ $product->id }}">
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -134,15 +162,27 @@
 
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script>
-$('#example').DataTable({
+$('#products-table').DataTable({
     ordering: false,
-    dom: 'Bfrtip',
-    buttons: ['excel']
+    responsive: true,
+    dom: "<'row g-2 align-items-center mb-3'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row g-2 align-items-center mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+    buttons: [
+        {
+            extend: 'excel',
+            className: 'btn btn-sm btn-success'
+        }
+    ]
 });
 </script>
 @endsection
