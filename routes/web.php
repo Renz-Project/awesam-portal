@@ -65,6 +65,7 @@ Route::post('/new-stock','StockMovementController@store')->name('create-stock');
 
 Route::get('/office-supplies/inventory','StockMovementOfficeController@index')->name('inventory');
 Route::post('office-supplies/new-stock','StockMovementOfficeController@store')->name('create-stock');
+Route::put('/office-supplies/stock/update', 'StockMovementOfficeController@update')->name('office-stock.update');
 Route::put('/stock/update', 'StockMovementController@update')->name('stock.update');
 
 
@@ -84,6 +85,7 @@ Route::get('/view-attachment/{id}', 'ClientController@viewAttachment')->name('vi
 Route::delete('delete-attachment/{id}', 'ClientController@destroyAttachment');
 
 Route::get('/stock-history', 'StockMovementController@history');
+Route::get('/office-supplies/stock-history', 'StockMovementOfficeController@history');
 
 
 });
