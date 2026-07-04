@@ -37,15 +37,16 @@
 
     #products-table th.ideal-stock-header,
     #products-table td.ideal-stock-cell {
-        min-width: 95px;
-        max-width: 120px;
         text-align: center;
-        white-space: normal;
     }
 
     #products-table th.ideal-stock-header {
+        min-width: 150px;
+        max-width: 220px;
         line-height: 1.25;
-        word-break: break-word;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: normal;
     }
 
     @media (max-width: 767.98px) {
