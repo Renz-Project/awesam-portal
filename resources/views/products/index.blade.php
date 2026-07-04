@@ -50,7 +50,7 @@
                         <thead>
                             <tr>
                                 <th colspan="4">Products Details</th>
-                                <th colspan="{{ count($locations) }}+1">Ideal Stock</th>
+                                <th colspan="{{ count($locations)+1 }}">Ideal Stock</th>
                             </tr>
                             <tr>
                                 <th>Code</th>
