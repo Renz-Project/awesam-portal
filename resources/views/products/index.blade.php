@@ -224,15 +224,8 @@ let productsTable = $('#products-table').DataTable({
             extend: 'excel',
             className: 'btn btn-sm btn-success'
         }
-    ],
-    initComplete: function () {
-        this.api().columns.adjust();
-    }
+    ]
 });
-
-setTimeout(function () {
-    productsTable.columns.adjust();
-}, 100);
 
 const productLocationIds = @json($locations->pluck('id')->values());
 
@@ -287,7 +280,6 @@ $(document).on('submit', '.edit-product-form', function (e) {
             if (row.any()) {
                 row.data(productRowData(product)).draw(false);
                 $(row.node()).attr('id', 'product-row-' + product.id);
-                productsTable.columns.adjust();
             }
 
             $('#editProductModal' + product.id + ' .modal-title').text('Edit Product: ' + product.product_name);
