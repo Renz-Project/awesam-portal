@@ -35,6 +35,19 @@
         min-width: 1100px;
     }
 
+    #products-table th.ideal-stock-header,
+    #products-table td.ideal-stock-cell {
+        min-width: 95px;
+        max-width: 120px;
+        text-align: center;
+        white-space: normal;
+    }
+
+    #products-table th.ideal-stock-header {
+        line-height: 1.25;
+        word-break: break-word;
+    }
+
     @media (max-width: 767.98px) {
         #products-table_wrapper .dataTables_filter,
         #products-table_wrapper .dataTables_paginate .pagination {
@@ -65,7 +78,7 @@
 
                                 {{-- Generate a column per location --}}
                                 @foreach($locations as $location)
-                                    <th>Ideal Stock ({{ $location->name }})</th>
+                                    <th class="ideal-stock-header">Ideal Stock ({{ $location->name }})</th>
                                 @endforeach
 
                                 <th>Actions</th>
