@@ -35,6 +35,23 @@
         min-width: 1100px;
     }
 
+    #products-table th.ideal-stock-header {
+        text-align: center;
+        line-height: 1.25;
+        vertical-align: middle;
+        white-space: normal;
+    }
+
+    #products-table th.ideal-stock-header .location-name {
+        display: block;
+        margin-top: 2px;
+    }
+
+    #products-table td.ideal-stock-cell {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     @media (max-width: 767.98px) {
         #products-table_wrapper .dataTables_filter,
         #products-table_wrapper .dataTables_paginate .pagination {
@@ -65,7 +82,16 @@
 
                                 {{-- Generate a column per location --}}
                                 @foreach($locations as $location)
-                                    <th>Ideal Stock ({{ $location->name }})</th>
+                                    <th class="ideal-stock-header">
+                                        Ideal Stock
+                                        <span class="location-name">
+                                            (
+                                            @foreach(preg_split('/\s+/', trim($location->name)) as $word)
+                                                {{ $word }}@if(!$loop->last)<br>@endif
+                                            @endforeach
+                                            )
+                                        </span>
+                                    </th>
                                 @endforeach
 
                                 <th>Actions</th>
@@ -198,8 +224,15 @@ let productsTable = $('#products-table').DataTable({
             extend: 'excel',
             className: 'btn btn-sm btn-success'
         }
-    ]
+    ],
+    initComplete: function () {
+        this.api().columns.adjust();
+    }
 });
+
+setTimeout(function () {
+    productsTable.columns.adjust();
+}, 100);
 
 const productLocationIds = @json($locations->pluck('id')->values());
 
@@ -254,6 +287,7 @@ $(document).on('submit', '.edit-product-form', function (e) {
             if (row.any()) {
                 row.data(productRowData(product)).draw(false);
                 $(row.node()).attr('id', 'product-row-' + product.id);
+                productsTable.columns.adjust();
             }
 
             $('#editProductModal' + product.id + ' .modal-title').text('Edit Product: ' + product.product_name);
