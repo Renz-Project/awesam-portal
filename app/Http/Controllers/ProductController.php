@@ -96,6 +96,23 @@ class ProductController extends Controller
         }
     }
 
+    if ($request->ajax()) {
+        $product->load(['category', 'idealStocks']);
+
+        return response()->json([
+            'success' => true,
+            'product' => [
+                'id' => $product->id,
+                'product_code' => $product->product_code,
+                'product_name' => $product->product_name,
+                'category' => optional($product->category)->category,
+                'unit_price' => number_format($product->unit_price, 2),
+                'ideal_stocks' => $product->idealStocks->pluck('ideal_stock', 'location_id'),
+            ],
+            'message' => 'Product updated successfully!',
+        ]);
+    }
+
     Alert::success('Product updated successfully!')->persistent('Dismiss');
     return back();
 }

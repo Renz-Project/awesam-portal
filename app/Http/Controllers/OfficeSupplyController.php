@@ -98,6 +98,23 @@ class OfficeSupplyController extends Controller
         );
     }
 
+    if ($request->ajax()) {
+        $product->load(['category', 'idealStocks']);
+
+        return response()->json([
+            'success' => true,
+            'product' => [
+                'id' => $product->id,
+                'product_code' => $product->product_code,
+                'product_name' => $product->product_name,
+                'category' => optional($product->category)->category ?? 'N/A',
+                'unit_price' => number_format($product->unit_price, 2),
+                'ideal_stocks' => $product->idealStocks->pluck('ideal_stock', 'location_id'),
+            ],
+            'message' => 'Office Supply updated successfully!',
+        ]);
+    }
+
     Alert::success('Office Supply updated successfully!')->persistent('Dismiss');
     return back();
 }

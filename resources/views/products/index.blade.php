@@ -60,7 +60,7 @@
                         </thead>
                         <tbody>
                             @foreach($products as $product)
-                            <tr>
+                            <tr id="product-row-{{ $product->id }}">
                                 <td>{{ $product->product_code }}</td>
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ $product->category->category }}</td>
@@ -69,11 +69,11 @@
                                 {{-- Show ideal stock per location --}}
                                 @foreach($locations as $location)
                                     @php
-                                        $idealStock = optional(
-                                            $product->idealStocks->firstWhere('location_id', $location->id)
-                                        )->ideal_stock ?? 0;
-                                    @endphp
-                                    <td>{{ $idealStock }}</td>
+                                    $idealStock = optional(
+                                        $product->idealStocks->firstWhere('location_id', $location->id)
+                                    )->ideal_stock ?? 0;
+                                @endphp
+                                    <td class="ideal-stock-cell" data-location="{{ $location->id }}">{{ $idealStock }}</td>
                                 @endforeach
 
                                 <td>
@@ -118,7 +118,7 @@
 @foreach($products as $product)
 <div class="modal fade" id="editProductModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="editProductLabel{{ $product->id }}">
     <div class="modal-dialog" role="document">
-        <form action="{{ url('products/update/'. $product->id) }}" method="POST" onsubmit="show();" enctype="multipart/form-data">
+        <form action="{{ url('products/update/'. $product->id) }}" method="POST" class="edit-product-form" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -170,8 +170,9 @@
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$('#products-table').DataTable({
+let productsTable = $('#products-table').DataTable({
     ordering: false,
     responsive: true,
     dom: "<'row g-2 align-items-center mb-3'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
@@ -183,6 +184,92 @@ $('#products-table').DataTable({
             className: 'btn btn-sm btn-success'
         }
     ]
+});
+
+const productLocationIds = @json($locations->pluck('id')->values());
+
+function escapeHtml(value) {
+    return $('<div>').text(value ?? '').html();
+}
+
+function editProductButton(productId) {
+    return `
+        <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+            data-bs-target="#editProductModal${productId}">
+            Edit
+        </button>
+    `;
+}
+
+function productRowData(product) {
+    let row = [
+        escapeHtml(product.product_code),
+        escapeHtml(product.product_name),
+        escapeHtml(product.category),
+        product.unit_price
+    ];
+
+    productLocationIds.forEach(function (locationId) {
+        row.push(product.ideal_stocks[locationId] ?? 0);
+    });
+
+    row.push(editProductButton(product.id));
+
+    return row;
+}
+
+$(document).on('submit', '.edit-product-form', function (e) {
+    e.preventDefault();
+
+    let form = $(this);
+    let submitButton = form.find('button[type=submit]');
+
+    $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        beforeSend: function () {
+            submitButton.prop('disabled', true).text('Saving...');
+        },
+        success: function (response) {
+            let product = response.product;
+            let rowSelector = '#product-row-' + product.id;
+            let row = productsTable.row(rowSelector);
+
+            if (row.any()) {
+                row.data(productRowData(product)).draw(false);
+                $(row.node()).attr('id', 'product-row-' + product.id);
+            }
+
+            $('#editProductModal' + product.id + ' .modal-title').text('Edit Product: ' + product.product_name);
+            form.closest('.modal').modal('hide');
+
+            Swal.fire({
+                icon: 'success',
+                title: response.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
+        error: function (xhr) {
+            let message = 'Unable to update product.';
+
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                message = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Update failed',
+                html: message
+            });
+        },
+        complete: function () {
+            submitButton.prop('disabled', false).text('Save changes');
+        }
+    });
 });
 </script>
 @endsection

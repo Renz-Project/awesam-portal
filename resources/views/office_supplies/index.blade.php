@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                         @foreach($products as $product)
-                        <tr>
+                        <tr id="office-supply-row-{{ $product->id }}">
                             <td>{{ $product->product_code }}</td>
                             <td>{{ $product->product_name }}</td>
                             <td>{{ $product->category->category ?? 'N/A' }}</td>
@@ -46,7 +46,7 @@
                                         $product->idealStocks->where('location_id', $location->id)->first()
                                     )->ideal_stock ?? 0;
                                 @endphp
-                                <td>{{ $ideal }}</td>
+                                <td class="ideal-stock-cell" data-location="{{ $location->id }}">{{ $ideal }}</td>
                             @endforeach
                             <td>
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal{{ $product->id }}">Edit</button>
@@ -95,7 +95,7 @@
 @foreach($products as $product)
 <div class="modal fade" id="editProductModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="editProductLabel{{ $product->id }}" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <form action="{{ url('/office-supplies/update/'. $product->id) }}" method="POST" onsubmit="show();" enctype="multipart/form-data">
+    <form action="{{ url('/office-supplies/update/'. $product->id) }}" method="POST" class="edit-office-supply-form" enctype="multipart/form-data">
         @csrf
         <div class="modal-content">
           <div class="modal-header">
@@ -146,12 +146,92 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-$('#example').DataTable({
+let officeSuppliesTable = $('#example').DataTable({
     ordering: false,
     dom: 'Bfrtip',
     buttons: ['excel']
+});
+
+const officeSupplyLocationIds = @json($locations->pluck('id')->values());
+
+function escapeHtml(value) {
+    return $('<div>').text(value ?? '').html();
+}
+
+function editOfficeSupplyButton(productId) {
+    return `<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal${productId}">Edit</button>`;
+}
+
+function officeSupplyRowData(product) {
+    let row = [
+        escapeHtml(product.product_code),
+        escapeHtml(product.product_name),
+        escapeHtml(product.category),
+        product.unit_price
+    ];
+
+    officeSupplyLocationIds.forEach(function (locationId) {
+        row.push(product.ideal_stocks[locationId] ?? 0);
+    });
+
+    row.push(editOfficeSupplyButton(product.id));
+
+    return row;
+}
+
+$(document).on('submit', '.edit-office-supply-form', function (e) {
+    e.preventDefault();
+
+    let form = $(this);
+    let submitButton = form.find('button[type=submit]');
+
+    $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        beforeSend: function () {
+            submitButton.prop('disabled', true).text('Saving...');
+        },
+        success: function (response) {
+            let product = response.product;
+            let row = officeSuppliesTable.row('#office-supply-row-' + product.id);
+
+            if (row.any()) {
+                row.data(officeSupplyRowData(product)).draw(false);
+                $(row.node()).attr('id', 'office-supply-row-' + product.id);
+            }
+
+            form.closest('.modal').modal('hide');
+
+            Swal.fire({
+                icon: 'success',
+                title: response.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
+        error: function (xhr) {
+            let message = 'Unable to update office supply.';
+
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                message = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Update failed',
+                html: message
+            });
+        },
+        complete: function () {
+            submitButton.prop('disabled', false).text('Save changes');
+        }
+    });
 });
 </script>
 @endsection
