@@ -22,6 +22,19 @@
         margin-bottom: 0;
     }
 
+    #products-table_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+
+    .products-table-scroll {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    #products-table {
+        min-width: 1100px;
+    }
+
     @media (max-width: 767.98px) {
         #products-table_wrapper .dataTables_filter,
         #products-table_wrapper .dataTables_paginate .pagination {
@@ -41,7 +54,7 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddProduct">+ Add Product</button>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="products-table-scroll">
                     <table id="products-table" class="table table-bordered table-striped align-middle nowrap" style="width:100%">
                         <thead>
                             <tr>
@@ -174,7 +187,9 @@
 <script>
 let productsTable = $('#products-table').DataTable({
     ordering: false,
-    responsive: true,
+    responsive: false,
+    scrollX: true,
+    autoWidth: false,
     dom: "<'row g-2 align-items-center mb-3'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row g-2 align-items-center mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
