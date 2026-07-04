@@ -22,34 +22,8 @@
         margin-bottom: 0;
     }
 
-    #products-table_wrapper .dataTables_scrollBody {
-        overflow-x: auto !important;
-    }
-
-    .products-table-scroll {
-        overflow-x: auto;
-        width: 100%;
-    }
-
     #products-table {
         min-width: 1100px;
-    }
-
-    #products-table th.ideal-stock-header {
-        text-align: center;
-        line-height: 1.25;
-        vertical-align: middle;
-        white-space: normal;
-    }
-
-    #products-table th.ideal-stock-header .location-name {
-        display: block;
-        margin-top: 2px;
-    }
-
-    #products-table td.ideal-stock-cell {
-        text-align: center;
-        vertical-align: middle;
     }
 
     @media (max-width: 767.98px) {
@@ -71,7 +45,7 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddProduct">+ Add Product</button>
             </div>
             <div class="card-body">
-                <div class="products-table-scroll">
+                <div class="table-responsive">
                     <table id="products-table" class="table table-bordered table-striped align-middle nowrap" style="width:100%">
                         <thead>
                             <tr>
@@ -82,16 +56,7 @@
 
                                 {{-- Generate a column per location --}}
                                 @foreach($locations as $location)
-                                    <th class="ideal-stock-header">
-                                        Ideal Stock
-                                        <span class="location-name">
-                                            (
-                                            @foreach(preg_split('/\s+/', trim($location->name)) as $word)
-                                                {{ $word }}@if(!$loop->last)<br>@endif
-                                            @endforeach
-                                            )
-                                        </span>
-                                    </th>
+                                    <th>Ideal Stock ({{ $location->name }})</th>
                                 @endforeach
 
                                 <th>Actions</th>
@@ -112,7 +77,7 @@
                                         $product->idealStocks->firstWhere('location_id', $location->id)
                                     )->ideal_stock ?? 0;
                                 @endphp
-                                    <td class="ideal-stock-cell" data-location="{{ $location->id }}">{{ $idealStock }}</td>
+                                    <td>{{ $idealStock }}</td>
                                 @endforeach
 
                                 <td>
@@ -213,9 +178,6 @@
 <script>
 let productsTable = $('#products-table').DataTable({
     ordering: false,
-    responsive: false,
-    scrollX: true,
-    autoWidth: false,
     dom: "<'row g-2 align-items-center mb-3'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row g-2 align-items-center mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
