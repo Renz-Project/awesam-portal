@@ -334,7 +334,7 @@ table td:nth-child(4) {
             <input type="text" name="treatment[]" class="form-control" placeholder="Service name" required>
           </div>
           <div class="col-md-4">
-            <input type="number" name="amount[]" class="form-control" placeholder="0.00" step="0.01" required>
+            <input type="number" name="amount[]" class="form-control" placeholder="0.00" step="0.01" min="0" required>
           </div>
           <div class="col-md-2">
             <button type="button" class="btn btn-outline-danger btn-remove-treatment w-100">
@@ -362,7 +362,7 @@ table td:nth-child(4) {
             <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
          </div>
           <div class="col-md-3">
-            <input type="number" name="product_amount[]" class="form-control" placeholder="0.00" required>
+            <input type="number" name="product_amount[]" class="form-control" placeholder="0.00" step="0.01" min="0" required>
           </div>
           <div class="col-md-2">
             <button type="button" class="btn btn-outline-danger btn-remove-product w-100">
