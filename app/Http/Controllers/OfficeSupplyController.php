@@ -34,7 +34,8 @@ class OfficeSupplyController extends Controller
     $category = OfficeCategory::find($request->category_id);
 
     // Get the latest product for this category
-    $lastProduct = OfficeSupply::where('category_id', $category->id)
+    $lastProduct = OfficeSupply::withTrashed()
+        ->where('category_id', $category->id)
         ->orderBy('id', 'desc')
         ->first();
 
@@ -118,4 +119,13 @@ class OfficeSupplyController extends Controller
     Alert::success('Office Supply updated successfully!')->persistent('Dismiss');
     return back();
 }
+
+    public function destroy($id)
+    {
+        $product = OfficeSupply::findOrFail($id);
+        $product->delete();
+
+        Alert::success('Office Supply deleted successfully!')->persistent('Dismiss');
+        return back();
+    }
 }

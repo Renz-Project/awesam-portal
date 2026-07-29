@@ -50,6 +50,13 @@
                             @endforeach
                             <td>
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal{{ $product->id }}">Edit</button>
+                                <form action="{{ route('office-supplies.destroy', $product->id) }}" method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this office supply?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         @endforeach
@@ -165,6 +172,17 @@ function editOfficeSupplyButton(productId) {
     return `<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal${productId}">Edit</button>`;
 }
 
+function officeSupplyActionButtons(productId) {
+    return editOfficeSupplyButton(productId) + `
+        <form action="{{ url('office-supplies') }}/${productId}" method="POST" class="d-inline"
+            onsubmit="return confirm('Are you sure you want to delete this office supply?');">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+    `;
+}
+
 function officeSupplyRowData(product) {
     let row = [
         escapeHtml(product.product_code),
@@ -177,7 +195,7 @@ function officeSupplyRowData(product) {
         row.push(product.ideal_stocks[locationId] ?? 0);
     });
 
-    row.push(editOfficeSupplyButton(product.id));
+    row.push(officeSupplyActionButtons(product.id));
 
     return row;
 }

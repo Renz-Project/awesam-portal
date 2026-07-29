@@ -93,6 +93,13 @@
                                         data-bs-target="#editProductModal{{ $product->id }}">
                                         Edit
                                     </button>
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach
@@ -212,6 +219,17 @@ function editProductButton(productId) {
     `;
 }
 
+function productActionButtons(productId) {
+    return editProductButton(productId) + `
+        <form action="{{ url('products') }}/${productId}" method="POST" class="d-inline"
+            onsubmit="return confirm('Are you sure you want to delete this product?');">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+    `;
+}
+
 function productRowData(product) {
     let row = [
         escapeHtml(product.product_code),
@@ -224,7 +242,7 @@ function productRowData(product) {
         row.push(product.ideal_stocks[locationId] ?? 0);
     });
 
-    row.push(editProductButton(product.id));
+    row.push(productActionButtons(product.id));
 
     return row;
 }

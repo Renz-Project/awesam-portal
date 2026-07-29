@@ -55,10 +55,12 @@ Route::post('/new-location','LocationController@store')->name('locations');
 Route::get('/products','ProductController@index')->name('products');
 Route::post('/products/store','ProductController@store')->name('new-product');
 Route::post('/products/update/{id}','ProductController@editProduct')->name('edit-product');
+Route::delete('/products/{id}','ProductController@destroy')->name('products.destroy');
 
 Route::get('/office-supplies','OfficeSupplyController@index')->name('products');
 Route::post('/office-supplies/store','OfficeSupplyController@store')->name('new-product');
 Route::post('/office-supplies/update/{id}','OfficeSupplyController@editProduct')->name('edit-product');
+Route::delete('/office-supplies/{id}','OfficeSupplyController@destroy')->name('office-supplies.destroy');
 
 Route::get('/inventory','StockMovementController@index')->name('inventory');
 Route::post('/new-stock','StockMovementController@store')->name('create-stock');

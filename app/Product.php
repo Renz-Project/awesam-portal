@@ -4,11 +4,12 @@ namespace App;
 
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model implements Auditable
 {
     //
-    use \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable, SoftDeletes;
        protected $fillable = [
         'product_code',
         'product_name',

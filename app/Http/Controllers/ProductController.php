@@ -29,7 +29,8 @@ class ProductController extends Controller
     $category = Category::find($request->category_id);
 
     // Get the latest product for this category
-    $lastProduct = Product::where('category_id', $category->id)
+    $lastProduct = Product::withTrashed()
+        ->where('category_id', $category->id)
         ->orderBy('id', 'desc')
         ->first();
 
@@ -116,5 +117,14 @@ class ProductController extends Controller
     Alert::success('Product updated successfully!')->persistent('Dismiss');
     return back();
 }
+
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->delete();
+
+        Alert::success('Product deleted successfully!')->persistent('Dismiss');
+        return back();
+    }
 
 }
